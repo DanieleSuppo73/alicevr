@@ -1,0 +1,63 @@
+.POI p {
+    font-family: 'Acumin-regular', sans-serif;
+    margin:0;
+    padding: 0;
+}
+
+.POI-container {
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 10px;
+    padding: 20px;
+    /* max-width: 45%; */
+    margin: 10px;
+
+    /* background-color: rgb(255, 255, 255);
+    border-color: rgb(236, 108, 185); */
+}
+
+
+.POI-label {
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+}
+
+.POI-icon {
+    width: 15px;
+    margin-right: 10px;
+}
+
+.POI-text {
+    font-weight: 500;
+    margin: 0;
+    color: black;
+}
+
+#POI-name {
+    font-size: 13px;
+    font-family: 'Acumin-bold', sans-serif;
+}
+
+#POI-description {
+    font-size: 13px;
+}
+
+.POI-data * {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+
+.POI-color-blue {
+    background-color: rgb(241, 248, 255) !important;
+    border-color: rgb(3, 102, 214) !important;
+}
+
+.POI-color-red {
+    background-color: rgb(255, 238, 248) !important;
+    border-color: rgb(236, 108, 185) !important;
+}
+
+
+

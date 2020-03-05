@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <objType>video</objType>
+    <userName>viagginbici</userName>
+    <title>Il Lio Piccolo di Venezia</title>
+    <description>Una delle isole più inesplorate ma anche più suggestive della laguna veneziana</description>
+    <date>Fry Nov 15 2019</date>
+    <location></location>
+    <videoUrl>https://player.vimeo.com/external/355816026.m3u8?s=95add46cf3c7efa7ee281230ef12daf0b5562d26</videoUrl>
+    <videoUrl_1>43237</videoUrl_1>
+    <poster>lioPiccolo.jpg</poster>
+    <videoMarkers>liopiccolovideo.xml</videoMarkers>
+    <POI>liopiccolo_POI.xml</POI>
+    <guide>LioPiccolo_guide.html</guide>
+</root>

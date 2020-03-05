@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ALL_POI>
+    <POI>
+        <LONGITUDE>12.3884377</LONGITUDE>
+        <LATITUDE>45.0174729</LATITUDE>
+        <TYPE>LABEL</TYPE>
+        <NAME>Scanerello</NAME>
+    </POI>
+    <POI>
+        <LONGITUDE>12.362106</LONGITUDE>
+        <LATITUDE>45.0484923</LATITUDE>
+        <TYPE>LABEL</TYPE>
+        <NAME>Porto Levante</NAME>
+    </POI>
+    <POI>
+        <LONGITUDE>12.3429</LONGITUDE>
+        <LATITUDE>45.0775</LATITUDE>
+        <TYPE>LABEL</TYPE>
+        <NAME>Isola Albarella</NAME>
+    </POI>
+    <POI>
+        <LONGITUDE>12.4198126</LONGITUDE>
+        <LATITUDE>44.9983542</LATITUDE>
+        <TYPE>LABEL</TYPE>
+        <NAME>Boccasette</NAME>
+    </POI>
+    <POI>
+        <LONGITUDE>12.2616788</LONGITUDE>
+        <LATITUDE>45.0565128</LATITUDE>
+        <TYPE>LABEL</TYPE>
+        <NAME>Ca' Cappello</NAME>
+    </POI>
+    <POI>
+        <LONGITUDE>12.3293</LONGITUDE>
+        <LATITUDE>45.0048</LATITUDE>
+        <TYPE>LABEL</TYPE>
+        <NAME>Parco Regionale Veneto del Delta del Po</NAME>
+        <FONT>15px sans-serif</FONT>
+        <COLOR>Cesium.Color.LIGHTGREEN</COLOR>
+    </POI>
+
+
+</ALL_POI>

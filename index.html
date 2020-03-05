@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset='utf-8' />
+    <title>index01</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <script src="src/dispatcher.js"></script>
+
+    <style>
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+
+            /* remove scrollbar for Microsoft Edge */
+            -ms-overflow-style: none;
+            overflow: -moz-scrollbars-none;
+        }
+
+        body {
+            display: flex;
+        }
+
+        body>div {
+            flex: 1;
+            margin: 0.5em;
+        }
+
+        @media (max-width: 800px) {
+            body {
+                flex-direction: column-reverse;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- PLAYER -->
+    <div>
+        <iframe id="alice_player" src="Player/Player.html" width="100%" height="100%" frameBorder="0"></iframe>
+    </div>
+
+    <!-- MAP -->
+    <div>
+        <!-- <iframe id="alice_map" src="Map/Map.html?id=1570451964288" width="100%" height="100%"
+            frameBorder="0"></iframe> -->
+        <iframe id="alice_map" src="Map/Map.html?id=1579530506349" width="100%" height="100%"
+            frameBorder="0"></iframe>
+
+
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <objType>video</objType>
+    <userName>viagginbici</userName>
+    <title>Il Lido e la Pellestrina di Venezia</title>
+    <description>Il famoso Lido di Venezia, e l'isola sotto</description>
+    <date>Fry Nov 15 2019</date>
+    <location></location>
+    <videoUrl>https://player.vimeo.com/external/356158599.m3u8?s=4cc2e833252c2f761dad31c7a825828d68146a78</videoUrl>
+    <videoUrl_1>41747</videoUrl_1>
+    <poster>lidoPellestrina.jpg</poster>
+    
+    <videoMarkers>lidopellestrinavideo.xml</videoMarkers>
+    <guide>LidoPellestrina_guide.html</guide>
+</root>

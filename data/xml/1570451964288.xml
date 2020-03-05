@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <objType>video</objType>
+    <userName>Piemonte Bike</userName>
+    <title>Le strade di Fausto Coppi</title>
+    <description>Le strade intorno alle colline di Alessandria, un giro sui percorsi dove si allenava il grande mito del ciclismo.</description>
+    <date>Thu Sep 26 2019</date>
+    <location>Castellania Coppi (AL) Italy</location>
+    
+    <videoUrl>https://player.vimeo.com/external/347803220.m3u8?s=61a66fd483813c89da138ac578628ca68bb65fe3</videoUrl>
+    <!-- <videoUrl>..\data\video\Alessandria_edit_071219_2k.mp4</videoUrl> -->
+    <videoUrl_1>43236</videoUrl_1>
+
+    <poster>coppi.jpg</poster>
+    <id>1571313244130</id>
+    <id>1571313271465</id> 
+    <id>1571313279009</id>
+    <videoMarkers>coppi_video.xml</videoMarkers>
+    <subtitles>coppi_subtitles.xml</subtitles>
+    <POI>coppi_POI.xml</POI>
+    <guide>Coppi_guide.html</guide>
+    <routes>Coppi_routes.xml</routes>
+</root>
