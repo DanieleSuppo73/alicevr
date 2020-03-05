@@ -4,12 +4,26 @@
     <meta charset='utf-8' />
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
     <style>
+        html,
+        body,
+        #wrapper {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+
+            /* for Microsoft Edge */
+            -ms-overflow-style: none;
+            overflow: -moz-scrollbars-none;
+        }
+
         .journeyDetailContainer {
             border-top: 1px solid rgb(224, 224, 224);
             /* background-color: rgb(237, 240, 242);
             border-radius: 8px; */
-            
+
             display: flex;
             flex-wrap: wrap;
             margin-left: 10px;
@@ -20,7 +34,7 @@
             height: 3em;
             padding-left: 10px;
 
-           
+
         }
 
         /* select all p that are descendant */
@@ -54,9 +68,9 @@
         }
 
 
-        .journeyDetailInfo {}
+        
 
-        journeyDetailWarning {}
+        
     </style>
 </head>
 
@@ -109,8 +123,14 @@
 
         </div>
 
+    </div>
 
+    <div id="journal">
 
     </div>
-</body>
 
+
+
+    <script type="module" src="src/main.js"></script>
+   
+</body>

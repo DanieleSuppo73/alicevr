@@ -174,7 +174,7 @@ setInterval(function () {
     if (videoPlayer.isPlaying) {
         videoPlayer.message.status = "playing";
         videoPlayer.message.time = videoPlayer.time;
-        videoPlayer.message.angle = videoPlayer.angle;
+        videoPlayer.message.angle = videoPlayer.angle - 180;
         videoPlayer.sendMessage();
     }
     /// we do this to not change everything in videomarkers...
@@ -182,7 +182,7 @@ setInterval(function () {
         if (videoPlayer.angle !== videoPlayer.oldAngle){
             videoPlayer.oldAngle = videoPlayer.angle;
             videoPlayer.message.status = "";
-            videoPlayer.message.angle = videoPlayer.angle;
+            videoPlayer.message.angle = videoPlayer.angle - 180;
             videoPlayer.sendMessage();
         }
     }

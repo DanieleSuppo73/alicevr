@@ -34,7 +34,7 @@ class Asset {
         this.gpxUrl = null;
         this.subtitles = null;
         this.POI = null;
-        this.guide = null;
+        this.journal = null;
         this.routes = null;
     }
 
@@ -139,9 +139,9 @@ class Asset {
                 }
             }
 
-            if (xmlDoc.getElementsByTagName("guide").length !== 0) {
-                if (xmlDoc.getElementsByTagName("guide")[0].childNodes.length !== 0) {
-                    Obj.guide = xmlDoc.getElementsByTagName("guide")[0].childNodes[0].nodeValue;
+            if (xmlDoc.getElementsByTagName("journal").length !== 0) {
+                if (xmlDoc.getElementsByTagName("journal")[0].childNodes.length !== 0) {
+                    Obj.journal = xmlDoc.getElementsByTagName("journal")[0].childNodes[0].nodeValue;
                 }
             }
 
@@ -685,6 +685,7 @@ function onVideoAssetClicked(asset) {
         title: asset.title,
         description: asset.description,
         videoMarkers: asset.videoMarkers,
+        journal: asset.journal,
     }
     window.parent.postMessage({
         'func': 'parentFunc',
