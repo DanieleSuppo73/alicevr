@@ -29,6 +29,7 @@ $(document).ready(function () {
 //////////////////////////////////////////////////////////
 if (window.addEventListener) window.addEventListener("message", onReceivedMessage, false);
 else window.attachEvent("onmessage", onReceivedMessage);
+
 function onReceivedMessage(evt) {
     let message = evt.data;
     if (message.command === "onVideoAssetClicked") {

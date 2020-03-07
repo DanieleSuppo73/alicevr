@@ -8,15 +8,8 @@
 
     <style>
         html,
-        body,
-        #wrapper {
-            height: 100%;
-            width: 100%;
+        body {
             margin: 0;
-
-            /* for Microsoft Edge */
-            -ms-overflow-style: none;
-            overflow: -moz-scrollbars-none;
         }
 
         .journeyDetailContainer {
@@ -33,6 +26,7 @@
             align-items: center;
             height: 3em;
             padding-left: 10px;
+            padding-right: 3em;
 
 
         }
@@ -68,7 +62,25 @@
         }
 
 
-        
+         /* width */
+         ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+            background: lightgray
+        }
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+        }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4e4e4e;
+        }
 
         
     </style>
@@ -76,18 +88,8 @@
 
 <body>
 
-    <div class="journeyDetailContainer">
+    <!-- <div class="journeyDetailContainer">
 
-
-        <!-- WARNING FOR NO DATA -->
-        <div class="journeyDetailWarning">
-            <img src="images/warning.svg">
-            <p>Questo tracciato non ha informazioni</p>
-        </div>
-
-
-
-        <!-- DISTANCE -->
         <div class="journeyDetailInfo">
             <img src="images/distance.svg">
 
@@ -99,7 +101,7 @@
 
         </div>
 
-        <!-- SLOPE -->
+       
         <div class="journeyDetailInfo">
             <img src="images/slope.svg">
 
@@ -111,7 +113,7 @@
 
         </div>
 
-        <!-- TIME -->
+       
         <div class="journeyDetailInfo">
             <img src="images/time.svg">
 
@@ -123,10 +125,11 @@
 
         </div>
 
-    </div>
+    </div> -->
+
+
 
     <div id="journal">
-
     </div>
 
 
