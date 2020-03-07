@@ -28,13 +28,6 @@ const videoPlayer = {
         angle: 0,
     },
 
-    sendMessage: function () {
-        window.parent.postMessage({
-            'func': 'parentFunc',
-            'message': this.message
-        }, "*");
-    },
-
     get time() {
         if (videoPlayer.player) {
             return videoPlayer.player.getCurrentTime();
@@ -114,7 +107,7 @@ const videoPlayer = {
                 console.log("poster is ready... videoPlayer.onReadyHandlers")
             }
         } else {
-            console.log("NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
+            console.warn("There's no POSTER image for this video!")
             setTimeout(function () {
                 for (let i in videoPlayer.onReadyHandlers) videoPlayer.onReadyHandlers[i](assetToLoad);
             }, 500)
@@ -173,7 +166,7 @@ const videoPlayer = {
                 for (let i in videoPlayer.onStartedHandlers) videoPlayer.onStartedHandlers[i]();
                 console.log("-------VP STARTED")
                 videoPlayer.message.status = "started";
-                videoPlayer.sendMessage();
+                sendMessage(videoPlayer.message);
             }
         });
 
@@ -187,7 +180,7 @@ const videoPlayer = {
 
             // console.log("video is paused");
             videoPlayer.message.status = "paused";
-            videoPlayer.sendMessage();
+            sendMessage(videoPlayer.message);
         });
 
 
@@ -200,7 +193,7 @@ const videoPlayer = {
 
             console.log("video is seeking");
             videoPlayer.message.status = "seeking";
-            videoPlayer.sendMessage();
+            sendMessage(videoPlayer.message);
         });
 
 
@@ -215,7 +208,7 @@ const videoPlayer = {
 
             console.log("Video ended");
             videoPlayer.message.status = "ended";
-            videoPlayer.sendMessage();
+            sendMessage(videoPlayer.message);
         });
     },
 };
@@ -230,7 +223,7 @@ setInterval(function () {
         videoPlayer.message.status = "playing";
         videoPlayer.message.time = videoPlayer.player.getCurrentTime();
         videoPlayer.message.angle = videoPlayer.angle;
-        videoPlayer.sendMessage();
+        sendMessage(videoPlayer.message);
     }
     /// we do this to not change everything in videomarkers...
     else if(!videoPlayer.isPlaying && videoPlayer.isStarted){
@@ -238,7 +231,7 @@ setInterval(function () {
             videoPlayer.oldAngle = videoPlayer.angle;
             videoPlayer.message.status = "";
             videoPlayer.message.angle = videoPlayer.angle;
-            videoPlayer.sendMessage();
+            sendMessage(videoPlayer.message);
         }
     }
 }, 100)
@@ -249,29 +242,20 @@ setInterval(function () {
 //////////////////////////////////////////////////////////
 /// receiver from Dispatcher.js
 //////////////////////////////////////////////////////////
-if (window.addEventListener) {
-    // For standards-compliant web browsers
-    window.addEventListener("message", displayMessage, false);
-} else {
-    window.attachEvent("onmessage", displayMessage);
-}
-
-function displayMessage(evt) {
-    let message = evt.data;
-
-    if (message.command === "onVideoAssetClicked") {
-        console.log("onVideoAssetClicked received message");
-        videoPlayer.load(message.asset);
+addReceivedMessageHandler(function (msg) {
+    if (msg.command === "onVideoAssetClicked") {
+        // console.log("onVideoAssetClicked received message");
+        videoPlayer.load(msg.asset);
     }
-
-    if (message.command === "videoPlayerPlay") {
+    if (msg.command === "videoPlayerPlay") {
         videoPlayer.play();
     }
-
-    if (message.command === "videoPlayerSeek") {
-        videoPlayer.seek(message.time);
+    if (msg.command === "videoPlayerSeek") {
+        videoPlayer.seek(msg.time);
     }
-}
+});
+
+
 
 
 
@@ -279,6 +263,6 @@ function displayMessage(evt) {
 
 // // DEBUG
 // let asset = {
-//     videoUrl: "../data/video/Alessandria_edit_071219_2k.mp4"
+//     videoUrl: "https://player.vimeo.com/external/355816026.m3u8?s=95add46cf3c7efa7ee281230ef12daf0b5562d26"
 // }
 // videoPlayer.load(asset)

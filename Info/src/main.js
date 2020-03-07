@@ -11,29 +11,15 @@ import {
 
 
 //////////////////////////////////////////////////////////
-/// send message to Dispatcher.js for iFrame ready
+/// receiver from Dispatcher.js
 //////////////////////////////////////////////////////////
-$(document).ready(function () {
-    window.parent.postMessage({
-        'message': {
-            command: "iframeLoaded",
-        }
-    }, "*");
+addReceivedMessageHandler(function (msg) {
+    // let message = msg.message;
+    if (msg.command === "onVideoAssetClicked") {
+        statistics(msg.asset);
+        journal(msg.asset);
+    }
 });
 
 
 
-
-//////////////////////////////////////////////////////////
-/// receiver from Dispatcher.js
-//////////////////////////////////////////////////////////
-if (window.addEventListener) window.addEventListener("message", onReceivedMessage, false);
-else window.attachEvent("onmessage", onReceivedMessage);
-
-function onReceivedMessage(evt) {
-    let message = evt.data;
-    if (message.command === "onVideoAssetClicked") {
-        statistics(message.asset);
-        journal(message.asset);
-    }
-}

@@ -450,23 +450,15 @@ function getHeadingPitchFromPoints(p1, p2) {
 
 
 
+
 //////////////////////////////////////////////////////////
 /// receiver from Dispatcher.js
 //////////////////////////////////////////////////////////
-if (window.addEventListener) {
-    // For standards-compliant web browsers
-    window.addEventListener("message", displayMessage, false);
-} else {
-    window.attachEvent("onmessage", displayMessage);
-}
-
-function displayMessage(evt) {
-    let message = evt.data;
-
-    if (message.command === "onVideoPlayerStatus") {
+addReceivedMessageHandler(function (msg) {
+    if (msg.command === "onVideoPlayerStatus") {
 
         /// when the video is ended
-        if (message.status === "ended") {
+        if (msg.status === "ended") {
             console.log("ENDED")
 
             mapPlaceholder.fadeOut();
@@ -495,4 +487,4 @@ function displayMessage(evt) {
         }
 
     }
-}
+});

@@ -7,7 +7,6 @@ function loadDoc(Obj, callback) {
     };
     let url = main.url + Obj.id + '.xml';
     xhttp.open("GET", url, true);
-    // logger.log("reading: " + url)
     xhttp.send();
 }
 
@@ -471,187 +470,6 @@ main = {
 
 
 
-// //////////////////
-// /// preload images
-// //////////////////
-// const preload = {
-//     folder: 'images/',
-//     urls: ['icon_placeholder-event_selected.svg',
-//         'icon_placeholder-video_selected.svg',
-//     ],
-//     images: [],
-//     load: function () {
-//         for (let i in this.urls) {
-//             let img = new Image();
-//             img.src = this.folder + this.urls[i];
-//             this.images.push(img)
-//         }
-//     }
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-// /// register the handler for picked entity!!!!!
-// viewer.screenSpaceEventHandler.setInputAction(function (movement) {
-//     let pickedFeature = viewer.scene.pick(movement.position);
-//     if (!Cesium.defined(pickedFeature)) {
-//         return;
-//     }
-//     let pickedPlaceholder = pickedFeature.id;
-//     if (pickedPlaceholder.asset) {
-//         onPickedAsset(pickedPlaceholder.asset);
-//     }
-// }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
-
-
-
-
-
-
-
-
-
-
-
-
-
-// function SHOWALL() {
-//     console.log('SHOWALL');
-//     let selectedAsset = main;
-//     getNew(selectedAsset, true, 'track', false, (result) => {
-//         // result.track.visibleTrack.polyline.show = true;
-//         result.track.visibleTrack.polyline.material = result.track.highlightedMaterial;
-//         console.log('show track ' + result.track.url)
-//     });
-// }
-
-// function HIDEALL() {
-//     console.log('HIDEALL');
-//     let selectedAsset = main;
-//     getNew(selectedAsset, true, 'track', false, (result) => {
-//         // result.track.visibleTrack.polyline.show = false;
-//         result.track.visibleTrack.polyline.material = result.track.defaultMaterial;
-//         console.log('show track ' + result.track.url)
-//     });
-// }
-
-
-// function getNew(parent, includeParent, type, useOnlyParent, callback) {
-//     if (useOnlyParent) {
-//         console.log("MA PERCHE?")
-//         callback(parent);
-//         return;
-//     }
-//     if (includeParent && parent.type && parent.type === type)
-//         callback(parent);
-//     for (let i in parent.subObj) {
-//         if (type !== 'any') {
-//             if (parent.subObj[i].type === type) {
-//                 callback(parent.subObj[i]);
-//             } else {
-//                 getNew(parent.subObj[i], includeParent, type, useOnlyParent, callback);
-//             }
-//         } else {
-//             callback(parent.subObj[i]);
-//             getNew(parent.subObj[i], includeParent, type, useOnlyParent, callback);
-//         }
-//     }
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// /////////////////////////////////////////////////////////////////////////////
-// /// function to execute when the mouse
-// /// is Hover a placeholder
-// /////////////////////////////////////////////////////////////////////////////
-// function onHoverPlaceholder(Obj) {
-//     console.log("onHoverPlaceholder")
-//     if (!Obj.isSelected) {
-//         Obj.isOver = true;
-//         Obj.placeholder.billboard.scale = 1.3;
-
-//         /// if is a video set highlight material all nested tracks
-//         if (Obj.type === 'video') {
-//             getAssetRecursive(Obj, true, 'track', false, (result) => {
-//                 result.track.visibleTrack.polyline.material = result.track.highlightedMaterial;
-//                 // result.track.visibleTrack.polyline.show = true;
-//             });
-//         }
-
-//     }
-// }
-
-
-// /////////////////////////////////////////////////////////////////////////////
-// /// function to execute when the mouse
-// /// exit from a placeholder
-// /////////////////////////////////////////////////////////////////////////////
-// function onExitPlaceholder(Obj) {
-//     if (Obj.isOver && !Obj.isSelected && Obj.id !== 'main') {
-//         Obj.isOver = false;
-//         Obj.placeholder.billboard.scale = 1.0;
-
-//         /// if is a video set dafault material for all nested tracks
-//         if (Obj.type === 'video') {
-//             getAssetRecursive(Obj, true, 'track', false, (result) => {
-//                 result.track.visibleTrack.polyline.material = result.track.defaultMaterial;
-//                 // result.track.visibleTrack.polyline.show = false;
-//             });
-//         }
-//     }
-// }
-
-
-
-
-
-// /////////////////////////////////////////////////////////////////////////////
-// /// fade in/out placeholders recursively
-// /////////////////////////////////////////////////////////////////////////////
-// function fadePlaceholder(parent, type, value, timeout = null, useOnlyParent = false) {
-//     getAssetRecursive(parent, true, type, useOnlyParent, (result) => {
-//         if (value) {
-//             if (timeout) {
-//                 result.placeholder.billboardImage.fadeInWithTimeout(timeout);
-//                 // result.label.labelImage.fadeInWithTimeout(timeout);
-//             } else {
-//                 result.placeholder.billboardImage.fadeIn();
-//                 // result.label.labelImage.fadeIn();
-//             }
-//         } else {
-//             if (timeout) {
-//                 result.placeholder.billboardImage.fadeOutWithTimeout(timeout);
-//                 // result.label.labelImage.fadeOutWithTimeout(timeout);
-//             } else {
-//                 result.placeholder.billboardImage.fadeOut();
-//                 // result.label.labelImage.fadeOut();
-//             }
-//         }
-//     })
-// }
-
 
 
 
@@ -687,13 +505,21 @@ function onVideoAssetClicked(asset) {
         videoMarkers: asset.videoMarkers,
         journal: asset.journal,
     }
-    window.parent.postMessage({
-        'func': 'parentFunc',
-        'message': {
-            command: 'onVideoAssetClicked',
-            asset: pickedAsset
-        }
-    }, "*");
+
+
+    // window.parent.postMessage({
+    //     'func': 'parentFunc',
+    //     'message': {
+    //         command: 'onVideoAssetClicked',
+    //         asset: pickedAsset
+    //     }
+    // }, "*");
+
+
+    sendMessage({
+        command: 'onVideoAssetClicked',
+        asset: pickedAsset
+    })
 
 
 
@@ -769,48 +595,8 @@ function onPickedAsset(asset) {
     /// if is a video call 'onVideoAssetClicked'
     if (selectedAsset.type === 'video') {
         onVideoAssetClicked(selectedAsset);
-
-
-        // console.log("Centro della bounding sphere di questo video: " + selectedAsset.boundingSphere.center);
-
-        //var cartesian = new Cesium.Cartesian3(1527780.02515, -4464217.70308, 4277167.40653);
-        // var cartographic = Cesium.Cartographic.fromCartesian(selectedAsset.boundingSphere.center);
-        // var latitude = Cesium.Math.toDegrees(cartographic.latitude);
-        // var longitude = Cesium.Math.toDegrees(cartographic.longitude);
-
-        // console.log("lat: " + latitude)
-        // console.log("lng: " + longitude)
-
-
     }
 
-    // if (main.isReady) {
-    //     viewer.camera.flyToBoundingSphere(selectedAsset.boundingSphere, {
-    //         duration: 0,
-    //     });
-    // }
-
-
-
-    // /// turn on selected widget
-    // let selectedId = "#" + selectedAsset.id;
-    // $(selectedId).data('selected', true);
-    // onListWidgetHover(selectedId);
-
-
-    // /// turn off old widget
-    // if (oldSelectedAsset) {
-    //     let oldId = "#" + oldSelectedAsset.id;
-    //     $(oldId).data('selected', false);
-    //     onListWidgetOut(oldId);
-
-
-    //     /// turn off home button
-    //     if (oldSelectedAsset === main) {
-    //         $('#main').data('clicked', false);
-    //         toggleSvgButton('#main', false);
-    //     }
-    // }
 
 
 
@@ -893,70 +679,7 @@ function onPickedAsset(asset) {
     if (selectedAsset.id !== 'main') {
 
         selectedAsset.isSelected = true;
-        // /// set new scale
-        // selectedAsset.placeholder.billboard.scale = 1.3;
 
-        // if (selectedAsset.type === 'event') {
-        //     if (oldSelectedAsset.id !== 'main') {
-        //         if (oldSelectedAsset.parent.id !== selectedAsset.id) {
-        //             /// fade in nested placeholders
-        //             logger.log('fade in nested placeholders')
-        //             fadePlaceholder(selectedAsset, 'video', true, 1000);
-        //             /// fade out this placeholder
-        //             logger.log('fade out this placeholder')
-        //             selectedAsset.placeholder.billboardImage.fadeOut();
-        //             // selectedAsset.label.labelImage.fadeOut();
-        //         }
-        //     } else {
-        //         /// fade in nested placeholders
-        //         logger.log('fade in nested placeholders')
-        //         fadePlaceholder(selectedAsset, 'video', true, 1000);
-        //         /// fade out this placeholder
-        //         logger.log('fade out this placeholder')
-        //         selectedAsset.placeholder.billboardImage.fadeOut();
-        //         // selectedAsset.label.labelImage.fadeOut();
-        //     }
-        // }
-
-
-        // if (selectedAsset.type === 'video') {
-        //     logger.log("VIDEO SELECTED: " + selectedAsset.title)
-        //     /// change icon on selected
-        //     // selectedAsset.placeholder.billboard.image =
-        //     //     getIconByType(selectedAsset.type, true);
-        //     selectedAsset.placeholder.billboard.image = null;
-
-        //     // /// highlight all nested tracks
-        //     // getAssetRecursive(selectedAsset, true, 'track', false, (result) => {
-        //     //     result.track.visibleTrack.polyline.material = result.track.highlightedMaterial;
-        //     // })
-        //     // /// hide the label
-        //     // selectedAsset.label.labelImage.setOpacity(0);
-        //     ///
-        //     if (selectedAsset.parent.type === 'event') {
-        //         if (oldSelectedAsset.id !== 'main') {
-        //             if (selectedAsset.parent.id !== oldSelectedAsset.parent.id &&
-        //                 selectedAsset.parent.id !== oldSelectedAsset.id) {
-        //                 /// fade in nested placeholders of the parent
-        //                 logger.log('fade in nested placeholders of the parent')
-        //                 fadePlaceholder(selectedAsset.parent, 'video', true, 1000);
-        //                 /// fade out parent placeholder
-        //                 logger.log('fade out parent placeholder')
-        //                 selectedAsset.parent.placeholder.billboardImage.fadeOut();
-        //                 // selectedAsset.parent.label.labelImage.fadeOut();
-        //             }
-        //         } else {
-        //             /// fade in nested placeholders of the parent
-        //             logger.log('fade in nested placeholders of the parent')
-        //             fadePlaceholder(selectedAsset.parent, 'video', true);
-        //             /// fade out parent placeholder
-        //             logger.log('fade out parent placeholder')
-        //             selectedAsset.parent.placeholder.billboardImage.fadeOut();
-        //             // selectedAsset.parent.label.labelImage.fadeOut();
-        //         }
-
-        //     }
-        // }
     }
 
 
@@ -1010,13 +733,6 @@ function getParameterFromIframe(parameter) {
 ////////////////////// //////////////////////////////////////////////
 /// START - START - START - START - START - START - START - START ///
 /////////////////////////////////////////////////////////////////////
-function start() {
-
-    // preload.load();
-
-    main.idToLoad = getParameterFromIframe("id");
-    main.load();
-    // main.load('1579530506349');
-
-}
-start();
+main.idToLoad = getParameterFromIframe("id");
+main.load();
+// main.load('1579530506349');

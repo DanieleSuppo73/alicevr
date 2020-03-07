@@ -203,11 +203,19 @@ const videoMarkers = {
 
         for (let i = 0; i < videoMarkers.markers.length; i++) {
 
+            // console.log("---------------------------------")
+            // console.log("i " + i);
+            // console.log("videoMarkers.markerIndex " + videoMarkers.markerIndex);
+            // console.log("videoPlayerTime " + videoPlayerTime)
+            // console.log("videoMarkers.markers[i].time " + videoMarkers.markers[i].time)
+            // console.log("videoMarkers.markers[i + 1].time " + videoMarkers.markers[i + 1].time)
+
             if (i < videoMarkers.markers.length - 1 && videoPlayerTime >= videoMarkers.markers[i].time &&
                 videoPlayerTime < videoMarkers.markers[i + 1].time && videoMarkers.markerIndex !== i) {
 
                 videoMarkers.markerIndex = i;
                 videoMarkers.onNewMarkerReached();
+                // console.log("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC")
                 break;
 
             } else if (i === videoMarkers.markers.length - 1 && videoPlayerTime >= videoMarkers.markers[i].time &&
@@ -224,16 +232,19 @@ const videoMarkers = {
 
         markerReached = true;
 
-        // console.log('-- new marker detected: index ' + this.markerIndex);
-        // console.log('--- time: ' + videoMarkers.markers[this.markerIndex].time)
+        // window.parent.postMessage({
+        //     'func': 'parentFunc',
+        //     'message': {
+        //         command: "onNewMarkerReached",
+        //         time: videoMarkers.markers[this.markerIndex].date
+        //     }
+        // }, "*");
 
-        window.parent.postMessage({
-            'func': 'parentFunc',
-            'message': {
-                command: "onNewMarkerReached",
-                time: videoMarkers.markers[this.markerIndex].date
-            }
-        }, "*");
+
+        // sendMessage({
+        //     command: "onNewMarkerReached",
+        //     time: videoMarkers.markers[this.markerIndex].date
+        // })
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -552,9 +563,9 @@ function lerpPoints(track, initIndex, useConstantVelocity) {
         if (videoPlayerStatus === "playing") {
 
             // mapPlaceholder.heading = getHeadingPitchFromPoints(initPos, endPos);
-            
+
             time += sampleInterval;
-            
+
             let lerpValue = time / lerpTime;
 
             if (time < lerpTime) {
@@ -618,22 +629,13 @@ setInterval(function () {
 
 
 //////////////////////////////////////////////////////////
-/// receiver
+/// receiver from Dispatcher.js
 //////////////////////////////////////////////////////////
-if (window.addEventListener) {
-    // For standards-compliant web browsers
-    window.addEventListener("message", onReceivedMessage_markers, false);
-} else {
-    window.attachEvent("onmessage", onReceivedMessage_markers);
-}
-
-function onReceivedMessage_markers(evt) {
-    let message = evt.data;
-    if (message.command === "onVideoPlayerStatus") {
-        videoPlayerStatus = message.status;
-        videoPlayerTime = message.time;
-        // console.log(videoPlayerStatus)
-        // console.log(videoPlayerTime)
+addReceivedMessageHandler(function (msg) {
+    
+    if (msg.command === "onVideoPlayerStatus") {
+        videoPlayerStatus = msg.status;
+        videoPlayerTime = msg.time;
 
         if (videoPlayerStatus === "seeking")
             videoMarkers.markerIndex = -1
@@ -643,9 +645,9 @@ function onReceivedMessage_markers(evt) {
             /// ok, questo resetta il parametro, e al prossimo giro di "flyAndLinkCameraToEntity"
             /// lo fa tornare al posto giusto, 
             /// ma non funziona ovviamente appena si rida' il play...
-
             videoMarkers.firstReached = false;
         }
 
     }
-}
+})
+

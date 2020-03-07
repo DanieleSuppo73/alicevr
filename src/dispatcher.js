@@ -1,67 +1,159 @@
-const alice_dispatcher = {
-    panelId: ["alice_map", "alice_player", "alice_info"],
-    panel: [],
-    l: 0,
-    queueMsg: [],
-    ready: false,
-    checkRoutine: null,
-    start: function () {
-        let Obj = this;
-        document.onreadystatechange = function () {
-            if (document.readyState === 'interactive') {
-                for (let i in Obj.panelId) {
-                    let p = document.getElementById(Obj.panelId[i]);
-                    if (p) {
-                        Obj.panel.push(p);
-                    }
-                }
-                let check = setInterval(function () {
-                    if (Obj.l === Obj.panel.length) {
-                        Obj.ready = true;
-                        console.log("******** DISPATCHER PRONTO! ********")
-                        clearInterval(check);
+let handlersQueue = [];
+let messagesQueue = [];
 
-                        if (Obj.queueMsg.length > 0){
-                            for (let i in Obj.queueMsg){
-                                Obj.sendMessage(Obj.queueMsg[i]);
-                                console.log("*** >>> " + Obj.queueMsg[i]);
-                            }
-                        }
-                    }
-                }, 100)
-            }
-        }
-    },
-    onMessage: function (event) {
-        let message = event.data.message;
-        if (typeof message === "undefined"){
-            console.error("ERROR IN DISPATCHER!! received undefined message...");
-            console.log(event);
-        }
-        if (message.command === "iframeLoaded") {
-            alice_dispatcher.l++;
-        } else {
-            if (!alice_dispatcher.ready) {
-                alice_dispatcher.queueMsg.push(message);
-                console.log("---- MESSAGGIO IN CODA: " + message.command)
-            } else {
-                alice_dispatcher.sendMessage(message);
-            }
-        }
-    },
-    sendMessage: function (message) {
-        for (let i in this.panel) {
-            this.panel[i].contentWindow.postMessage(message, "*");
-        }
+let handlersInterval = null;
+let messagesInterval = null;
+
+/// create the top window object just once,
+/// since we have multiple instance of this script running
+if (typeof window.parent.alice_dispatcher === "undefined") {
+
+    window.parent.alice_dispatcher = {
+        message: "",
+        receivedMessageHandlers: [],
+        topDocumentIsReady: false,
+        iframesAreLoaded: false,
+        toLoad: 0,
+        loaded: 0,
+    };
+    init();
+}
+else{
+    waitForThisDoc();
+}
+
+
+
+const dispatcher = {
+
+}
+
+
+
+let sendMessage = function (msg) {
+    if (!window.parent.alice_dispatcher.iframesAreLoaded) {
+        messagesQueue.push(msg);
+        messagesQueueManager();
+
+    } else {
+        window.parent.alice_dispatcher.message = msg;
+        onReceivedMessage();
+    }
+};
+
+
+
+let addReceivedMessageHandler = function (func) {
+    if (!window.parent.alice_dispatcher.topDocumentIsReady) {
+        handlersQueue.push(func);
+        handlersQueueManager();
+
+    } else {
+        window.parent.alice_dispatcher.receivedMessageHandlers.push(func);
     }
 }
 
 
-if (window.addEventListener) {
-    window.addEventListener("message", alice_dispatcher.onMessage, false);
-} else if (window.attachEvent) {
-    window.attachEvent("onmessage", alice_dispatcher.onMessage, false);
+
+
+function onReceivedMessage() {
+    for (let i in window.parent.alice_dispatcher.receivedMessageHandlers) {
+        window.parent.alice_dispatcher.receivedMessageHandlers[i]
+            (window.parent.alice_dispatcher.message);
+    }
 }
 
 
-alice_dispatcher.start();
+
+
+/// if the top document is not ready
+/// manage the queue for receivedMessageHandlers
+function handlersQueueManager() {
+    console.log("--> called handlersQueueManager")
+
+    if (handlersInterval) clearInterval(handlersInterval);
+    handlersInterval = setInterval(function () {
+
+        if (window.parent.alice_dispatcher.topDocumentIsReady) {
+            clearInterval(handlersInterval);
+            handlersInterval = null;
+
+            for (let i in handlersQueue) {
+                addReceivedMessageHandler(handlersQueue[i]);
+            }
+            handlersQueue = [];
+        }
+    }, 100)
+}
+
+
+
+/// if iframes are not ready
+/// manage the queue for messages
+function messagesQueueManager() {
+    console.log("---> called messagesQueueManager")
+
+    if (messagesInterval) clearInterval(messagesInterval);
+    messagesInterval = setInterval(function () {
+
+        if (window.parent.alice_dispatcher.iframesAreLoaded) {
+
+            clearInterval(messagesInterval);
+            messagesInterval = null;
+
+            for (let i in messagesQueue) {
+                sendMessage(messagesQueue[i]);
+            }
+            messagesQueue = [];
+        }
+    }, 100)
+}
+
+
+
+/// wait for TOP document ready
+function init() {
+    let waitForTopDoc = setInterval(function () {
+
+            if (top.document.readyState === 'interactive' || top.document.readyState === 'complete') {
+                window.parent.alice_dispatcher.topDocumentIsReady = true;
+                clearInterval(waitForTopDoc);
+                // console.log("TOP DOC READY")
+
+                /// get the number of iframes to be loaded
+                let iframes = top.document.getElementsByClassName("alicevr");
+                window.parent.alice_dispatcher.toLoad = iframes.length;
+
+
+                waitForThisDoc();
+
+                /// wait until the iframes loaded are the same number
+                /// that should be loaded
+                let interval = setInterval(function(){
+
+                    if(window.parent.alice_dispatcher.toLoad === window.parent.alice_dispatcher.loaded){
+                        clearInterval(interval);
+                        window.parent.alice_dispatcher.iframesAreLoaded = true;
+                        console.log("<--! all iframes loaded")
+                    }
+                }, 50);
+            }
+    }, 20)
+}
+
+
+/// wait for THIS document loaded
+function waitForThisDoc() {
+    let interval = setInterval(function () {
+
+        if (document.readyState === 'complete') {
+            // console.log("IFRAME LOADED")
+            clearInterval(interval);
+
+            /// we wait a little to avoid conflict with handlers queue...
+            setTimeout(function () {
+                window.parent.alice_dispatcher.loaded++;
+            }, 100)
+        }
+    }, 50);
+}

@@ -88,16 +88,13 @@ let mapPlaceholderStart = setInterval(function () {
 
 
 
+
+
 //////////////////////////////////////////////////////////
 /// receiver from Dispatcher.js
 //////////////////////////////////////////////////////////
-if (window.addEventListener) window.addEventListener("message", addVideoplayerHeading, false);
-else window.attachEvent("onmessage", addVideoplayerHeading);
-
-
-function addVideoplayerHeading(evt) {
-    let message = evt.data;
-    if (message.command === "onVideoPlayerStatus") {
-        mapPlaceholder.videoplayerHeading = Cesium.Math.toRadians(message.angle);
+addReceivedMessageHandler(function (msg) {
+    if (msg.command === "onVideoPlayerStatus") {
+        mapPlaceholder.videoplayerHeading = Cesium.Math.toRadians(msg.angle);
     }
-}
+})

@@ -29,12 +29,12 @@ const videoPlayer = {
         angle: 0,
     },
 
-    sendMessage: function () {
-        window.parent.postMessage({
-            'func': 'parentFunc',
-            'message': this.message
-        }, "*");
-    },
+    // sendMessage: function () {
+    //     window.parent.postMessage({
+    //         'func': 'parentFunc',
+    //         'message': this.message
+    //     }, "*");
+    // },
 
     load: function (asset) {
 
@@ -96,7 +96,7 @@ OmniVirt.api.receiveMessage('started', function (eventName, data, instance) {
     // console.log('------ video is started ------')
     for (let i in videoPlayer.onStartedHandlers) videoPlayer.onStartedHandlers[i]();
     videoPlayer.message.status = "started";
-    videoPlayer.sendMessage();
+    sendMessage(videoPlayer.message);
 
 });
 
@@ -106,7 +106,7 @@ OmniVirt.api.receiveMessage('paused', function (eventName, data, instance) {
     videoPlayer.isPaused = true;
     // console.log('------ video is paused ------')
     videoPlayer.message.status = "paused";
-    videoPlayer.sendMessage();
+    sendMessage(videoPlayer.message);
 });
 
 
@@ -115,7 +115,7 @@ OmniVirt.api.receiveMessage('ended', function (eventName, data, instance) {
     videoPlayer.isPlaying = false;
     // console.log('------ video is ended ------')
     videoPlayer.message.status = "ended";
-    videoPlayer.sendMessage();
+    sendMessage(videoPlayer.message);
 });
 
 
@@ -123,7 +123,7 @@ OmniVirt.api.receiveMessage('seeked', function (eventName, data, instance) {
     videoPlayer.isSeeking = true;
     console.log('------ video is seeked ------')
     videoPlayer.message.status = "seeking";
-    videoPlayer.sendMessage();
+    sendMessage(videoPlayer.message);
 
     if (videoPlayer.timeout) clearTimeout(videoPlayer.timeout);
 
@@ -175,7 +175,7 @@ setInterval(function () {
         videoPlayer.message.status = "playing";
         videoPlayer.message.time = videoPlayer.time;
         videoPlayer.message.angle = videoPlayer.angle - 180;
-        videoPlayer.sendMessage();
+        sendMessage(videoPlayer.message);
     }
     /// we do this to not change everything in videomarkers...
     else if(!videoPlayer.isPlaying && videoPlayer.isStarted){
@@ -183,7 +183,7 @@ setInterval(function () {
             videoPlayer.oldAngle = videoPlayer.angle;
             videoPlayer.message.status = "";
             videoPlayer.message.angle = videoPlayer.angle - 180;
-            videoPlayer.sendMessage();
+            sendMessage(videoPlayer.message);
         }
     }
 }, 100)
@@ -191,28 +191,19 @@ setInterval(function () {
 
 
 
+
 //////////////////////////////////////////////////////////
 /// receiver from Dispatcher.js
 //////////////////////////////////////////////////////////
-if (window.addEventListener) {
-    // For standards-compliant web browsers
-    window.addEventListener("message", displayMessage, false);
-} else {
-    window.attachEvent("onmessage", displayMessage);
-}
-
-function displayMessage(evt) {
-    let message = evt.data;
-
-    if (message.command === "onVideoAssetClicked") {
-        videoPlayer.load(message.asset);
+addReceivedMessageHandler(function (msg) {
+    if (msg.command === "onVideoAssetClicked") {
+        // console.log("onVideoAssetClicked received message");
+        videoPlayer.load(msg.asset);
     }
-
-    if (message.command === "videoPlayerPlay") {
+    if (msg.command === "videoPlayerPlay") {
         videoPlayer.play();
     }
-
-    if (message.command === "videoPlayerSeek") {
-        videoPlayer.seek(message.time);
+    if (msg.command === "videoPlayerSeek") {
+        videoPlayer.seek(msg.time);
     }
-}
+});

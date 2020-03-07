@@ -345,19 +345,35 @@ $(document).ready(function () {
 
 
 
+// //////////////////////////////////////////////////////////
+// /// receiver from Dispatcher.js
+// //////////////////////////////////////////////////////////
+// if (window.addEventListener) window.addEventListener("message", displayMessage, false);
+// else window.attachEvent("onmessage", displayMessage);
+
+// function displayMessage(evt) {
+//     let message = evt.data;
+//     if (message.command === "onDeviceDetected") {
+//         toolbar.isVisible = message.isMobile ? false : true;
+//     }
+//     if (message.command === "onVideoPlayerStatus" && message.status === "started") {
+//         cameraLinkButton.isLinked = true;
+//         cameraLinkButton.isActive = true;
+//     }
+// }
+
+
+
+
 //////////////////////////////////////////////////////////
 /// receiver from Dispatcher.js
 //////////////////////////////////////////////////////////
-if (window.addEventListener) window.addEventListener("message", displayMessage, false);
-else window.attachEvent("onmessage", displayMessage);
-
-function displayMessage(evt) {
-    let message = evt.data;
-    if (message.command === "onDeviceDetected") {
-        toolbar.isVisible = message.isMobile ? false : true;
+addReceivedMessageHandler(function (msg) {
+    if (msg.command === "onDeviceDetected") {
+        toolbar.isVisible = msg.isMobile ? false : true;
     }
-    if (message.command === "onVideoPlayerStatus" && message.status === "started") {
+    if (msg.command === "onVideoPlayerStatus" && msg.status === "started") {
         cameraLinkButton.isLinked = true;
         cameraLinkButton.isActive = true;
     }
-}
+})

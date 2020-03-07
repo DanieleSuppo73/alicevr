@@ -20,7 +20,7 @@ overlay.icon360 = {
     id: "icon-360",
     show: function () {
         $("#" + this.id).fadeIn(0);
-    },
+    },  
     hide: function () {
         $("#" + this.id).fadeOut();
     }
@@ -35,7 +35,7 @@ overlay.icon360big = {
         let _id = this.id;
         setTimeout(function () {
             $("#" + _id).fadeOut();
-        }, 3000)
+        }, 6000)
     },
     hide: function () {
         $("#" + this.id).fadeOut(0);
@@ -231,27 +231,27 @@ overlay.viewArrows = {
 
 
 
-overlay.oldTime = null;
-overlay.time = function (time) {
+// overlay.oldTime = null;
+// overlay.time = function (time) {
 
-    if (overlay.oldTime) {
-        let diff = Math.abs(time - this.oldTime) / 1000; //sec
-        if (diff < 120) return;
-    }
+//     if (overlay.oldTime) {
+//         let diff = Math.abs(time - this.oldTime) / 1000; //sec
+//         if (diff < 120) return;
+//     }
 
-    overlay.oldTime = time;
+//     overlay.oldTime = time;
 
-    var d = new Date(time)
-    var hh = d.getHours();
-    var mm = d.getMinutes();
+//     var d = new Date(time)
+//     var hh = d.getHours();
+//     var mm = d.getMinutes();
 
-    $('#time').fadeIn();
-    $('#time').find('p').text(hh + ":" + mm);
+//     $('#time').fadeIn();
+//     $('#time').find('p').text(hh + ":" + mm);
 
-    setTimeout(function () {
-        $('#time').fadeOut();
-    }, 4000)
-}
+//     setTimeout(function () {
+//         $('#time').fadeOut();
+//     }, 4000)
+// }
 
 
 
