@@ -1,14 +1,18 @@
+
 const map = {
+
     params: {
-        useMapbox: true,
+        useMapbox: false,
         fxaa: false,
-        maxScreenSpaceError: 4, // def 2
+        maxScreenSpaceError: 2,
         occlusion: true, // occlusion culling
         brightness: 0.3,
         hue: 0.04,
         saturation: -0.01,
-        defaultAccessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzZDU1NWMyOC00YjFkLTQ5OTUtODg5Yy0zZDRlNGI1NTg3ZjciLCJpZCI6MTUxNTgsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NjcyNDQ4NjR9.WDQmliwvLOArHiI9n4ET2TBELHRsGofW1unvSsbuyR8',
+        //defaultAccessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzZDU1NWMyOC00YjFkLTQ5OTUtODg5Yy0zZDRlNGI1NTg3ZjciLCJpZCI6MTUxNTgsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NjcyNDQ4NjR9.WDQmliwvLOArHiI9n4ET2TBELHRsGofW1unvSsbuyR8',
     },
+
+
 
     imageryProvider: function () {
         return (
@@ -107,10 +111,13 @@ const map = {
 };
 
 
+let useHighQuality = getParameterFromIframe("hq");
+map.params.useMapbox = useHighQuality === "true" ? false : true;
+map.params.maxScreenSpaceError = useHighQuality === "true" ? 2 : 4;
 
 
 
-Cesium.Ion.defaultAccessToken = map.params.defaultAccessToken;
+Cesium.Ion.defaultAccessToken = getParameterFromIframe("token");
 const terrainProvider = Cesium.createWorldTerrain();
 const viewer = new Cesium.Viewer('container', {
     imageryProvider: map.imageryProvider(),
