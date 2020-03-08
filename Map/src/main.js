@@ -493,26 +493,26 @@ function onVideoAssetClicked(asset) {
     }
 
 
+
+    // const pickedAsset = {
+    //     owner: asset.owner,
+    //     videoUrl: asset.videoUrl,
+    //     videoUrl_1: asset.videoUrl_1,
+    //     poster: asset.poster,
+    //     subtitles: asset.subtitles,
+    //     title: asset.title,
+    //     description: asset.description,
+    //     videoMarkers: asset.videoMarkers,
+    //     journal: asset.journal,
+    // }
+
+
+
+
     /// send message!
-    const pickedAsset = {
-        owner: asset.owner,
-        videoUrl: asset.videoUrl,
-        videoUrl_1: asset.videoUrl_1,
-        poster: asset.poster,
-        subtitles: asset.subtitles,
-        title: asset.title,
-        description: asset.description,
-        videoMarkers: asset.videoMarkers,
-        journal: asset.journal,
-    }
-
-
-
-
-
     dispatcher.sendMessage({
         command: 'onVideoAssetClicked',
-        asset: pickedAsset
+        asset: asset
     })
 
 
