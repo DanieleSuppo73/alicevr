@@ -283,15 +283,12 @@
 
     <script>
         /// get device info from WURFL
-        setTimeout(function () {
-            window.parent.postMessage({
-                'func': 'parentFunc',
-                'message': {
-                    command: "onDeviceDetected",
-                    isMobile: WURFL.is_mobile,
-                }
-            }, "*");
-        }, 1000);
+        dispatcher.sendMessage({
+            command: "onDeviceDetected",
+            isMobile: WURFL.is_mobile,
+        });
+
+
         let isMobile = WURFL.is_mobile;
 
 
@@ -314,6 +311,6 @@
         head.appendChild(js);
     </script>
 
-   
+
 
 </body>

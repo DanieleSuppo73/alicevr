@@ -17,41 +17,44 @@ if (typeof window.parent.alice_dispatcher === "undefined") {
         loaded: 0,
     };
     init();
-}
-else{
+} else {
     waitForThisDoc();
 }
 
 
 
+
+
+
+
 const dispatcher = {
 
-}
+    /// sender
+    sendMessage: function (msg) {
+        if (!window.parent.alice_dispatcher.iframesAreLoaded) {
+            messagesQueue.push(msg);
+            messagesQueueManager();
 
+        } else {
+            window.parent.alice_dispatcher.message = msg;
+            onReceivedMessage();
+        }
+    },
 
+    /// receiver - append the function that will be executed
+    onMessage: function (func) {
+        if (!window.parent.alice_dispatcher.topDocumentIsReady) {
+            handlersQueue.push(func);
+            handlersQueueManager();
 
-let sendMessage = function (msg) {
-    if (!window.parent.alice_dispatcher.iframesAreLoaded) {
-        messagesQueue.push(msg);
-        messagesQueueManager();
-
-    } else {
-        window.parent.alice_dispatcher.message = msg;
-        onReceivedMessage();
+        } else {
+            window.parent.alice_dispatcher.receivedMessageHandlers.push(func);
+        }
     }
 };
 
 
 
-let addReceivedMessageHandler = function (func) {
-    if (!window.parent.alice_dispatcher.topDocumentIsReady) {
-        handlersQueue.push(func);
-        handlersQueueManager();
-
-    } else {
-        window.parent.alice_dispatcher.receivedMessageHandlers.push(func);
-    }
-}
 
 
 
@@ -79,7 +82,7 @@ function handlersQueueManager() {
             handlersInterval = null;
 
             for (let i in handlersQueue) {
-                addReceivedMessageHandler(handlersQueue[i]);
+                dispatcher.onMessage(handlersQueue[i]);
             }
             handlersQueue = [];
         }
@@ -102,7 +105,7 @@ function messagesQueueManager() {
             messagesInterval = null;
 
             for (let i in messagesQueue) {
-                sendMessage(messagesQueue[i]);
+                dispatcher.sendMessage(messagesQueue[i]);
             }
             messagesQueue = [];
         }
@@ -115,29 +118,29 @@ function messagesQueueManager() {
 function init() {
     let waitForTopDoc = setInterval(function () {
 
-            if (top.document.readyState === 'interactive' || top.document.readyState === 'complete') {
-                window.parent.alice_dispatcher.topDocumentIsReady = true;
-                clearInterval(waitForTopDoc);
-                // console.log("TOP DOC READY")
+        if (top.document.readyState === 'interactive' || top.document.readyState === 'complete') {
+            window.parent.alice_dispatcher.topDocumentIsReady = true;
+            clearInterval(waitForTopDoc);
+            // console.log("TOP DOC READY")
 
-                /// get the number of iframes to be loaded
-                let iframes = top.document.getElementsByClassName("alicevr");
-                window.parent.alice_dispatcher.toLoad = iframes.length;
+            /// get the number of iframes to be loaded
+            let iframes = top.document.getElementsByClassName("alicevr");
+            window.parent.alice_dispatcher.toLoad = iframes.length;
 
 
-                waitForThisDoc();
+            waitForThisDoc();
 
-                /// wait until the iframes loaded are the same number
-                /// that should be loaded
-                let interval = setInterval(function(){
+            /// wait until the iframes loaded are the same number
+            /// that should be loaded
+            let interval = setInterval(function () {
 
-                    if(window.parent.alice_dispatcher.toLoad === window.parent.alice_dispatcher.loaded){
-                        clearInterval(interval);
-                        window.parent.alice_dispatcher.iframesAreLoaded = true;
-                        console.log("<--! all iframes loaded")
-                    }
-                }, 50);
-            }
+                if (window.parent.alice_dispatcher.toLoad === window.parent.alice_dispatcher.loaded) {
+                    clearInterval(interval);
+                    window.parent.alice_dispatcher.iframesAreLoaded = true;
+                    console.log("<--! all iframes loaded")
+                }
+            }, 50);
+        }
     }, 20)
 }
 

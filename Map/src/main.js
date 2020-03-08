@@ -507,16 +507,10 @@ function onVideoAssetClicked(asset) {
     }
 
 
-    // window.parent.postMessage({
-    //     'func': 'parentFunc',
-    //     'message': {
-    //         command: 'onVideoAssetClicked',
-    //         asset: pickedAsset
-    //     }
-    // }, "*");
 
 
-    sendMessage({
+
+    dispatcher.sendMessage({
         command: 'onVideoAssetClicked',
         asset: pickedAsset
     })

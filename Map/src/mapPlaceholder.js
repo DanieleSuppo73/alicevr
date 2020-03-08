@@ -93,7 +93,7 @@ let mapPlaceholderStart = setInterval(function () {
 //////////////////////////////////////////////////////////
 /// receiver from Dispatcher.js
 //////////////////////////////////////////////////////////
-addReceivedMessageHandler(function (msg) {
+dispatcher.onMessage(function (msg) {
     if (msg.command === "onVideoPlayerStatus") {
         mapPlaceholder.videoplayerHeading = Cesium.Math.toRadians(msg.angle);
     }

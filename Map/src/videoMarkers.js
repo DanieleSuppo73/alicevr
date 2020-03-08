@@ -232,19 +232,7 @@ const videoMarkers = {
 
         markerReached = true;
 
-        // window.parent.postMessage({
-        //     'func': 'parentFunc',
-        //     'message': {
-        //         command: "onNewMarkerReached",
-        //         time: videoMarkers.markers[this.markerIndex].date
-        //     }
-        // }, "*");
-
-
-        // sendMessage({
-        //     command: "onNewMarkerReached",
-        //     time: videoMarkers.markers[this.markerIndex].date
-        // })
+        
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -631,8 +619,8 @@ setInterval(function () {
 //////////////////////////////////////////////////////////
 /// receiver from Dispatcher.js
 //////////////////////////////////////////////////////////
-addReceivedMessageHandler(function (msg) {
-    
+dispatcher.onMessage(function (msg) {
+
     if (msg.command === "onVideoPlayerStatus") {
         videoPlayerStatus = msg.status;
         videoPlayerTime = msg.time;

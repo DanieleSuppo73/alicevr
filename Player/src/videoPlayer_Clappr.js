@@ -166,7 +166,7 @@ const videoPlayer = {
                 for (let i in videoPlayer.onStartedHandlers) videoPlayer.onStartedHandlers[i]();
                 console.log("-------VP STARTED")
                 videoPlayer.message.status = "started";
-                sendMessage(videoPlayer.message);
+                dispatcher.sendMessage(videoPlayer.message);
             }
         });
 
@@ -180,7 +180,7 @@ const videoPlayer = {
 
             // console.log("video is paused");
             videoPlayer.message.status = "paused";
-            sendMessage(videoPlayer.message);
+            dispatcher.sendMessage(videoPlayer.message);
         });
 
 
@@ -193,7 +193,7 @@ const videoPlayer = {
 
             console.log("video is seeking");
             videoPlayer.message.status = "seeking";
-            sendMessage(videoPlayer.message);
+            dispatcher.sendMessage(videoPlayer.message);
         });
 
 
@@ -208,7 +208,7 @@ const videoPlayer = {
 
             console.log("Video ended");
             videoPlayer.message.status = "ended";
-            sendMessage(videoPlayer.message);
+            dispatcher.sendMessage(videoPlayer.message);
         });
     },
 };
@@ -223,7 +223,7 @@ setInterval(function () {
         videoPlayer.message.status = "playing";
         videoPlayer.message.time = videoPlayer.player.getCurrentTime();
         videoPlayer.message.angle = videoPlayer.angle;
-        sendMessage(videoPlayer.message);
+        dispatcher.sendMessage(videoPlayer.message);
     }
     /// we do this to not change everything in videomarkers...
     else if(!videoPlayer.isPlaying && videoPlayer.isStarted){
@@ -231,7 +231,7 @@ setInterval(function () {
             videoPlayer.oldAngle = videoPlayer.angle;
             videoPlayer.message.status = "";
             videoPlayer.message.angle = videoPlayer.angle;
-            sendMessage(videoPlayer.message);
+            dispatcher.sendMessage(videoPlayer.message);
         }
     }
 }, 100)
@@ -242,7 +242,7 @@ setInterval(function () {
 //////////////////////////////////////////////////////////
 /// receiver from Dispatcher.js
 //////////////////////////////////////////////////////////
-addReceivedMessageHandler(function (msg) {
+dispatcher.onMessage(function (msg) {
     if (msg.command === "onVideoAssetClicked") {
         // console.log("onVideoAssetClicked received message");
         videoPlayer.load(msg.asset);

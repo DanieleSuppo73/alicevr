@@ -368,7 +368,7 @@ $(document).ready(function () {
 //////////////////////////////////////////////////////////
 /// receiver from Dispatcher.js
 //////////////////////////////////////////////////////////
-addReceivedMessageHandler(function (msg) {
+dispatcher.onMessage(function (msg) {
     if (msg.command === "onDeviceDetected") {
         toolbar.isVisible = msg.isMobile ? false : true;
     }

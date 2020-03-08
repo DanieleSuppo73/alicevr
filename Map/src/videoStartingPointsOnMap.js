@@ -17,27 +17,22 @@ function onThisHover(entity) {
 function onThisExit(entity) {
     if (entity.id.name !== "videoStartingPoint") return;
     entity.id.billboard.width = new Cesium.CallbackProperty(setSizeOnCameraHeight, false),
-    entity.id.billboard.height = new Cesium.CallbackProperty(setSizeOnCameraHeight, false),
-    entity.id.billboard.image = imgFolder + videoStartingPointsOnMap.image;
+        entity.id.billboard.height = new Cesium.CallbackProperty(setSizeOnCameraHeight, false),
+        entity.id.billboard.image = imgFolder + videoStartingPointsOnMap.image;
 }
 
 function onThisPicked(entity) {
     if (entity.id.name !== "videoStartingPoint") return;
 
-    window.parent.postMessage({
-        'func': 'parentFunc',
-        'message': {
-            command: "videoPlayerSeek",
-            time: entity.id.time
-        }
-    }, "*");
 
-    window.parent.postMessage({
-        'func': 'parentFunc',
-        'message': {
-            command: "videoPlayerPlay",
-        }
-    }, "*");
+    dispatcher.sendMessage({
+        command: "videoPlayerSeek",
+        time: entity.id.time
+    });
+
+    dispatcher.sendMessage({
+        command: "videoPlayerPlay",
+    })
 }
 
 
@@ -88,7 +83,8 @@ function createFromGpx() {
 
 let pointCameraHeight = 0;
 let pointSize = 0;
-function setSizeOnCameraHeight(){
+
+function setSizeOnCameraHeight() {
     if (map.cameraHeight !== pointCameraHeight) {
 
         /// update the width
@@ -104,7 +100,7 @@ function setSizeOnCameraHeight(){
         // console.log("widthMult " + widthMult)
 
         videoStartingPointsOnMap.size = Math.lerp(minSize, maxSize, mult);
-        
+
     }
     return videoStartingPointsOnMap.size;
 }
