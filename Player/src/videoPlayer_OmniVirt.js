@@ -12,7 +12,7 @@ const videoPlayer = {
     omniVirtIframe: null,
     asset: null,
 
-    angle: 0,
+    angle: 180, /// must stay 180 because at start is 180° rotated!
     oldAngle: 0,
 
     onReadyHandlers: [],
@@ -24,12 +24,12 @@ const videoPlayer = {
 
     message: {
         command: 'onVideoPlayerStatus',
-        status: null,
+        status: "",
         time: null,
         angle: 0,
     },
 
-   
+
 
     load: function (asset) {
 
@@ -173,8 +173,8 @@ setInterval(function () {
         dispatcher.sendMessage(videoPlayer.message);
     }
     /// we do this to not change everything in videomarkers...
-    else if(!videoPlayer.isPlaying && videoPlayer.isStarted){
-        if (videoPlayer.angle !== videoPlayer.oldAngle){
+    else if (!videoPlayer.isPlaying && videoPlayer.isStarted) {
+        if (videoPlayer.angle !== videoPlayer.oldAngle) {
             videoPlayer.oldAngle = videoPlayer.angle;
             videoPlayer.message.status = "";
             videoPlayer.message.angle = videoPlayer.angle - 180;

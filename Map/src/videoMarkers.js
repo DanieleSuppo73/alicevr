@@ -29,8 +29,10 @@ function flyAndLinkCameraToEntity(heading, pitch, range) {
     console.log("flyAndLinkCameraToEntity")
 
     /// show the placeholder
-    if (!videoMarkers.firstReached)
-        mapPlaceholder.show();
+    // if (!videoMarkers.firstReached)
+    //     mapPlaceholder.fadeIn();
+
+    mapPlaceholder.fadeIn();
 
     /// create boundingsphere around billboard
     var billboardPos = mapPlaceholder.entity.position._value;
@@ -232,7 +234,7 @@ const videoMarkers = {
 
         markerReached = true;
 
-        
+
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -537,7 +539,7 @@ function lerpPoints(track, initIndex, useConstantVelocity) {
     if (useConstantVelocity) {
         let dist = Cesium.Cartesian3.distance(initPos, endPos);
         let speed = 240; /// milliseconds for 1 meter @ 15Km/h
-        lerpTime = (speed * dist)
+        lerpTime = (speed * dist);
     } else {
         lerpTime = track.times[initIndex + 1] - track.times[initIndex];
     }
@@ -638,4 +640,3 @@ dispatcher.onMessage(function (msg) {
 
     }
 })
-

@@ -278,7 +278,7 @@
 
         <!-- poster -->
         <div id="videoPlayer-poster" class="absolute gradient" style="pointer-events: none;">
-            <div style="position: absolute; left: 5%; right: 5%; bottom: 5%; max-height: 25%; overflow: auto; pointer-events: auto;">
+            <div id="poster-textContainer" style="position: absolute; left: 5%; right: 5%; bottom: 5%; max-height: 25%; overflow: auto; pointer-events: auto;">
                 <p id="poster-title" class="title"></p>
                 <p id="poster-description" class="description"></p>
             </div>
@@ -327,6 +327,12 @@
         if (WURFL.complete_device_name === "Microsoft Edge") {
             $("#Clappr-container").remove();
             js.src = "src/videoPlayer_OmniVirt.js";
+
+            /// set DIV
+            $("#poster-textContainer").css("max-height", "27%");
+            $("#poster-textContainer").css("bottom", "60px");
+
+            
         } else {
             $("#OmniVirt-container").remove();
             js.src = "src/videoPlayer_Clappr.js";

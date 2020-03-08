@@ -30,30 +30,39 @@ let AAAA = 0;
 let updateTrack = setInterval(function () {
 
     /// must change this, because it keep working when the video is ended...
-    if (cameraLinkButton.isLinked){
+    if (cameraLinkButton.isLinked || !cameraLinkButton.isLinked){
         if (map.cameraHeight !== AAAA) {
 
             /// update the tracks values
             AAAA = map.cameraHeight;
     
             let maxOpacity = 0.7;
-            let minOpacity = 0;
+            let minOpacity = 0.2;
     
             let maxWidth = 6;
-            let minWidth = 5;
+            let minWidth = 0.5;
     
     
             let minHeight = 0;
             let maxHeight = 9;
     
             let clampedHeight = Math.clamp(map.cameraHeight, minHeight, maxHeight);
+            
+            /// opacity
             let opMult = 1 - Math.inverseLerp(minHeight, maxHeight, clampedHeight);
+            
+            /// width
             let wMult = 1 - opMult;
+
+            
     
     
             tracksOpacity = Math.lerp(maxOpacity, minOpacity, opMult);
             // routesWidth = Math.lerp(minWidth, maxWidth, wMult);
-            routesWidth = maxWidth;
+            tracksWidth = Math.lerp(maxWidth, minWidth, wMult);
+
+            // console.log("tracksOpacity " + tracksOpacity)
+            // console.log("tracksWidth " + tracksWidth)
     
         }
     }
@@ -251,9 +260,9 @@ class Track {
 
                 material: new Cesium.PolylineOutlineMaterialProperty({
                     color: new Cesium.CallbackProperty(function () {
-                        return new Cesium.Color(0.26, 0.52, 0.96, tracksOpacity)
+                        return new Cesium.Color(0.08, 1.0, 0.94, tracksOpacity)
                     }),
-                    outlineWidth: 2,
+                    outlineWidth: 0,
                     outlineColor: new Cesium.CallbackProperty(function () {
                         return new Cesium.Color(0, 0, 0, tracksOpacity)
                     }),
