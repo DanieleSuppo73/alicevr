@@ -1,3 +1,14 @@
+let cameraTarget = viewer.entities.add({
+    position: new Cesium.Cartesian3(0, 0, 0),
+    point: {
+        pixelSize: 10,
+        color: new Cesium.Color(1, 0.9, 0, 0),
+        disableDepthTestDistance: Number.POSITIVE_INFINITY,
+    }
+});
+
+
+
 function loadFromUrl(url, callback) {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
@@ -28,14 +39,11 @@ function flyAndLinkCameraToEntity(heading, pitch, range) {
 
     console.log("flyAndLinkCameraToEntity")
 
-    /// show the placeholder
-    // if (!videoMarkers.firstReached)
-    //     mapPlaceholder.fadeIn();
-
-    mapPlaceholder.fadeIn();
-
     /// create boundingsphere around billboard
-    var billboardPos = mapPlaceholder.entity.position._value;
+    // var billboardPos = mapPlaceholder.entity.position._value;
+    var billboardPos = cameraTarget.position._value;
+
+
     var boundingSphere = new Cesium.BoundingSphere(billboardPos, 1000);
 
     let h = typeof heading === "undefined" ? viewer.scene.camera.heading : heading;
@@ -52,7 +60,8 @@ function flyAndLinkCameraToEntity(heading, pitch, range) {
 
     if (!videoMarkers.firstReached) videoMarkers.firstReached = true;
 
-    viewer.trackedEntity = mapPlaceholder.entity;
+    // viewer.trackedEntity = mapPlaceholder.entity;
+    viewer.trackedEntity = cameraTarget;
     viewer.camera.flyToBoundingSphere(boundingSphere, {
         offset: new Cesium.HeadingPitchRange(h, p, r),
 
@@ -82,7 +91,7 @@ let lerp = null;
 let videoPlayerStatus = null;
 let videoPlayerTime = null;
 
-let markerReached = false;
+let newMarkerReached = false;
 
 const videoMarkers = {
     folder: "../data/xml/",
@@ -232,7 +241,7 @@ const videoMarkers = {
 
     onNewMarkerReached: function () {
 
-        markerReached = true;
+        newMarkerReached = true;
 
 
 
@@ -527,9 +536,9 @@ function lerpPoints(track, initIndex, useConstantVelocity) {
 
     /// we want to update the placeholder rotation
     /// at least every time the lerp is started
-    if (!markerReached)
+    if (!newMarkerReached)
         mapPlaceholder.heading = getHeadingPitchFromPoints(initPos, endPos);
-    else markerReached = false;
+    else newMarkerReached = false;
 
 
 
@@ -562,20 +571,31 @@ function lerpPoints(track, initIndex, useConstantVelocity) {
 
                 /// move the billboard
                 Cesium.Cartesian3.lerp(initPos, endPos, lerpValue, newPos)
-                mapPlaceholder.entity.position = newPos;
+                // mapPlaceholder.entity.position = newPos;
+                cameraTarget.position = newPos;
 
 
                 if (!viewer.trackedEntity) {
 
+                    /// this code will be executed every time a new marker is reached,
+                    /// or when we seek the video.
+                    /// I don't know exactly when it's called but it work...
+
                     /// get the heading from initPos - endPos
                     let heading = getHeadingPitchFromPoints(initPos, endPos);
-                    mapPlaceholder.heading = heading;
+
+                    /// unlink the placeholder, fade out, link again and fade in
+                    mapPlaceholder.linkedEntity = null;
+                    mapPlaceholder.fadeOut(null, function () {
+                        mapPlaceholder.heading = heading;
+                        mapPlaceholder.linkedEntity = cameraTarget;
+                        mapPlaceholder.fadeIn();
+                    })
 
                     if (cameraLinkButton.isLinked) {
                         flyAndLinkCameraToEntity(heading);
                     }
                 }
-
 
 
                 /// this is when the player is paused, to reset

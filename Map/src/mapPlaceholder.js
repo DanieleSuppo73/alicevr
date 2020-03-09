@@ -17,14 +17,16 @@ const mapPlaceholder = {
     entity: null,
     isVisible: false,
 
-    fadeIn: function () {
-        this.fade(0, 1);
+    linkedEntity: null,
+
+    fadeIn: function (time, callback) {
+        this.fade(0, 1, time, callback);
         this.isVisible = true;
 
     },
 
-    fadeOut: function () {
-        this.fade(1, 0);
+    fadeOut: function (time, callback) {
+        this.fade(1, 0, time, callback);
         this.isVisible = false;
     },
 
@@ -38,9 +40,9 @@ const mapPlaceholder = {
         this.isVisible = false;
     },
 
-    fade: function (from, to) {
+    fade: function (from, to, time = null, callback = null) {
         if (!this.entity) return;
-        let lerpTime = 1000;
+        let lerpTime = time ? time : 1000;
         let sampleInterval = 50;
         let initTime = 0;
         let billboard = this.entity.billboard;
@@ -52,6 +54,7 @@ const mapPlaceholder = {
                 billboard.color = new Cesium.Color(1.0, 1.0, 1.0, op);
             } else {
                 clearInterval(lerp);
+                if (callback) callback();
             }
         }, sampleInterval)
     },
@@ -82,6 +85,13 @@ let mapPlaceholderStart = setInterval(function () {
 
         mapPlaceholder.hide();
 
+
+        /// set the position continuosly linked
+        setInterval(function(){
+            if (mapPlaceholder.linkedEntity){
+                mapPlaceholder.entity.position = mapPlaceholder.linkedEntity.position._value;
+            }
+        }, 50);
     }
 }, 100);
 

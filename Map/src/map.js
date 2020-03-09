@@ -468,6 +468,7 @@ dispatcher.onMessage(function (msg) {
         if (msg.status === "ended") {
             console.log("ENDED")
 
+            mapPlaceholder.linkedEntity = null;
             mapPlaceholder.fadeOut();
 
             if (videoMarkers.oldFoundTrack) videoMarkers.oldFoundTrack.notHighlight();
