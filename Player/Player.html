@@ -324,7 +324,7 @@
         var js = document.createElement("script");
         js.type = "text/javascript";
 
-        if (WURFL.complete_device_name === "Microsoft Edge") {
+        if (WURFL.complete_device_name === "Microsoft Edge" || WURFL.complete_device_name === "Apple iPhone") {
             $("#Clappr-container").remove();
             js.src = "src/videoPlayer_OmniVirt.js";
 

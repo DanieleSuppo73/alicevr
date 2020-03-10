@@ -13,7 +13,7 @@ import {
 //////////////////////////////////////////////////////////
 /// receiver from Dispatcher.js
 //////////////////////////////////////////////////////////
-dispatcher.onMessage(function (msg) {
+dispatcher.receiveMessage(function (msg) {
     // let message = msg.message;
     if (msg.command === "onVideoAssetClicked") {
         statistics(msg.asset);

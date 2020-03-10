@@ -242,7 +242,7 @@ setInterval(function () {
 //////////////////////////////////////////////////////////
 /// receiver from Dispatcher.js
 //////////////////////////////////////////////////////////
-dispatcher.onMessage(function (msg) {
+dispatcher.receiveMessage(function (msg) {
     if (msg.command === "onVideoAssetClicked") {
         // console.log("onVideoAssetClicked received message");
         videoPlayer.load(msg.asset);

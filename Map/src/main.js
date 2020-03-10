@@ -423,6 +423,7 @@ main = {
             viewer.camera.flyToBoundingSphere(this.boundingSphere, {
                 duration: 0,
             });
+            
         } else {
             /// get the heading of the 1st marker, pointing along the track
             let boundingSphere = this.boundingSphere;
@@ -445,6 +446,7 @@ main = {
                                     offset: offset,
                                     duration: 0,
                                 });
+                                console.log(boundingSphere)
                             }
                         });
                 })

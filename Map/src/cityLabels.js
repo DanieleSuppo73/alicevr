@@ -4,21 +4,14 @@
 //     if (map.isReady) console.log("RANGE: " +cameraProperties.range)
 // });
 
-// map.onMapHeightChangedHandlers.push(function(){
-//     mapLabels.isRequestCheck = true;
-// })
 
 
 
-viewer.camera.moveEnd.addEventListener(() => {
-    mapLabels.load();
-    // console.log("MAP MOVE END" + mapLabels.isRequestCheck)
-    // if (mapLabels.isRequestCheck) {
-    //     mapLabels.isRequestCheck = false;
-    //     console.log("------ map is changed, try to load labels");
-    //     mapLabels.load();
-    // }
-});
+// viewer.camera.moveEnd.addEventListener(() => {
+//     mapLabels.load();
+// });
+
+
 
 
 const mapLabels = {
@@ -49,7 +42,7 @@ const mapLabels = {
         /// load cities
         function loader() {
             console.log("LOADER--------------")
-            let radius = cameraProperties.range / 1500;
+            let radius = cameraProperties.range / 1000;
             /// if the radius is < 1km don't request
             if (radius <= 1) {
                 console.log("camera too near to terrain, don't request cities");
@@ -69,29 +62,33 @@ const mapLabels = {
 
             /// load mayor cities
             console.log('LOAD MAYOR CITIES')
-            let minPopulation = 50000;
+            let minPopulation = 100000;
             let font = '28px Acumin-bold';
             let minDistance = 50000;
             let maxDistance = 800000;
+            
+            
             getDataFromWebServer(function () {
 
-                /// load minor cities
-                console.log('LOAD MEDIUM CITIES')
-                minPopulation = 10000;
-                font = '24px Acumin-bold';
-                minDistance = 30000;
-                maxDistance = 200000;
-                getDataFromWebServer(function () {
+                mapLabels.isServerAvailable = true;
 
-                    console.log('LOAD MINOR CITIES')
-                    minPopulation = 1000;
-                    font = '24px Acumin-bold';
-                    minDistance = 30000;
-                    maxDistance = 200000;
-                    getDataFromWebServer(function () {
-                        mapLabels.isServerAvailable = true;
-                    });
-                })
+                // /// load minor cities
+                // console.log('LOAD MEDIUM CITIES')
+                // minPopulation = 10000;
+                // font = '24px Acumin-bold';
+                // minDistance = 30000;
+                // maxDistance = 200000;
+                // getDataFromWebServer(function () {
+
+                //     console.log('LOAD MINOR CITIES')
+                //     minPopulation = 1000;
+                //     font = '24px Acumin-bold';
+                //     minDistance = 30000;
+                //     maxDistance = 200000;
+                //     getDataFromWebServer(function () {
+                //         mapLabels.isServerAvailable = true;
+                //     });
+                // })
 
             });
 
@@ -159,7 +156,7 @@ const mapLabels = {
                                         label: {
                                             text: result.city,
                                             // font: '24px Acumin-bold',
-                                            font: '12px sans-serif',
+                                            font: '700 20px Roboto',
                                             fillColor: Cesium.Color.WHITE,
                                             outlineColor: Cesium.Color.BLACK,
                                             outlineWidth: 3,

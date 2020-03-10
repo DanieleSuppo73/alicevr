@@ -641,7 +641,7 @@ setInterval(function () {
 //////////////////////////////////////////////////////////
 /// receiver from Dispatcher.js
 //////////////////////////////////////////////////////////
-dispatcher.onMessage(function (msg) {
+dispatcher.receiveMessage(function (msg) {
 
     if (msg.command === "onVideoPlayerStatus") {
         videoPlayerStatus = msg.status;

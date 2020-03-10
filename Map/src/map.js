@@ -461,7 +461,7 @@ function getHeadingPitchFromPoints(p1, p2) {
 //////////////////////////////////////////////////////////
 /// receiver from Dispatcher.js
 //////////////////////////////////////////////////////////
-dispatcher.onMessage(function (msg) {
+dispatcher.receiveMessage(function (msg) {
     if (msg.command === "onVideoPlayerStatus") {
 
         /// when the video is ended

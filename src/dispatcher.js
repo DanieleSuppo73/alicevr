@@ -42,7 +42,7 @@ const dispatcher = {
     },
 
     /// receiver - append the function that will be executed
-    onMessage: function (func) {
+    receiveMessage: function (func) {
         if (!window.parent.alice_dispatcher.topDocumentIsReady) {
             handlersQueue.push(func);
             handlersQueueManager();
@@ -82,7 +82,7 @@ function handlersQueueManager() {
             handlersInterval = null;
 
             for (let i in handlersQueue) {
-                dispatcher.onMessage(handlersQueue[i]);
+                dispatcher.receiveMessage(handlersQueue[i]);
             }
             handlersQueue = [];
         }
