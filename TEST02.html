@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset='utf-8' />
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.66/Build/Cesium/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.66/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+
+
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+        rel="stylesheet">
+
+
+    <!-- <script type="module" src="./Map/src/map_main.js"></script> -->
+
+
+
+
+    <script>
+        var map = {
+            isReady: false,
+        }
+    </script>
+
+
+
+
+
+
+    <style>
+        @font-face {
+            font-family: Acumin-bold;
+            src: url("fonts/Acumin-BdPro.otf") format("opentype");
+        }
+
+
+        html,
+        body,
+        #cesiumContainer {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="cesiumContainer" class="fullSize"></div>
+
+    <div id="toolbar"></div>
+
+
+
+    <p id="PITCH" style="position: absolute; top: 0; left: 0; color: red; font-size: 40px; font-family: Roboto;">PITCH
+    </p>
+    <p id="DISTANCE" style="position: absolute; top: 20%; left: 0; color: red; font-size: 40px; font-family: Acumin-bold;">DISTANCE</p>
+    <p id="HEIGHT" style="position: absolute; top: 30%; left: 0; color: red; font-size: 40px;">HEIGHT</p>
+
+    <!-- <button style="position: absolute; top: 50%; left: 0" onclick="loadCities()">LABELS</button> -->
+
+
+
+
+    <script src="src/Math.js"></script>
+
+
+    <script>
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+        Cesium.Ion.defaultAccessToken =
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzZDU1NWMyOC00YjFkLTQ5OTUtODg5Yy0zZDRlNGI1NTg3ZjciLCJpZCI6MTUxNTgsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NjcyNDQ4NjR9.WDQmliwvLOArHiI9n4ET2TBELHRsGofW1unvSsbuyR8';
+        var viewer = new Cesium.Viewer('cesiumContainer', {
+            imageryProvider: new Cesium.MapboxImageryProvider({
+                mapId: 'mapbox.satellite',
+                accessToken: 'pk.eyJ1IjoiZGFuaWVsZXN1cHBvIiwiYSI6ImNqb2owbHp2YjAwODYzcW8xaWdhcGp1ancifQ.JvNWYw_cL6rV7ymuEbeTCw'
+            }),
+            terrainProvider: Cesium.createWorldTerrain(),
+            animation: false,
+            baseLayerPicker: false,
+            fullscreenButton: false,
+            geocoder: false,
+            homeButton: false,
+            infoBox: false,
+            sceneModePicker: false,
+            timeline: false,
+            navigationHelpButton: false,
+            useBrowserRecommendedResolution: false, /// change this to improve rendering speed on mobile
+        });
+
+        viewer.scene.globe.maximumScreenSpaceError = 4;
+
+
+        /// INIT
+        var center = new Cesium.Cartesian3(4410146, 966816, 4490121);
+        // var radius = 6885;
+        var r = 50000;
+        var boundingSphere = new Cesium.BoundingSphere(center, r);
+        viewer.camera.flyToBoundingSphere(boundingSphere, {
+            offset: new Cesium.HeadingPitchRange(0, -1.47, 140000),
+            duration: 0,
+            complete: function () {
+                console.log("DONE")
+                map.isReady = true;
+            }
+        });
+
+
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        function getPointFromCamera(xCanvas = null, yCanvas = null) {
+            const canvas = viewer.scene.canvas;
+            if (xCanvas === null || yCanvas === null) {
+                xCanvas = canvas.clientWidth / 2;
+                yCanvas = canvas.clientHeight / 2;
+            }
+            const ray = viewer.camera.getPickRay(new Cesium.Cartesian2(
+                Math.round(xCanvas), Math.round(yCanvas)
+            ));
+
+            const point = viewer.scene.globe.pick(ray, viewer.scene);
+            return point;
+        }
+
+
+
+        var camera = viewer.scene.camera;
+        var cameraProperties = {
+            minHeight: 0.4, // in Km
+            maxHeight: 35, // in Km
+            zoomRate: 7,
+
+            get height() { // in Km
+                var cartographic = new Cesium.Cartographic();
+                var ellipsoid = viewer.scene.mapProjection.ellipsoid;
+                ellipsoid.cartesianToCartographic(camera.positionWC, cartographic);
+                return cartographic.height;
+            },
+
+            get range() { // in meters
+                let p = getPointFromCamera();
+                if (p === undefined) {
+                    return 0;
+                }
+                return Cesium.Cartesian3.distance(camera.positionWC, p);
+            },
+        };
+
+
+
+
+        // var pitch = 0;
+        var pitchMult = 0;
+        // var height = 0;
+        var cameraDistanceFromCenterPoint = 0;
+
+        
+
+        
+        var cameraHeightMult = 0;
+        const minCameraHeight = 1000;
+        const maxCameraHeight = 30000;
+
+        setInterval(function () {
+
+            if (!map.isReady) return;
+
+
+            /// PITCH MULT
+            let pitch = Math.abs(Math.radToDeg(viewer.camera.pitch));
+            pitchMult = Math.inverseLerp(0, 90, pitch)
+            document.getElementById("PITCH").innerHTML = "pitch mult. " + pitchMult;
+
+
+            /// HEIGHT MULT
+            let height = cameraProperties.height;
+            let clampedHeight = Math.clamp(height, minCameraHeight,
+                maxCameraHeight);
+            cameraHeightMult = Math.inverseLerp(minCameraHeight,
+                maxCameraHeight, clampedHeight);
+            document.getElementById("HEIGHT").innerHTML = "height mult. " + cameraHeightMult;
+
+
+
+            document.getElementById("DISTANCE").innerHTML = "range " + cameraProperties.range;
+        }, 250)
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+        const loadPlaces = function (lng, lat, radius) {
+            const PLACES = [{
+                name: "Your place name",
+                categories: [],
+                location: {
+                    id: null,
+                    lat: 0, // add here latitude if using static data
+                    lng: 0, // add here longitude if using static data
+                    address: null,
+                    city: null,
+                },
+            }, ];
+            return loadPlaceFromAPIs(lng, lat, radius);
+        };
+
+
+
+
+
+        // getting places from REST APIs
+        function loadPlaceFromAPIs(lng, lat, radius) {
+            const params = {
+                lng: 7.6763373,
+                lat: 45.0620588,
+                radius: 100, // search places not farther than this value (in meters)
+                clientId: 'W5EWPKYYJJ3HMFEYXZHJKRVBG3JA3GDJG0AN2XFK0V0CVUMP',
+                clientSecret: 'R233QHAWTWFZAEGYKZAVY4RJ1H4GZRLIHZNQV32PD1NZNRSM',
+                version: '20300101', // foursquare versioning, required but unuseful
+            };
+
+            const categories = {
+                noleggioBici: '4e4c9077bd41f78e849722f9',
+                hotel: '4bf58dd8d48988d1fa931735',
+                campeggio: '4bf58dd8d48988d1e4941735',
+                agriturismo: '55a5a1ebe4b013909087cb7c',
+                monumento: '4bf58dd8d48988d12d941735',
+
+                parcoNazionale: '52e81612bcbc57f1066b7a21',
+                riservaNaturale: '52e81612bcbc57f1066b7a13',
+                parco: '4bf58dd8d48988d163941735',
+                parcoStatale: '5bae9231bedf3950379f89d0',
+                isola: '50aaa4314b90af0d42d5de10',
+                lago: '4bf58dd8d48988d161941735',
+                città: '50aa9e094b90af0d42d5de0d',
+                cittadina: '530e33ccbcbc57f1066bbff3',
+                paese: '530e33ccbcbc57f1066bbff9',
+            };
+
+            const categoryName = [
+                "Parco Nazionale",
+                "Riserva naturale",
+                "Parco",
+                "Isola",
+                "Lago"
+            ]
+
+            // CORS Proxy to avoid CORS problems
+            const corsProxy = 'https://cors-anywhere.herokuapp.com/';
+
+            // Foursquare API
+            const endpoint = `${corsProxy}https://api.foursquare.com/v2/venues/search?intent=browse
+    &ll=${lat},${lng}
+    &radius=${radius}
+    &client_id=${params.clientId}
+    &client_secret=${params.clientSecret}
+    &limit=50
+    &categoryId=${categories.parcoNazionale},${categories.riservaNaturale},${categories.isola},${categories.parcoStatale}
+    &v=${params.version}`;
+            return fetch(endpoint)
+                .then((res) => {
+                    return res.json()
+                        .then((resp) => {
+                            console.log(resp.response.venues)
+                            return resp.response.venues;
+                        })
+                })
+                .catch((err) => {
+                    console.error('Error with places API', err);
+                })
+        };
+
+
+
+
+        /// load places from API (foursquare.com)
+        /// from lng lat of the bounding sphere center of the selected asset
+
+        // let cartographic = Cesium.Cartographic.fromCartesian(asset.boundingSphere.center);
+        // let lng = Cesium.Math.toDegrees(cartographic.longitude);
+        // let lat = Cesium.Math.toDegrees(cartographic.latitude);
+        let lng = 12.4304549396038055419921875;
+        let lat = 45.0172648765146732330322265625;
+        let radius = 30000;
+        loadPlaces(lng, lat, radius)
+            .then((places) => {
+                places.forEach((place) => {
+
+                    let lng = place.location.lng;
+                    let lat = place.location.lat;
+                    let name = place.name;
+                    let address = null;
+                    // if (typeof place.location.address !== 'undefined' && typeof place.location.city !==
+                    //     'undefined')
+                    //     address = place.location.address + " - " + place.location.city;
+
+                    let categoryName = place.categories[0].name;
+                    let categoryId = place.categories[0].id;
+                    let foursquareId = place.id;
+
+
+
+                    console.log("------------------------------")
+                    console.log(categoryName)
+                    console.log(name)
+
+                    // let newPOI = new POI(lng, lat, categoryId, name, address, null, null, null,
+                    //     foursquareId);
+                    // allPOI.push(newPOI);
+
+
+                    let entity = viewer.entities.add({
+                        position: Cesium.Cartesian3.fromDegrees(lng, lat),
+                        label: {
+                            // text: new Cesium.CallbackProperty(function () {
+
+                            //     /// calculate this distance multiplier factor
+                            //     let cameraPos = viewer.camera.positionWC;
+                            //     let thisPos = entity.position._value;
+                            //     let thisDist = Cesium.Cartesian3.distance(cameraPos,
+                            //         thisPos);
+                            //     let minDist = 20000;
+                            //     let maxDist = 90000;
+                            //     thisDist = Cesium.Math.clamp(thisDist, minDist,
+                            //         maxDist);
+                            //     let thisDistMult = (1 - Math.inverseLerp(minDist,
+                            //         maxDist,
+                            //         thisDist)).toFixed(2);
+
+
+
+                            //     /// calculate height of the camera
+                            //     let minCameraHeight = 1000;
+                            //     let maxCameraHeight = 30000;
+                            //     let clampedHeight = Math.clamp(height, minCameraHeight,
+                            //         maxCameraHeight);
+                            //     let cameraHeightMult = Math.inverseLerp(minCameraHeight,
+                            //         maxCameraHeight, clampedHeight);
+
+
+
+
+                            //     // /// calculate pitch multiplier factor
+                            //     // let pitchMult = Math.inverseLerp(0, 90, pitch)
+
+
+
+
+
+
+                            //     return thisDistMult.toString();
+                            //     // return thisDistMult.toString();
+
+
+
+                            // }, true),
+                            text: "CIAO",
+                            font: '24px Acumin-bold',
+                            // font: '24px sans-serif',
+
+                            fillColor: new Cesium.CallbackProperty(function () {
+
+
+                                /// calculate this distance multiplier factor
+                                let cameraPos = viewer.camera.positionWC;
+                                let thisPos = entity.position._value;
+                                let thisDist = Cesium.Cartesian3.distance(cameraPos,
+                                    thisPos);
+                                let minDist = 20000;
+                                let maxDist = 60000;
+                                thisDist = Cesium.Math.clamp(thisDist, minDist,
+                                    maxDist);
+                                let thisDistMult = (1 - Math.inverseLerp(minDist,
+                                    maxDist,
+                                    thisDist))
+
+
+                                let pitchFactor = Cesium.Math.clamp(thisDistMult + pitchMult, 0,
+                                    1)
+                                // let opacity = (thisDistMult + pitchMult);
+                                // console.log(opacity)
+
+
+
+
+                                return new Cesium.Color(1, 1, 1, pitchFactor)
+                            }, true),
+                            outlineColor: Cesium.Color.RED,
+                            outlineWidth: 0,
+                            style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+                            verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+                            heightReference: Cesium.HeightReference.NONE,
+                            // pixelOffset: new Cesium.Cartesian2(0, -5),
+                            // translucencyByDistance: new Cesium.NearFarScalar(minDistance, 1.0,
+                            //     maxDistance, 0.0),
+                            disableDepthTestDistance: Number.POSITIVE_INFINITY,
+                        }
+                    });
+
+
+
+                });
+            })
+
+
+
+
+
+
+
+        // loadPlaceFromAPIs(12.4304549396038055419921875, 45.0172648765146732330322265625, 30000)
+    </script>
+
+
+    <script src="Map/src/cityLabels.js"></script>
+
+</body>

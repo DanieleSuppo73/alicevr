@@ -1,3 +1,8 @@
+import {
+    stringDivider
+} from "../../lib/stringDivider.js"
+
+
 export function drawLabel(position, text, category = null, collection = null) {
 
     let properties = getPropertiesFromCategory(category)
@@ -5,7 +10,7 @@ export function drawLabel(position, text, category = null, collection = null) {
     let entity = viewer.entities.add({
         position: position,
         label: {
-            text: text,
+            text: stringDivider(text, 15),
             font: properties.font,
             fillColor: properties.fillColor,
             outlineColor: properties.outlineColor,
@@ -41,20 +46,37 @@ function getPropertiesFromCategory(category) {
 
     switch (category) {
         case "A1":
-            properties.font = "500 24px Acumin-bold";
-            properties.outlineWidth = 4;
+            properties.font = "20px Acumin-bold";
+            properties.outlineWidth = 2;
+            properties.translucencyByDistance = new Cesium.NearFarScalar(800000, 1.0,
+                2000000, 0.0);
             break;
         case "A2":
             properties.font = "500 19px Roboto";
-            properties.outlineWidth = 4;
+            properties.outlineWidth = 2;
+            properties.translucencyByDistance = new Cesium.NearFarScalar(170000, 1.0,
+                800000, 0.0);
             break;
         case "A3":
-            properties.font = "500 15px Roboto";
-            properties.outlineWidth = 3;
+            properties.font = "16px Acumin-bold";
+            properties.outlineWidth = 2;
+            // properties.fillColor = Cesium.Color.AQUAMARINE;
+            properties.translucencyByDistance = new Cesium.NearFarScalar(130000, 1.0,
+                500000, 0.0);
             break;
         case "A4":
-            properties.font = "400 13px Roboto";
+            properties.font = "14px Acumin-bold";
             properties.outlineWidth = 2;
+            properties.fillColor = Cesium.Color.YELLOW;
+            properties.translucencyByDistance = new Cesium.NearFarScalar(60000, 1.0,
+                80000, 0.0);
+            break;
+        case "A5":
+            properties.font = "13px Acumin-bold";
+            properties.outlineWidth = 2;
+            properties.fillColor = Cesium.Color.ORANGE;
+            properties.translucencyByDistance = new Cesium.NearFarScalar(25000, 1.0,
+                35000, 0.0);
             break;
     }
 

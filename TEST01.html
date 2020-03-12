@@ -62,7 +62,7 @@
     <button style="position: absolute; top: 50%; left: 0" onclick="loadCities()">LABELS</button>
     <button style="position: absolute; top: 55%; left: 0" onclick="zoomIn()">ZOOM IN</button>
     <button style="position: absolute; top: 60%; left: 0" onclick="moveRight()">ROTATE</button>
-    <button style="position: absolute; top: 65%; left: 0" onclick="testRect()">testRect</button>
+    <button style="position: absolute; top: 65%; left: 0" onclick="testSphere()">testSphere</button>
 
 
 
@@ -163,6 +163,12 @@
         var pitch = 0;
         var height = 0;
         var cameraDistanceFromCenterPoint = 0;
+
+
+        
+
+
+
         setInterval(function () {
 
             if (!map.isReady) return;
@@ -191,7 +197,7 @@
             viewer.camera.flyToBoundingSphere(boundingSphere, {
                 // offset: offset,
                 complete: function () {
-                    console.log("DONE")
+                    console.log("FLYING COMPLETE")
                 },
                 duration: 8,
                 easingFunction: Cesium.EasingFunction.QUADRACTIC_IN_OUT,

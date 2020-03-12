@@ -2,26 +2,43 @@ import {
     drawLabel
 } from "./drawLabel.js"
 import {
-    coveredArea
-} from "../lib/utils/isCoveredArea.js"
+    coveredMap
+} from "../lib/utils/coveredMap.js"
 
 
 let isServerAvailable = true; /// does the webserver can accept a new request?
 const serverRequestTimeout = 1000; /// time to wait from each request to the webserver
 let cities = [];
 let bigArea; /// the area that have been covered for big cities
+let mediumArea; /// the area that have been covered for small cities
 let smallArea; /// the area that have been covered for small cities
+let wait = null; /// the setTimeout to process the request
 
 
+
+
+
+
+
+///////////////////////////////////////
+/// load cities by population
+///////////////////////////////////////
 export function loadCitiesByPopulation(minPopulation, callback = null) {
     loadCities(minPopulation, callback);
 }
 
 
-export function loadAllCities(callback = null) {
+
+
+
+
+///////////////////////////////////////
+/// load all big cities
+///////////////////////////////////////
+export function loadBigCities(callback = null) {
     loadCitiesByPopulation(500000, function () {
         loadCitiesByPopulation(100000, function () {
-            loadCitiesByPopulation(50000, function(){
+            loadCitiesByPopulation(50000, function () {
                 if (callback) callback();
             });
         });
@@ -29,75 +46,96 @@ export function loadAllCities(callback = null) {
 
 }
 
+
+
+///////////////////////////////////////
 /// automate
+///////////////////////////////////////
 export function loadAuto() {
-
     /// at start
+    bigArea = new coveredMap();
+    mediumArea = new coveredMap();
+    smallArea = new coveredMap();
 
-
-    bigArea = new coveredArea();
-    smallArea = new coveredArea();
-
-
-    // if (!isCoveredArea()) {
-    //     loadAllCities();
-    // }
-
-    // /// add listener
-    // viewer.camera.changed.addEventListener(() => {
-    //     if (!isCoveredArea()) {
-    //         loadAllCities();
-    //     }
-
-    //     if (cameraProperties.range <= 30000){
-    //         loadCitiesByPopulation(10000);
-    //     }
-    // });
-
-
-    if (!bigArea.isCovered()) {
-        loadAllCities();
-    }
+    onCameraChanged();
 
     /// add listener
     viewer.camera.changed.addEventListener(() => {
-        if (!bigArea.isCovered()) {
-            loadAllCities();
-        }
-
-        if (cameraProperties.range <= 30000){
-            if (!smallArea.isCovered()){
-                loadCitiesByPopulation(10000);
-            }
-            
-        }
+        onCameraChanged();
     });
 }
 
 
 
 
-function loadCities(minPopulation, callback = null) {
 
-    function waitForServer() {
-        if (!isServerAvailable) setTimeout(waitForServer, 100);
-        else {
-            let radius = cameraProperties.range / 2000;
-            /// if the radius is < 1km don't request
-            if (radius <= 1) {
-                console.warn("camera too near to terrain, don't request cities");
-            } else {
-                /// get the coordinates in the center of the window
-                let cartographic = Cesium.Cartographic.fromCartesian(getPointFromCamera());
-                let longitude = Cesium.Math.toDegrees(cartographic.longitude);
-                let latitude = Cesium.Math.toDegrees(cartographic.latitude);
-                console.info("looking for cities at " + latitude + " - " + longitude + " around " + radius + " Km");
 
-                getDataFromWebServer(minPopulation, latitude, longitude, radius, callback);
+
+function onCameraChanged() {
+
+    let range = cameraProperties.range;
+
+    if (!bigArea.isCovered()) {
+        console.log("> load big cities <")
+        loadBigCities();
+    }
+
+    if (range <= 80000) {
+
+        if (!mediumArea.isCovered()) {
+            console.log("> load small cities <")
+            loadCitiesByPopulation(10000, function () {
+
+                if (range <= 35000 && !smallArea.isCovered()) {
+                    console.log("> load very small cities <")
+                    // loadCitiesByPopulation(1000);
+                }
+            });
+        } else {
+            if (range <= 35000 && !smallArea.isCovered()) {
+                console.log("> load very small cities <")
+                loadCitiesByPopulation(1000);
             }
         }
+
     }
-    waitForServer();
+}
+
+
+
+/// main function
+function loadCities(minPopulation, callback = null) {
+
+    /// if there's a previous request...
+    if (wait) {
+        console.error("! --> cities request not allowed because there's another one");
+    } else {
+        wait = function () {
+            if (!isServerAvailable) setTimeout(wait, 100);
+
+            else {
+                wait = null;
+
+                let radius = cameraProperties.range / 2000;
+                /// if the radius is < 1km don't request
+                if (radius <= 1) {
+                    console.warn("camera too near to terrain, don't request cities");
+                } else {
+                    /// get the coordinates in the center of the window
+                    let cartographic = Cesium.Cartographic.fromCartesian(getPointFromCamera());
+                    let longitude = Cesium.Math.toDegrees(cartographic.longitude);
+                    let latitude = Cesium.Math.toDegrees(cartographic.latitude);
+                    // console.info("looking for cities at " + latitude + " - " + longitude + " around " + radius + " Km");
+                    console.info("? - looking for cities with min population = " + minPopulation);
+
+                    getDataFromWebServer(minPopulation, latitude, longitude, radius, callback);
+                }
+            }
+        }
+        wait();
+    }
+
+
 }
 
 
@@ -122,8 +160,9 @@ function getDataFromWebServer(minPopulation, latitude, longitude, radius, callba
                 return;
             }
             if (data.length === 0) {
-                console.info("no cities with " + minPopulation + " people in this area");
+                console.info("! -- no cities with " + minPopulation + " people in this area");
             }
+
 
             /// create labels of the cities
             for (let i = 0; i < data.length; i++) {
@@ -138,15 +177,18 @@ function getDataFromWebServer(minPopulation, latitude, longitude, radius, callba
                         let category;
                         if (minPopulation >= 500000) category = "A1";
                         if (minPopulation >= 100000 && minPopulation < 500000) category = "A2";
-                        if (minPopulation >= 10000 && minPopulation < 100000) category = "A3";
-                        if (minPopulation < 10000) category = "A4";
+                        if (minPopulation >= 50000 && minPopulation < 100000) category = "A3";
+                        if (minPopulation >= 10000 && minPopulation < 50000) category = "A4";
+                        if (minPopulation < 10000) category = "A5";
                         let position = Cesium.Cartesian3.fromDegrees(result.longitude, result.latitude);
 
                         drawLabel(position, result.city, category)
 
-                    } else {
-                        console.info("refused city: " + result.city);
-                    }
+                        console.info("--- new city: " + result.city);
+                    } 
+                    // else {
+                    //     console.info("refused city: " + result.city);
+                    // }
                 }
             }
 
