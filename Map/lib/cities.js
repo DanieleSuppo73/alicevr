@@ -6,6 +6,7 @@ import {
 } from "../lib/utils/coveredMap.js"
 
 
+
 let isServerAvailable = true; /// does the webserver can accept a new request?
 const serverRequestTimeout = 1000; /// time to wait from each request to the webserver
 let cities = [];
@@ -13,10 +14,6 @@ let bigArea; /// the area that have been covered for big cities
 let mediumArea; /// the area that have been covered for small cities
 let smallArea; /// the area that have been covered for small cities
 let wait = null; /// the setTimeout to process the request
-
-
-
-
 
 
 
@@ -86,13 +83,13 @@ function onCameraChanged() {
             console.log("> load small cities <")
             loadCitiesByPopulation(10000, function () {
 
-                if (range <= 35000 && !smallArea.isCovered()) {
+                if (range <= 55000 && !smallArea.isCovered()) {
                     console.log("> load very small cities <")
                     // loadCitiesByPopulation(1000);
                 }
             });
         } else {
-            if (range <= 35000 && !smallArea.isCovered()) {
+            if (range <= 55000 && !smallArea.isCovered()) {
                 console.log("> load very small cities <")
                 loadCitiesByPopulation(1000);
             }

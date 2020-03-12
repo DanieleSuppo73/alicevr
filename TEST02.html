@@ -56,7 +56,12 @@
 
     <p id="PITCH" style="position: absolute; top: 0; left: 0; color: red; font-size: 40px; font-family: Roboto;">PITCH
     </p>
-    <p id="DISTANCE" style="position: absolute; top: 20%; left: 0; color: red; font-size: 40px; font-family: Acumin-bold;">DISTANCE</p>
+    <p id="MINRANGE"
+        style="position: absolute; top: 20%; left: 0; color: red; font-size: 40px; font-family: Acumin-bold;">DISTANCE
+    </p>
+    <p id="MAXRANGE"
+        style="position: absolute; top: 25%; left: 0; color: red; font-size: 40px; font-family: Acumin-bold;">DISTANCE
+    </p>
     <p id="HEIGHT" style="position: absolute; top: 30%; left: 0; color: red; font-size: 40px;">HEIGHT</p>
 
     <!-- <button style="position: absolute; top: 50%; left: 0" onclick="loadCities()">LABELS</button> -->
@@ -161,36 +166,66 @@
         // var height = 0;
         var cameraDistanceFromCenterPoint = 0;
 
-        
 
-        
+
+
         var cameraHeightMult = 0;
-        const minCameraHeight = 1000;
-        const maxCameraHeight = 30000;
-
-        setInterval(function () {
-
-            if (!map.isReady) return;
-
-
-            /// PITCH MULT
-            let pitch = Math.abs(Math.radToDeg(viewer.camera.pitch));
-            pitchMult = Math.inverseLerp(0, 90, pitch)
-            document.getElementById("PITCH").innerHTML = "pitch mult. " + pitchMult;
-
-
-            /// HEIGHT MULT
-            let height = cameraProperties.height;
-            let clampedHeight = Math.clamp(height, minCameraHeight,
-                maxCameraHeight);
-            cameraHeightMult = Math.inverseLerp(minCameraHeight,
-                maxCameraHeight, clampedHeight);
-            document.getElementById("HEIGHT").innerHTML = "height mult. " + cameraHeightMult;
+        const minCameraHeight = 2000;
+        const maxCameraHeight = 15000;
 
 
 
-            document.getElementById("DISTANCE").innerHTML = "range " + cameraProperties.range;
-        }, 250)
+
+        var minRange = 0;
+        var maxRange = 0;
+
+
+        function getMultipliers() {
+            if (map.isReady) {
+
+                console.log("GET")
+                /// PITCH MULT
+                let pitch = Math.abs(Math.radToDeg(viewer.camera.pitch));
+                pitchMult = Math.inverseLerp(10, 90, pitch)
+                pitchMult = Math.clamp(pitchMult, 0, 1);
+                // pitchMult = Math.pow(pitchMult, 2);
+                document.getElementById("PITCH").innerHTML = "pitch mult. " + pitchMult;
+
+
+                /// HEIGHT MULT
+                let height = cameraProperties.height;
+                let clampedHeight = Math.clamp(height, minCameraHeight,
+                    maxCameraHeight);
+                cameraHeightMult = Math.inverseLerp(minCameraHeight,
+                    maxCameraHeight, clampedHeight);
+
+                document.getElementById("HEIGHT").innerHTML = "height mult. " + cameraHeightMult;
+
+
+                minRange = cameraProperties.range;
+                document.getElementById("MINRANGE").innerHTML = "min range " + minRange;
+
+                maxRange = minRange * 4;
+                document.getElementById("MAXRANGE").innerHTML = "max range " + maxRange;
+            }
+        }
+
+
+
+        // setInterval(function () {
+
+        // }, 500)
+
+
+
+
+
+        /// add listener
+        viewer.camera.changed.addEventListener(() => {
+            getMultipliers();
+        });
+
+
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -276,7 +311,7 @@
     &client_id=${params.clientId}
     &client_secret=${params.clientSecret}
     &limit=50
-    &categoryId=${categories.parcoNazionale},${categories.riservaNaturale},${categories.isola},${categories.parcoStatale}
+    &categoryId=${categories.riservaNaturale},${categories.isola}
     &v=${params.version}`;
             return fetch(endpoint)
                 .then((res) => {
@@ -329,95 +364,65 @@
                     //     foursquareId);
                     // allPOI.push(newPOI);
 
+                    
 
                     let entity = viewer.entities.add({
                         position: Cesium.Cartesian3.fromDegrees(lng, lat),
+
+                        opacity: 0,
+                        minDistance: 50000,
+                        maxDistance: 800000,
+
+                        color: new Cesium.Cartesian3(0.5, 1, 1),
+
+
                         label: {
+
+                            text: "CIAO",
                             // text: new Cesium.CallbackProperty(function () {
 
-                            //     /// calculate this distance multiplier factor
-                            //     let cameraPos = viewer.camera.positionWC;
-                            //     let thisPos = entity.position._value;
-                            //     let thisDist = Cesium.Cartesian3.distance(cameraPos,
-                            //         thisPos);
-                            //     let minDist = 20000;
-                            //     let maxDist = 90000;
-                            //     thisDist = Cesium.Math.clamp(thisDist, minDist,
-                            //         maxDist);
-                            //     let thisDistMult = (1 - Math.inverseLerp(minDist,
-                            //         maxDist,
-                            //         thisDist)).toFixed(2);
+                            //     return "dist:" + entity.distMult;
+                            // }),
 
 
-
-                            //     /// calculate height of the camera
-                            //     let minCameraHeight = 1000;
-                            //     let maxCameraHeight = 30000;
-                            //     let clampedHeight = Math.clamp(height, minCameraHeight,
-                            //         maxCameraHeight);
-                            //     let cameraHeightMult = Math.inverseLerp(minCameraHeight,
-                            //         maxCameraHeight, clampedHeight);
-
-
-
-
-                            //     // /// calculate pitch multiplier factor
-                            //     // let pitchMult = Math.inverseLerp(0, 90, pitch)
-
-
-
-
-
-
-                            //     return thisDistMult.toString();
-                            //     // return thisDistMult.toString();
-
-
-
-                            // }, true),
-                            text: "CIAO",
                             font: '24px Acumin-bold',
                             // font: '24px sans-serif',
 
                             fillColor: new Cesium.CallbackProperty(function () {
-
-
-                                /// calculate this distance multiplier factor
-                                let cameraPos = viewer.camera.positionWC;
-                                let thisPos = entity.position._value;
-                                let thisDist = Cesium.Cartesian3.distance(cameraPos,
-                                    thisPos);
-                                let minDist = 20000;
-                                let maxDist = 60000;
-                                thisDist = Cesium.Math.clamp(thisDist, minDist,
-                                    maxDist);
-                                let thisDistMult = (1 - Math.inverseLerp(minDist,
-                                    maxDist,
-                                    thisDist))
-
-
-                                let pitchFactor = Cesium.Math.clamp(thisDistMult + pitchMult, 0,
-                                    1)
-                                // let opacity = (thisDistMult + pitchMult);
-                                // console.log(opacity)
-
-
-
-
-                                return new Cesium.Color(1, 1, 1, pitchFactor)
-                            }, true),
-                            outlineColor: Cesium.Color.RED,
-                            outlineWidth: 0,
+                                return new Cesium.Color(entity.color.x, entity.color.y, entity.color.z, entity.opacity)
+                            }, false),
+                            outlineColor: new Cesium.CallbackProperty(function () {
+                                return new Cesium.Color(0, 0, 0, entity.opacity)
+                            }, false),
+                            outlineWidth: 2,
                             style: Cesium.LabelStyle.FILL_AND_OUTLINE,
                             verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
                             heightReference: Cesium.HeightReference.NONE,
                             // pixelOffset: new Cesium.Cartesian2(0, -5),
-                            // translucencyByDistance: new Cesium.NearFarScalar(minDistance, 1.0,
-                            //     maxDistance, 0.0),
                             disableDepthTestDistance: Number.POSITIVE_INFINITY,
                         }
                     });
 
+
+
+                    /// register the listener to camerachanged, to update the label
+                    viewer.camera.changed.addEventListener(() => {
+
+                        let pos = entity.position._value;
+                        let dist = Cesium.Cartesian3.distance(viewer.camera.positionWC,
+                            pos);
+
+                        /// get multiplier by min-max range
+                        let rangeMult = 1 - Math.inverseLerp(minRange, maxRange,
+                            Cesium.Math.clamp(dist, minRange, maxRange));
+
+                        /// get multiplier by min-max distance
+                        let distMult = 1 - Math.inverseLerp(entity.minDistance, entity
+                            .maxDistance,
+                            Cesium.Math.clamp(dist, entity.minDistance, entity.maxDistance));
+
+                        entity.opacity = rangeMult * distMult;
+                    });
 
 
                 });
