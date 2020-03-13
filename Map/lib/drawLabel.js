@@ -10,7 +10,8 @@ import {
 /// set the range
 let minRange = 0;
 let maxRange = 0;
-function updateRange(){
+
+function updateRange() {
     minRange = cameraProperties.range;
     maxRange = minRange * 4;
 }
@@ -21,10 +22,10 @@ viewer.camera.changed.addEventListener(() => {
 });
 
 
-dispatcher.receiveMessage(function(){
-    console.log("RICEVUTO!")
-})
 
+dispatcher.receiveMessage("mapReady", function(data){
+    console.log("sono drawLabel e ho ricevuto il messaggio: " + data)
+});
 
 
 export function drawLabel(position, text, category, collection = null) {

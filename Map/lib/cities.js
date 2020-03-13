@@ -77,7 +77,7 @@ function onCameraChanged() {
         loadBigCities();
     }
 
-    if (range <= 80000) {
+    if (range <= 100000) {
 
         if (!mediumArea.isCovered()) {
             console.log("> load small cities <")

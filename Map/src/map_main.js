@@ -14,11 +14,13 @@ import * as cities from "../lib/cities.js";
 function init() {
     console.log("START")
 
-    dispatcher.sendMessage({
-        message: "mapLoaded"
-    })
+  
+    dispatcher.sendMessage("mapReady", 100);
 
-    cities.loadAuto();
+
+
+
+    // cities.loadAuto();
 };
 
 
