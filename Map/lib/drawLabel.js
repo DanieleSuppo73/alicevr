@@ -22,10 +22,8 @@ viewer.camera.changed.addEventListener(() => {
 });
 
 
+dispatcher.receiveMessage("mapReady", updateRange);
 
-dispatcher.receiveMessage("mapReady", function(data){
-    console.log("sono drawLabel e ho ricevuto il messaggio: " + data)
-});
 
 
 export function drawLabel(position, text, category, collection = null) {
@@ -61,7 +59,6 @@ export function drawLabel(position, text, category, collection = null) {
     /// register the listener to camerachanged, 
     /// to update this label opacity
     viewer.camera.changed.addEventListener(() => {
-        console.log("-----------------CHANGED")
         let pos = entity.position._value;
         let dist = Cesium.Cartesian3.distance(viewer.camera.positionWC,
             pos);

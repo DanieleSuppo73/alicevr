@@ -1,0 +1,206 @@
+html,
+body,
+#wrapper {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+
+    /* for Microsoft Edge */
+    -ms-overflow-style: none;
+    overflow: -moz-scrollbars-none;
+}
+
+p {
+    color: white;
+}
+
+#videoPlayer-preloader {
+    background-color: white;
+    z-index: 9999;
+}
+
+#videoPlayer-preloader img {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+#videoPlayer_viewAngle {
+    position: absolute;
+    right: 1em;
+    top: 1em;
+    width: 50px;
+    height: 50px;
+    pointer-events: auto;
+    cursor: pointer;
+    z-index: 9999
+}
+
+#videoPlayer_viewAngle img {
+    position: absolute;
+    right: 0;
+    top: 0;
+    left: 0;
+    bottom: 0;
+}
+
+#videoPlayer_viewAngle-over {
+    opacity: 0.5;
+}
+
+#videoPlayer_viewArrows {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 999;
+    pointer-events: none;
+    padding: 1em;
+}
+
+#videoPlayer_viewArrows>div {
+    pointer-events: auto;
+    cursor: default;
+    width: 50px;
+    position: relative;
+}
+
+#subtitlesContainer {
+    position: absolute;
+    left: 10vw;
+    right: 10vw;
+    bottom: 0;
+    height: 150px;
+    z-index: 2;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#subtitlesContainer p {
+    -webkit-text-stroke: 0.45px black;
+    color: white;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-shadow: rgb(0, 0, 0) 2px 2px 2px;
+    font-size: 3.2vw;
+    z-index: 99;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    letter-spacing: 1px;
+    word-spacing: 2px;
+    line-height: 130%;
+    text-align: center;
+}
+
+.absolute {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0
+}
+
+.gradient {
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.6951155462184874) 0%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0) 100%);
+}
+
+
+.title {
+    font-size: 30px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    margin: 0;
+    margin-bottom: 0.2em;
+    letter-spacing: 1px;
+}
+
+.description {
+    font-size: 13px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    margin: 0;
+    margin-bottom: 0.2em;
+    letter-spacing: 1px;
+}
+
+#icon-360 {
+    position: absolute;
+    right: 1em;
+    top: 1em;
+    width: 50px;
+    height: 50px;
+    mix-blend-mode: lighten;
+    z-index: 9999
+}
+
+#icon-360-big {
+    position: absolute;
+    margin: auto;
+    right: 0;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 80px;
+    height: 80px;
+    mix-blend-mode: lighten;
+    z-index: 9999
+}
+
+#logo {
+    position: absolute;
+    left: 1em;
+    top: 1em;
+    z-index: 999;
+    width: 4em;
+}
+
+
+
+/* width */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0)
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.514);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #ffffff;
+}
+
+
+
+@media (max-height: 300px),
+(max-width: 400px) {
+    .title {
+        font-size: 20px;
+    }
+
+    .description {
+        display: none !important;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    #subtitlesContainer p {
+        font-size: 16px;
+    }
+}
+
+@media screen and (min-width: 800px) {
+    #subtitlesContainer p {
+        font-size: 28px;
+    }
+}
