@@ -5,6 +5,7 @@ import {
     OmniVirt_player
 } from "../lib/OmniVirt_player.js"
 import * as overlay from "../lib/overlay.js"
+import * as subtitles from "../lib/subtitles.js"
 import {
     dispatcher
 } from "../../lib/dispatcher.js"
@@ -50,6 +51,7 @@ player.onPausedHandlers.push(function () {
 
 player.onSeekedHandlers.push(function () {
     dispatcher.sendMessage("seeking");
+    subtitles.restart();
 });
 
 player.onEndedHandlers.push(function () {
@@ -64,15 +66,16 @@ player.onEndedHandlers.push(function () {
 //////////////////////////////////////////////
 /// receive messages
 //////////////////////////////////////////////
-dispatcher.receiveMessage("onVideoAssetClicked", function () {
+dispatcher.receiveMessage("onVideoAssetClicked", function (asset) {
     console.log("onVideoAssetClicked received message");
-    videoPlayer.load(msg.asset);
+    player.load(asset);
+    subtitles.load(asset);
 });
 dispatcher.receiveMessage("videoPlayerPlay", function () {
-    videoPlayer.play();
+    player.play();
 });
 dispatcher.receiveMessage("videoPlayerSeek", function (time) {
-    videoPlayer.seek(time);
+    player.seek(time);
 });
 
 
@@ -88,16 +91,25 @@ setInterval(() => {
         //////////////////////////////////////////////
         /// send message during playback
         //////////////////////////////////////////////
+        let time = player.time;
+        let angle = player.angle;
         dispatcher.sendMessage("playerPlaying", {
-            time: player.time,
-            angle: player.angle,
+            time: time,
+            angle: angle,
         });
 
 
         //////////////////////////////////////////////
         /// rotate overlay viewAngle
         //////////////////////////////////////////////
-        overlay.viewAngle.rotate(player.angle);
+        overlay.viewAngle.rotate(angle);
+
+
+
+        //////////////////////////////////////////////
+        /// check for subtitles
+        //////////////////////////////////////////////
+        subtitles.check(time);
 
     }
 }, 200);
@@ -110,7 +122,9 @@ setInterval(() => {
 
 ////////////////////////////////////////// DEBUG
 let asset = {
-    videoUrl: "https://player.vimeo.com/external/355816026.m3u8?s=95add46cf3c7efa7ee281230ef12daf0b5562d26",
-    videoUrl_1: "43237"
+    videoUrl: "https://player.vimeo.com/external/347803220.m3u8?s=61a66fd483813c89da138ac578628ca68bb65fe3",
+    videoUrl_1: "43236",
+    subtitles:"coppi_subtitles.xml"
 }
 player.load(asset)
+subtitles.load(asset);
