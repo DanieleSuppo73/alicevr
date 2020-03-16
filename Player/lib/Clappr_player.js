@@ -1,4 +1,4 @@
-export const Clappr_player = {
+const Clappr_player = {
     posterFolder: "../data/poster/",
     player: null,
     plugin360: null,
@@ -188,5 +188,8 @@ export const Clappr_player = {
         window.dur = Clappr_player.player.getDuration();
     }
 };
+
+
+export default Clappr_player;
 
 

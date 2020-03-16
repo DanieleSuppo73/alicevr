@@ -1,4 +1,4 @@
-export const OmniVirt_player = {
+const OmniVirt_player = {
 
     isStarted: false,
     isPlaying: false,
@@ -144,3 +144,6 @@ export const OmniVirt_player = {
         });
     },
 };
+
+
+export default OmniVirt_player;

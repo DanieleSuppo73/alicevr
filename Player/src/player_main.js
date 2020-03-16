@@ -1,14 +1,11 @@
 import {
-    Clappr_player
-} from "../lib/Clappr_player.js"
-import {
-    OmniVirt_player
-} from "../lib/OmniVirt_player.js"
-import * as overlay from "../lib/overlay.js"
-import * as subtitles from "../lib/subtitles.js"
-import {
     dispatcher
-} from "../../lib/dispatcher.js"
+} from "../../lib/dispatcher.js";
+import Clappr_player from "../lib/Clappr_player.js";
+import OmniVirt_player from "../lib/OmniVirt_player.js";
+import * as overlay from "../lib/overlay.js";
+import * as subtitles from "../lib/subtitles.js";
+
 
 
 
@@ -37,12 +34,12 @@ if (WURFL.complete_device_name === "Microsoft Edge" || WURFL.complete_device_nam
 //////////////////////////////////////////////
 player.onReadyHandlers.push(function () {
     $("#videoPlayer-preloader").fadeOut();
-    overlay.init(player);
+    overlay.showOnReady();
 });
 
 player.onStartedHandlers.push(function () {
     dispatcher.sendMessage("started");
-    overlay.showDuringPlayback();
+    overlay.showOnPlay();
 });
 
 player.onPausedHandlers.push(function () {
@@ -56,6 +53,7 @@ player.onSeekedHandlers.push(function () {
 
 player.onEndedHandlers.push(function () {
     dispatcher.sendMessage("ended");
+    overlay.showOnReady();
 });
 
 
@@ -69,6 +67,7 @@ player.onEndedHandlers.push(function () {
 dispatcher.receiveMessage("onVideoAssetClicked", function (asset) {
     console.log("onVideoAssetClicked received message");
     player.load(asset);
+    overlay.load(player, asset);
     subtitles.load(asset);
 });
 dispatcher.receiveMessage("videoPlayerPlay", function () {
@@ -124,7 +123,13 @@ setInterval(() => {
 let asset = {
     videoUrl: "https://player.vimeo.com/external/347803220.m3u8?s=61a66fd483813c89da138ac578628ca68bb65fe3",
     videoUrl_1: "43236",
-    subtitles:"coppi_subtitles.xml"
+    subtitles: "coppi_subtitles.xml",
+    title: "Titolo di prova",
+    description: "Per debug"
 }
+
+
+
 player.load(asset)
+overlay.load(player, asset);
 subtitles.load(asset);

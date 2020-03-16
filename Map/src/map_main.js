@@ -1,71 +1,97 @@
 import {
     dispatcher
-} from "../../lib/dispatcher.js"
+} from "../../lib/dispatcher.js";
+
+import map from "../lib/map/map.js";
 
 import * as cities from "../lib/cities.js";
+import * as pointsOfInterest from "../lib/pointsOfInterest.js";
+
+// import {
+//     gpxParser
+// } from "../lib/gpxParser.js"
 
 
 
 
 
-////////////////////////
-/// INIT
-////////////////////////
-function init() {
+
+
+
+
+
+
+
+
+
+
+
+
+
+//////////////////////////////////////////
+/// ON MAP READY
+//////////////////////////////////////////
+function onMapReady(){
     dispatcher.sendMessage("mapReady");
     cities.loadAuto();
+    // pointsOfInterest.loadFromFile(asset);
+}
+
+
+
+
+
+//////////////////////////////////////////
+/// INIT
+//////////////////////////////////////////
+map.onReady.push(function () {
+    console.log("YEEEEE")
+    onMapReady();
+})
+
+function init() {
+    map.init();
 };
 
 
 
 
+init();
 
-// //////////////////////////////
-// /// startup the map
-// //////////////////////////////
-// Cesium.Ion.defaultAccessToken =
-//     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzZDU1NWMyOC00YjFkLTQ5OTUtODg5Yy0zZDRlNGI1NTg3ZjciLCJpZCI6MTUxNTgsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NjcyNDQ4NjR9.WDQmliwvLOArHiI9n4ET2TBELHRsGofW1unvSsbuyR8';
-// var viewer = new Cesium.Viewer('cesiumContainer', {
-//     imageryProvider: new Cesium.MapboxImageryProvider({
-//         mapId: 'mapbox.satellite',
-//         accessToken: 'pk.eyJ1IjoiZGFuaWVsZXN1cHBvIiwiYSI6ImNqb2owbHp2YjAwODYzcW8xaWdhcGp1ancifQ.JvNWYw_cL6rV7ymuEbeTCw'
-//     }),
-//     terrainProvider: Cesium.createWorldTerrain(),
-//     animation: false,
-//     baseLayerPicker: false,
-//     fullscreenButton: false,
-//     geocoder: false,
-//     homeButton: false,
-//     infoBox: false,
-//     sceneModePicker: false,
-//     timeline: false,
-//     navigationHelpButton: false,
-//     useBrowserRecommendedResolution: false, /// change this to improve rendering speed on mobile
-// });
 
-// viewer.scene.globe.maximumScreenSpaceError = 4;
+
+
+////////////////////////////////////////// DEBUG
+
+
+
+var center = new Cesium.Cartesian3(4410146, 966816, 4490121);
+// var radius = 6885;
+var radius = 50000;
+var boundingSphere = new Cesium.BoundingSphere(center, radius);
+map.camera.flyToBoundingSphere(boundingSphere, {
+    offset: new Cesium.HeadingPitchRange(0, -1.47, 140000),
+    duration: 0,
+    complete: function () {
+        console.log("DONE")
+        map.isReady = true;
+    }
+});
 
 
 
 
 
 
-//////////////////////////////
-/// wait for the map loaded
-//////////////////////////////
-let ready = false;
-(function () {
-    function t() {
-        if (typeof viewer === "undefined") {
-            setTimeout(t, 250);
-        } else {
-            viewer.scene.globe.tileLoadProgressEvent.addEventListener((value) => {
-                if (!ready && value === 0) {
-                    ready = true;
-                    init();
-                }
-            });
-        }
-    };
-    t();
-})();
+
+
+let asset = {
+    videoUrl: "https://player.vimeo.com/external/347803220.m3u8?s=61a66fd483813c89da138ac578628ca68bb65fe3",
+    videoUrl_1: "43236",
+    subtitles: "coppi_subtitles.xml",
+    title: "Titolo di prova",
+    description: "Per debug",
+    POI: "delta_POI.xml"
+}
+
+

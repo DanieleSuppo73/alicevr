@@ -1,9 +1,9 @@
 import {
     stringDivider
 } from "../../lib/stringDivider.js"
-import {
-    dispatcher
-} from "../../lib/dispatcher.js"
+// import {
+//     dispatcher
+// } from "../../lib/dispatcher.js"
 
 
 
@@ -30,6 +30,8 @@ export function drawLabel(position, text, category, collection = null) {
 
     let properties = getPropertiesFromCategory(category)
 
+    if (text.length > 15) text = stringDivider(text, 15);
+
     let entity = viewer.entities.add({
         opacity: 1, /// default value at start
         minDistance: properties.minDistance,
@@ -38,7 +40,7 @@ export function drawLabel(position, text, category, collection = null) {
         outlineColor: properties.outlineColor,
         position: position,
         label: {
-            text: stringDivider(text, 15),
+            text: text,
             font: properties.font,
             fillColor: new Cesium.CallbackProperty(function () {
                 return new Cesium.Color(entity.fillColor.x, entity.fillColor.y, entity.fillColor.z, entity.opacity)
@@ -54,6 +56,7 @@ export function drawLabel(position, text, category, collection = null) {
             disableDepthTestDistance: properties.disableDepthTestDistance,
         }
     });
+    if (collection) collection.push(entity);
 
 
     /// register the listener to camerachanged, 
@@ -74,9 +77,6 @@ export function drawLabel(position, text, category, collection = null) {
 
         entity.opacity = rangeMult * distMult;
     });
-
-
-    if (collection) collection.push(entity);
 };
 
 
@@ -99,7 +99,7 @@ function getPropertiesFromCategory(category) {
 
     switch (category) {
         case "A1":
-            properties.font = "20px Acumin-bold";
+            properties.font = "700 20px Roboto";
             properties.outlineWidth = 2;
             properties.minDistance = 800000;
             properties.maxDistance = 2000000;
@@ -112,14 +112,14 @@ function getPropertiesFromCategory(category) {
             properties.maxDistance = 800000;
             break;
         case "A3":
-            properties.font = "16px Acumin-bold";
+            properties.font = "500 16px Roboto";
             properties.outlineWidth = 2;
             properties.fillColor = new Cesium.Cartesian3(.9, .5, .2);
             properties.minDistance = 130000;
             properties.maxDistance = 500000;
             break;
         case "A4":
-            properties.font = "14px Acumin-bold";
+            properties.font = "500 14px Roboto";
             properties.outlineWidth = 2;
             properties.fillColor = new Cesium.Cartesian3(0, 1, 1);
             properties.minDistance = 60000;
@@ -131,6 +131,13 @@ function getPropertiesFromCategory(category) {
             // properties.fillColor = new Cesium.Cartesian3(1, 1, 1);
             properties.minDistance = 35000;
             properties.maxDistance = 75000;
+            break;
+        case "BIG_PARK":
+            properties.font = "500 15px Roboto";
+            properties.outlineWidth = 2;
+            properties.fillColor = new Cesium.Cartesian3(0.5, 1, 0.5);
+            properties.minDistance = 170000;
+            properties.maxDistance = 800000;
             break;
     }
 

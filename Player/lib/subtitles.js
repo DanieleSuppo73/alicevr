@@ -51,7 +51,6 @@ let subtitlesFolder = "../data/xml/";
 function splitIntoPages() {
     let _subt = sub[index];
     if (_subt.pages.length === 0) {
-        console.log("SPLIT")
         let pages = _subt.text.match(/([^\.!\,]+[\.!\,]+)|([^\.!\,]+$)/g);
         for (let i = 0; i < pages.length; i++) {
             let text = pages[i];

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ALL_POI>
-    <POI>
+    <!-- <POI>
         <LONGITUDE>12.3884377</LONGITUDE>
         <LATITUDE>45.0174729</LATITUDE>
         <TYPE>LABEL</TYPE>
@@ -29,14 +29,13 @@
         <LATITUDE>45.0565128</LATITUDE>
         <TYPE>LABEL</TYPE>
         <NAME>Ca' Cappello</NAME>
-    </POI>
+    </POI> -->
     <POI>
         <LONGITUDE>12.3293</LONGITUDE>
         <LATITUDE>45.0048</LATITUDE>
         <TYPE>LABEL</TYPE>
         <NAME>Parco Regionale Veneto del Delta del Po</NAME>
-        <FONT>15px sans-serif</FONT>
-        <COLOR>Cesium.Color.LIGHTGREEN</COLOR>
+        <CATEGORY>BIG_PARK</CATEGORY>
     </POI>
 
 

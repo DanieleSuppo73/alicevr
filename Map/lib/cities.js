@@ -1,9 +1,6 @@
-import {
-    drawLabel
-} from "./drawLabel.js"
-import {
-    coveredMap
-} from "../lib/utils/coveredMap.js"
+import map from "../lib/map/map.js";
+import drawLabel from "./map/tools/drawLabel.js"
+import coveredMap from "./map/tools/coveredMap.js"
 
 
 
@@ -14,6 +11,9 @@ let bigArea; /// the area that have been covered for big cities
 let mediumArea; /// the area that have been covered for small cities
 let smallArea; /// the area that have been covered for small cities
 let wait = null; /// the setTimeout to process the request
+
+
+
 
 
 
@@ -46,10 +46,10 @@ export function loadBigCities(callback = null) {
 
 
 ///////////////////////////////////////
-/// automate
+/// automate the loading as camera move
 ///////////////////////////////////////
 export function loadAuto() {
-    /// at start
+    
     bigArea = new coveredMap();
     mediumArea = new coveredMap();
     smallArea = new coveredMap();
@@ -57,7 +57,7 @@ export function loadAuto() {
     onCameraChanged();
 
     /// add listener
-    viewer.camera.changed.addEventListener(() => {
+    map.camera.changed.addEventListener(() => {
         onCameraChanged();
     });
 }
@@ -70,7 +70,7 @@ export function loadAuto() {
 
 function onCameraChanged() {
 
-    let range = cameraProperties.range;
+    let range = map.range;
 
     if (!bigArea.isCovered()) {
         console.log("> load big cities <")
@@ -105,7 +105,7 @@ function loadCities(minPopulation, callback = null) {
 
     /// if there's a previous request...
     if (wait) {
-        console.error("! --> cities request not allowed because there's another one");
+        console.warn("! --> cities request not allowed because there's another one in queue");
     } else {
         wait = function () {
             if (!isServerAvailable) setTimeout(wait, 100);
@@ -113,16 +113,15 @@ function loadCities(minPopulation, callback = null) {
             else {
                 wait = null;
 
-                let radius = cameraProperties.range / 2000;
+                let radius = map.range / 2000;
                 /// if the radius is < 1km don't request
                 if (radius <= 1) {
                     console.warn("camera too near to terrain, don't request cities");
                 } else {
                     /// get the coordinates in the center of the window
-                    let cartographic = Cesium.Cartographic.fromCartesian(getPointFromCamera());
+                    let cartographic = Cesium.Cartographic.fromCartesian(map.getPointFromCamera());
                     let longitude = Cesium.Math.toDegrees(cartographic.longitude);
                     let latitude = Cesium.Math.toDegrees(cartographic.latitude);
-                    // console.info("looking for cities at " + latitude + " - " + longitude + " around " + radius + " Km");
                     console.info("? - looking for cities with min population = " + minPopulation);
 
                     getDataFromWebServer(minPopulation, latitude, longitude, radius, callback);
@@ -131,8 +130,6 @@ function loadCities(minPopulation, callback = null) {
         }
         wait();
     }
-
-
 }
 
 
@@ -177,6 +174,7 @@ function getDataFromWebServer(minPopulation, latitude, longitude, radius, callba
                         if (minPopulation >= 50000 && minPopulation < 100000) category = "A3";
                         if (minPopulation >= 10000 && minPopulation < 50000) category = "A4";
                         if (minPopulation < 10000) category = "A5";
+                        
                         let position = Cesium.Cartesian3.fromDegrees(result.longitude, result.latitude);
 
                         drawLabel(position, result.city, category)

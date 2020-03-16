@@ -3,13 +3,24 @@ import {
 } from "../../lib/Maf.js"
 
 
+let vp = null;
+
 
 const poster = {
     id: "videoPlayer-poster",
-    show: function (asset) {
-        $("#" + this.id).fadeIn();
-        $('#poster-title').text(asset.title);
-        $('#poster-description').text(asset.description);
+    title: null,
+    description: null,
+    show: function () {
+
+        /// wait for title loaded...
+        if (!poster.title) {
+            setTimeout(this.show, 250);
+        } else {
+            $("#" + poster.id).fadeIn();
+            $('#poster-title').text(poster.title);
+            if (poster.description)
+                $('#poster-description').text(poster.description);
+        }
     },
     hide: function () {
         $("#" + this.id).fadeOut();
@@ -44,7 +55,7 @@ const icon360big = {
 }
 
 
-let vp = null;
+
 
 export const viewAngle = {
     id: "videoPlayer_viewAngle",
@@ -221,20 +232,31 @@ const viewArrows = {
 
 
 
-
-
-export function init(videoPlayer) {
+export function load(videoPlayer, asset) {
     vp = videoPlayer;
-    // poster.show(asset);
+    poster.title = asset.title;
+    poster.description = asset.description;
+}
+
+
+
+
+export function showOnReady() {
+    poster.show();
     icon360.show();
     icon360big.hide();
     viewAngle.hide();
     viewAngle.over.hide();
     viewArrows.isActive = false;
     viewArrows.hide(0);
+
+
+
+
 }
 
-export function showDuringPlayback() {
+
+export function showOnPlay() {
     poster.hide();
     icon360.hide();
     icon360big.show();
