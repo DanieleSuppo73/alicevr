@@ -1,5 +1,7 @@
 import map from "../lib/map/map.js";
-import drawLabel from "./map/tools/drawLabel.js"
+import {
+    drawLabel,
+} from "./map/tools/label.js";
 import coveredMap from "./map/tools/coveredMap.js"
 
 

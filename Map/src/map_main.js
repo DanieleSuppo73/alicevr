@@ -7,9 +7,9 @@ import map from "../lib/map/map.js";
 import * as cities from "../lib/cities.js";
 import * as pointsOfInterest from "../lib/pointsOfInterest.js";
 
-// import {
-//     gpxParser
-// } from "../lib/gpxParser.js"
+import *
+as myTrack
+from "../lib/myTrack.js"
 
 
 
@@ -19,23 +19,48 @@ import * as pointsOfInterest from "../lib/pointsOfInterest.js";
 
 
 
+let asset = {
+    POI: "delta_POI.xml",
+    gpx: "activity_4446943983.gpx",
+}
 
 
 
 
 
 
+
+
+
+//////////////////////////////////////////
+/// ON MAP STARTED
+//////////////////////////////////////////
+map.onStarted.push(function () {
+
+    myTrack.load(asset);
+    
+})
 
 
 
 //////////////////////////////////////////
 /// ON MAP READY
 //////////////////////////////////////////
-function onMapReady(){
-    dispatcher.sendMessage("mapReady");
+map.onReady.push(function () {
+
+    // //// SEND MAP READY MESSAGE
+    // dispatcher.sendMessage("mapReady");
+
+    /// LOAD CITIES
     cities.loadAuto();
+
+    // //// LOAD POINTS OF INTEREST
     // pointsOfInterest.loadFromFile(asset);
-}
+    
+    map.camera.percentageChanged = 0.3;
+})
+
+
 
 
 
@@ -44,19 +69,10 @@ function onMapReady(){
 //////////////////////////////////////////
 /// INIT
 //////////////////////////////////////////
-map.onReady.push(function () {
-    console.log("YEEEEE")
-    onMapReady();
-})
-
-function init() {
-    map.init();
-};
+map.init();
 
 
 
-
-init();
 
 
 
@@ -80,18 +96,5 @@ map.camera.flyToBoundingSphere(boundingSphere, {
 
 
 
-
-
-
-
-
-let asset = {
-    videoUrl: "https://player.vimeo.com/external/347803220.m3u8?s=61a66fd483813c89da138ac578628ca68bb65fe3",
-    videoUrl_1: "43236",
-    subtitles: "coppi_subtitles.xml",
-    title: "Titolo di prova",
-    description: "Per debug",
-    POI: "delta_POI.xml"
-}
 
 

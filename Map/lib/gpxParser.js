@@ -6,49 +6,49 @@ export var gpxParser = function () {
     this.routes = [];
 };
 
-gpxParser.prototype.parse = function (string) {
+gpxParser.prototype.parse = function (string, callback = null) {
     var keepThis = this;
     var domParser = new DOMParser();
     this.xmlSource = domParser.parseFromString(string, 'text/xml');
 
-    metadata = this.xmlSource.querySelector('metadata');
-    if (metadata != null) {
-        this.metadata.name = this.getElementValue(metadata, "name");
-        this.metadata.desc = this.getElementValue(metadata, "desc");
-        this.metadata.time = this.getElementValue(metadata, "time");
+    // metadata = this.xmlSource.querySelector('metadata');
+    // if (metadata != null) {
+    //     this.metadata.name = this.getElementValue(metadata, "name");
+    //     this.metadata.desc = this.getElementValue(metadata, "desc");
+    //     this.metadata.time = this.getElementValue(metadata, "time");
 
-        let author = {};
-        let authorElem = metadata.querySelector('author');
-        if (authorElem != null) {
-            author.name = this.getElementValue(authorElem, "name");
+    //     let author = {};
+    //     let authorElem = metadata.querySelector('author');
+    //     if (authorElem != null) {
+    //         author.name = this.getElementValue(authorElem, "name");
 
-            author.email = {};
-            let emailElem = authorElem.querySelector('email');
-            if (emailElem != null) {
-                author.email.id = emailElem.getAttribute("id");
-                author.email.domain = emailElem.getAttribute("domain");
-            }
+    //         author.email = {};
+    //         let emailElem = authorElem.querySelector('email');
+    //         if (emailElem != null) {
+    //             author.email.id = emailElem.getAttribute("id");
+    //             author.email.domain = emailElem.getAttribute("domain");
+    //         }
 
-            let link = {};
-            let linkElem = authorElem.querySelector('link');
-            if (linkElem != null) {
-                link.href = linkElem.getAttribute('href');
-                link.text = this.getElementValue(linkElem, "text");
-                link.type = this.getElementValue(linkElem, "type");
-            }
-            author.link = link;
-        }
-        this.metadata.author = author;
+    //         let link = {};
+    //         let linkElem = authorElem.querySelector('link');
+    //         if (linkElem != null) {
+    //             link.href = linkElem.getAttribute('href');
+    //             link.text = this.getElementValue(linkElem, "text");
+    //             link.type = this.getElementValue(linkElem, "type");
+    //         }
+    //         author.link = link;
+    //     }
+    //     this.metadata.author = author;
 
-        let link = {};
-        let linkElem = metadata.querySelector('link');
-        if (linkElem != null) {
-            link.href = linkElem.getAttribute('href');
-            link.text = this.getElementValue(linkElem, "text");
-            link.type = this.getElementValue(linkElem, "type");
-            this.metadata.link = link;
-        }
-    }
+    //     let link = {};
+    //     let linkElem = metadata.querySelector('link');
+    //     if (linkElem != null) {
+    //         link.href = linkElem.getAttribute('href');
+    //         link.text = this.getElementValue(linkElem, "text");
+    //         link.type = this.getElementValue(linkElem, "type");
+    //         this.metadata.link = link;
+    //     }
+    // }
 
     var wpts = [].slice.call(this.xmlSource.querySelectorAll('trkpt'));
     for (let idx in wpts) {
@@ -122,6 +122,8 @@ gpxParser.prototype.parse = function (string) {
         track.points = trackpoints;
         keepThis.tracks.push(track);
     }
+
+    if (callback) callback();
 };
 
 gpxParser.prototype.getElementValue = function (parent, needle) {

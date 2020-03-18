@@ -1,7 +1,6 @@
 import map from "../map.js";
 
 
-// const canvas = map.viewer.scene.canvas;
 
 class coveredMap {
     constructor(debugText = null, debugColor = null) {

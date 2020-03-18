@@ -1,5 +1,7 @@
-import drawLabel from "./map/tools/drawLabel.js"
-import map from "../lib/map/map.js";
+import {
+    drawLabel,
+    removeLabel
+} from "./map/tools/label.js";
 
 
 
@@ -86,7 +88,7 @@ export function loadFromFile(asset) {
 
 function clear() {
     for (let i in pointsOfInterest) {
-        map.viewer.entities.remove(pointsOfInterest[i]);
+       removeLabel(pointsOfInterest[i]);
     }
 }
 
