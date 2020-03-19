@@ -2,27 +2,9 @@ import {
     stringDivider
 } from "../../../../lib/stringDivider.js"
 import map from "../map.js";
-
-
-
-// /// set the range
-// let minRange = 0;
-// let maxRange = 0;
-
-
-// function updateRange() {
-//     minRange = map.range;
-//     maxRange = minRange * 4;
-// }
-
-
-// map.onReady.push(function(){
-//     updateRange();
-
-//     map.camera.changed.addEventListener(() => {
-//         updateRange();
-//     });
-// });
+import {
+    Maf
+} from "../../../../lib/Maf.js"
 
 
 
@@ -34,11 +16,11 @@ function updateOpacity(entity){
         pos);
 
     /// get multiplier by min-max range
-    let rangeMult = 1 - Math.inverseLerp(minRange, maxRange,
+    let rangeMult = 1 - Maf.inverseLerp(minRange, maxRange,
         Cesium.Math.clamp(dist, minRange, maxRange));
 
     /// get multiplier by min-max distance
-    let distMult = 1 - Math.inverseLerp(entity.minDistance, entity
+    let distMult = 1 - Maf.inverseLerp(entity.minDistance, entity
         .maxDistance,
         Cesium.Math.clamp(dist, entity.minDistance, entity.maxDistance));
 

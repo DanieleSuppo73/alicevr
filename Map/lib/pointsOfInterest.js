@@ -1,7 +1,7 @@
 import {
     drawLabel,
     removeLabel
-} from "./map/tools/label.js";
+} from "./map/entity/label.js";
 
 
 

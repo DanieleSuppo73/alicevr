@@ -328,7 +328,7 @@ const map = {
 
                 ///update range
                 this.updateRange(() => {
-                    console.log("map is ready")
+                    // console.log("map is ready")
 
                     /// subscribed funcs
                     for (let i = 0; i < this.onReady.length; i++) {

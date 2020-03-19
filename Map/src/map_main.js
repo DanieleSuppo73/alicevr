@@ -7,38 +7,51 @@ import map from "../lib/map/map.js";
 import * as cities from "../lib/cities.js";
 import * as pointsOfInterest from "../lib/pointsOfInterest.js";
 
-import *
-as myTrack
-from "../lib/myTrack.js"
+import Track from "../lib/Track.js"
 
 
 
 
+import {
+    drawEllipse, removeEllipse
+} from "../lib/map/entity/ellipse.js";
 
 
 
 
-
-let asset = {
+let asset1 = {
     POI: "delta_POI.xml",
     gpx: "activity_4446943983.gpx",
+}
+
+let asset2 = {
+    // POI: "delta_POI.xml",
+    gpx: "activity_4446944479.gpx",
+}
+
+let asset3 = {
+    // POI: "delta_POI.xml",
+    gpx: "activity_4447053939.gpx",
 }
 
 
 
 
-
-
-
-
-
+var placeholder;
 //////////////////////////////////////////
 /// ON MAP STARTED
 //////////////////////////////////////////
 map.onStarted.push(function () {
 
-    myTrack.load(asset);
-    
+    var TR1 = new Track(asset1);
+    TR1.load(() => {
+        placeholder = drawEllipse(TR1.boundingSphere.center)
+    });
+    var TR2 = new Track(asset2);
+    TR2.load();
+    var TR3 = new Track(asset3);
+    TR3.load();
+
 })
 
 
@@ -48,16 +61,17 @@ map.onStarted.push(function () {
 //////////////////////////////////////////
 map.onReady.push(function () {
 
-    // //// SEND MAP READY MESSAGE
-    // dispatcher.sendMessage("mapReady");
+    /// SEND MAP READY MESSAGE
+    dispatcher.sendMessage("mapReady");
 
     /// LOAD CITIES
-    cities.loadAuto();
+    // cities.loadAuto();
 
-    // //// LOAD POINTS OF INTEREST
+    /// LOAD POINTS OF INTEREST
     // pointsOfInterest.loadFromFile(asset);
-    
-    map.camera.percentageChanged = 0.3;
+
+    const mapChangeSensitivity = 0.3; /// default 0.5
+    map.camera.percentageChanged = mapChangeSensitivity;
 })
 
 
@@ -96,5 +110,20 @@ map.camera.flyToBoundingSphere(boundingSphere, {
 
 
 
+function zoomIn() {
+    boundingSphere.radius = 7000;
+    map.camera.flyToBoundingSphere(boundingSphere, {
+        // offset: offset,
+        complete: function () {
+            console.log("FLYING COMPLETE")
+        },
+        duration: 8,
+        easingFunction: Cesium.EasingFunction.QUADRACTIC_IN_OUT,
+    });
+}
 
+window.zoomIn = zoomIn;
 
+window.removePlaceholder = function(){
+    removeEllipse(placeholder);
+}
