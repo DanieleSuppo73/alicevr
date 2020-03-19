@@ -1,21 +1,22 @@
 import {
     gpxParser
-} from "./gpxParser.js"
+} from "../../utils/gpxParser.js"
 
-import {
-    drawPolyline,
-} from "./map/entity/polyline.js";
+// import {
+//     drawPolyline,
+// } from "../../entity/polyline.js";
+
+import Polyline from "../../entity/Polyline.js";
 
 
 
 class Track {
-    constructor(asset) {
-        this.url = `data/gpx/${asset.gpx}`;
+    constructor(gpxUrl) {
+        this.gpxUrl = `data/gpx/${gpxUrl}`;
         this.positions = [];
         this.times = [];
         this.gpx = null;
         this.entity = null;
-        this.boundingSphere = null;
     }
 
     load(callback = null) {
@@ -49,16 +50,15 @@ class Track {
                     };
 
                     /// draw the polyline
-                    _this.entity = drawPolyline(_this.positions, "TRACK");
+                    _this.entity = Polyline.draw(_this.positions, "TRACK");
 
-                    /// create the boundingsphere from positions
-                    _this.boundingSphere = new Cesium.BoundingSphere.fromPoints(_this.positions);
-
-                    if (callback) callback();
+                    /// return this boundingSphere to the Asset
+                    const boundingSphere = new Cesium.BoundingSphere.fromPoints(_this.positions);
+                    if (callback) callback(boundingSphere);
                 })
             }
         };
-        xhttp.open("GET", this.url, true);
+        xhttp.open("GET", this.gpxUrl, true);
         xhttp.send();
     }
 };

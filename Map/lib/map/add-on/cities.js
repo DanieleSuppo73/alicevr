@@ -1,8 +1,6 @@
-import map from "../lib/map/map.js";
-import {
-    drawLabel,
-} from "./map/entity/label.js";
-import coveredMap from "./map/tools/coveredMap.js"
+import map from "../map.js";
+import Label from "../entity/label.js";
+import coveredMap from "../utils/coveredMap.js"
 
 
 
@@ -179,7 +177,8 @@ function getDataFromWebServer(minPopulation, latitude, longitude, radius, callba
                         
                         let position = Cesium.Cartesian3.fromDegrees(result.longitude, result.latitude);
 
-                        drawLabel(position, result.city, category)
+                        /// draw the label!
+                        Label.draw(position, result.city, category)
 
                         console.info("--- new city: " + result.city);
                     } 

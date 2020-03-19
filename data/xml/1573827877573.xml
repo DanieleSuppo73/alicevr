@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-    <objType>video</objType>
-    <userName>viagginbici</userName>
+    <type>video</type>
+    <owner>viagginbici</owner>
     <title>Il Lido e la Pellestrina di Venezia</title>
     <description>Il famoso Lido di Venezia, e l'isola sotto</description>
     <date>Fry Nov 15 2019</date>

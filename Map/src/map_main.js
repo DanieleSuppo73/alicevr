@@ -4,17 +4,23 @@ import {
 
 import map from "../lib/map/map.js";
 
-import * as cities from "../lib/cities.js";
-import * as pointsOfInterest from "../lib/pointsOfInterest.js";
+import * as cities from "../lib/map/add-on/cities.js";
+// import * as pointsOfInterest from "../lib/map/add-on/pointsOfInterest.js";
 
-import Track from "../lib/Track.js"
+import Track from "../lib/map/managers/constructors/Track.js"
+
+import Loader from "../lib/map/managers/Loader.js"
 
 
 
 
-import {
-    drawEllipse, removeEllipse
-} from "../lib/map/entity/ellipse.js";
+
+import * as entityTools from "../lib/map/utils/entity_utils.js";
+
+
+
+
+
 
 
 
@@ -38,34 +44,37 @@ let asset3 = {
 
 
 var placeholder;
-//////////////////////////////////////////
+//////////////////////////////////////////////
 /// ON MAP STARTED
-//////////////////////////////////////////
+//////////////////////////////////////////////
 map.onStarted.push(function () {
 
-    var TR1 = new Track(asset1);
-    TR1.load(() => {
-        placeholder = drawEllipse(TR1.boundingSphere.center)
-    });
-    var TR2 = new Track(asset2);
-    TR2.load();
-    var TR3 = new Track(asset3);
-    TR3.load();
+    // var TR1 = new Track(asset1.gpx);
+    // TR1.load((boundingSphere) => {
+    //     placeholder = drawEllipse(boundingSphere.center, "PLACEHOLDER");
+    // });
+    // var TR2 = new Track(asset2.gpx);
+    // TR2.load();
+    // var TR3 = new Track(asset3.gpx);
+    // TR3.load();
+
+
+    Loader.init();
 
 })
 
 
 
-//////////////////////////////////////////
+//////////////////////////////////////////////
 /// ON MAP READY
-//////////////////////////////////////////
+//////////////////////////////////////////////
 map.onReady.push(function () {
 
     /// SEND MAP READY MESSAGE
-    dispatcher.sendMessage("mapReady");
+    // dispatcher.sendMessage("mapReady");
 
     /// LOAD CITIES
-    // cities.loadAuto();
+    cities.loadAuto();
 
     /// LOAD POINTS OF INTEREST
     // pointsOfInterest.loadFromFile(asset);
@@ -79,10 +88,22 @@ map.onReady.push(function () {
 
 
 
+//////////////////////////////////////////////
+/// receive messages
+//////////////////////////////////////////////
+dispatcher.receiveMessage("playerPlaying", (data) => {
+    
+    /// rotate placeholder texture with player angle
+    placeholder.ellipse.stRotation = Cesium.Math.toRadians(data.angle);
+});
 
-//////////////////////////////////////////
+
+
+
+
+//////////////////////////////////////////////
 /// INIT
-//////////////////////////////////////////
+//////////////////////////////////////////////
 map.init();
 
 
@@ -126,4 +147,12 @@ window.zoomIn = zoomIn;
 
 window.removePlaceholder = function(){
     removeEllipse(placeholder);
+}
+
+window.fadeIn = function(){
+    entityTools.fadeIn(placeholder)
+}
+
+window.fadeOut = function(){
+    entityTools.fadeOut(placeholder)
 }

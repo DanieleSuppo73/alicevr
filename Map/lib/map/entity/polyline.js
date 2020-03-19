@@ -22,9 +22,9 @@ map.onReady.push(function () {
 });
 
 
+
 function update() {
     let r = Maf.clamp(map.range, minRange, maxRange);
-
     globalOpacity = Maf.inverseLerp(maxRange, minRange, r);
     globalWidth = Maf.inverseLerp(maxRange * 2, minRange, r);
 };
@@ -58,9 +58,7 @@ function getPropertiesFromCategory(category) {
                 properties.outlineWidth = 0;
                 break;
         }
-
     }
-
     return properties;
 }
 
@@ -68,41 +66,48 @@ function getPropertiesFromCategory(category) {
 
 
 
-export function drawPolyline(positions, category = null, collection = null,
-    onOverFunc = null, onExitFunc = null, onClickFunc = null) {
+export default class Polyline {
 
-    let properties = getPropertiesFromCategory(category);
+    /// DRAW
+    static draw(positions, category = null, collection = null,
+        onOverFunc = null, onExitFunc = null, onClickFunc = null) {
 
-    let entity = map.viewer.entities.add({
-        opacity: properties.opacity, /// change this value to set the opacity individually
-        color: properties.color,
-        outlineColor: properties.outlineColor,
-        width: properties.width,
-        category: category,
-        polyline: {
-            positions: positions,
-            clampToGround: properties.clampToGround,
+        const properties = getPropertiesFromCategory(category);
+
+        const entity = map.viewer.entities.add({
+            opacity: properties.opacity, /// change this value to set the opacity individually
+            color: properties.color,
+            outlineColor: properties.outlineColor,
             width: properties.width,
-            // width: new Cesium.CallbackProperty(function () {
-            //     return entity.width * globalWidth;
-            // }, false),
-            material: new Cesium.PolylineOutlineMaterialProperty({
-                color: new Cesium.CallbackProperty(function () {
-                    return new Cesium.Color(entity.color.x, entity.color.y, entity.color.z, entity.opacity * globalOpacity)
-                }),
-                outlineWidth: properties.outlineWidth,
-                outlineColor: new Cesium.CallbackProperty(function () {
-                    return new Cesium.Color(entity.outlineColor.x, entity.outlineColor.y, entity.outlineColor.z, entity.opacity * globalOpacity)
-                }),
-            }),
-            show: properties.show,
-        }
-    });
+            category: category,
+            polyline: {
+                positions: positions,
+                clampToGround: properties.clampToGround,
+                width: properties.width,
 
-    if (collection) collection.push(entity);
-    if (onOverFunc) map.onOverEntity.push(onOverFunc);
-    if (onExitFunc) map.onExitEntity.push(onExitFunc);
-    if (onClickFunc) map.onClickEntity.push(onClickFunc);
+                //// tooo slow.....
+                // width: new Cesium.CallbackProperty(function () {
+                //     return entity.width * globalWidth;
+                // }, false),
 
-    return entity;
+                material: new Cesium.PolylineOutlineMaterialProperty({
+                    color: new Cesium.CallbackProperty(function () {
+                        return new Cesium.Color(entity.color.x, entity.color.y, entity.color.z, entity.opacity * globalOpacity)
+                    }),
+                    outlineWidth: properties.outlineWidth,
+                    outlineColor: new Cesium.CallbackProperty(function () {
+                        return new Cesium.Color(entity.outlineColor.x, entity.outlineColor.y, entity.outlineColor.z, entity.opacity * globalOpacity)
+                    }),
+                }),
+                show: properties.show,
+            }
+        });
+
+        if (collection) collection.push(entity);
+        if (onOverFunc) map.onOverEntity.push(onOverFunc);
+        if (onExitFunc) map.onExitEntity.push(onExitFunc);
+        if (onClickFunc) map.onClickEntity.push(onClickFunc);
+
+        return entity;
+    }
 };

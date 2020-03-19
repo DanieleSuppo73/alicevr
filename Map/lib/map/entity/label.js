@@ -8,7 +8,7 @@ import {
 
 
 
-function updateOpacity(entity){
+function updateOpacity(entity) {
     let minRange = map.range;
     let maxRange = minRange * 4;
     let pos = entity.position._value;
@@ -96,59 +96,111 @@ function getPropertiesFromCategory(category) {
 
 
 
+export default class Label {
+
+    /// DRAW
+    static draw(position, text, category, collection = null) {
+
+        const properties = getPropertiesFromCategory(category)
+
+        if (text.length > 15) text = stringDivider(text, 15);
+
+        const entity = map.viewer.entities.add({
+            opacity: 0, /// default value at start
+            minDistance: properties.minDistance,
+            maxDistance: properties.maxDistance,
+            fillColor: properties.fillColor,
+            outlineColor: properties.outlineColor,
+            position: position,
+            category: category,
+            label: {
+                text: text,
+                font: properties.font,
+                fillColor: new Cesium.CallbackProperty(function () {
+                    return new Cesium.Color(entity.fillColor.x, entity.fillColor.y, entity.fillColor.z, entity.opacity)
+                }, false),
+                outlineColor: new Cesium.CallbackProperty(function () {
+                    return new Cesium.Color(entity.outlineColor.x, entity.outlineColor.y, entity.outlineColor.z, entity.opacity)
+                }, false),
+                outlineWidth: properties.outlineWidth,
+                style: properties.style,
+                verticalOrigin: properties.verticalOrigin,
+                heightReference: properties.heightReference,
+                pixelOffset: properties.pixelOffset,
+                disableDepthTestDistance: properties.disableDepthTestDistance,
+            }
+        });
+        if (collection) collection.push(entity);
 
 
-export function drawLabel(position, text, category, collection = null) {
+        /// register the listener to camerachanged, 
+        /// to update this label opacity
+        map.camera.changed.addEventListener(() => {
+            updateOpacity(entity);
+        });
 
-    let properties = getPropertiesFromCategory(category)
-
-    if (text.length > 15) text = stringDivider(text, 15);
-
-    var entity = map.viewer.entities.add({
-        opacity: 0, /// default value at start
-        minDistance: properties.minDistance,
-        maxDistance: properties.maxDistance,
-        fillColor: properties.fillColor,
-        outlineColor: properties.outlineColor,
-        position: position,
-        category: category,
-        label: {
-            text: text,
-            font: properties.font,
-            fillColor: new Cesium.CallbackProperty(function () {
-                return new Cesium.Color(entity.fillColor.x, entity.fillColor.y, entity.fillColor.z, entity.opacity)
-            }, false),
-            outlineColor: new Cesium.CallbackProperty(function () {
-                return new Cesium.Color(entity.outlineColor.x, entity.outlineColor.y, entity.outlineColor.z, entity.opacity)
-            }, false),
-            outlineWidth: properties.outlineWidth,
-            style: properties.style,
-            verticalOrigin: properties.verticalOrigin,
-            heightReference: properties.heightReference,
-            pixelOffset: properties.pixelOffset,
-            disableDepthTestDistance: properties.disableDepthTestDistance,
-        }
-    });
-    if (collection) collection.push(entity);
-
-
-    /// register the listener to camerachanged, 
-    /// to update this label opacity
-    map.camera.changed.addEventListener(() => {
+        /// update opacity immediately
         updateOpacity(entity);
-    });
 
-    /// update opacity immediately
-    updateOpacity(entity);
-};
+        return entity;
+    };
 
 
+    /// REMOVE
+    static remove(entity) {
 
-export function removeLabel (entity){
-    map.viewer.entities.remove(entity);
+        map.viewer.entities.remove(entity);
+    };
 }
 
 
 
+// export function drawLabel(position, text, category, collection = null) {
+
+//     let properties = getPropertiesFromCategory(category)
+
+//     if (text.length > 15) text = stringDivider(text, 15);
+
+//     var entity = map.viewer.entities.add({
+//         opacity: 0, /// default value at start
+//         minDistance: properties.minDistance,
+//         maxDistance: properties.maxDistance,
+//         fillColor: properties.fillColor,
+//         outlineColor: properties.outlineColor,
+//         position: position,
+//         category: category,
+//         label: {
+//             text: text,
+//             font: properties.font,
+//             fillColor: new Cesium.CallbackProperty(function () {
+//                 return new Cesium.Color(entity.fillColor.x, entity.fillColor.y, entity.fillColor.z, entity.opacity)
+//             }, false),
+//             outlineColor: new Cesium.CallbackProperty(function () {
+//                 return new Cesium.Color(entity.outlineColor.x, entity.outlineColor.y, entity.outlineColor.z, entity.opacity)
+//             }, false),
+//             outlineWidth: properties.outlineWidth,
+//             style: properties.style,
+//             verticalOrigin: properties.verticalOrigin,
+//             heightReference: properties.heightReference,
+//             pixelOffset: properties.pixelOffset,
+//             disableDepthTestDistance: properties.disableDepthTestDistance,
+//         }
+//     });
+//     if (collection) collection.push(entity);
 
 
+//     /// register the listener to camerachanged, 
+//     /// to update this label opacity
+//     map.camera.changed.addEventListener(() => {
+//         updateOpacity(entity);
+//     });
+
+//     /// update opacity immediately
+//     updateOpacity(entity);
+// };
+
+
+
+// export function removeLabel(entity) {
+//     map.viewer.entities.remove(entity);
+// }
