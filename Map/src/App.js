@@ -67,10 +67,15 @@ map.onStarted.push(function () {
         /// DEBUG : show circle
         Ellipse.draw(Loader.root.boundingSphere.center, "GREEN_TRANSPARENT", Loader.root.boundingSphere.radius);
 
+        /// go there
+        let range = 140000;
         map.camera.flyToBoundingSphere(Loader.root.boundingSphere, {
-            offset: new Cesium.HeadingPitchRange(0, -1.47, 140000),
+            offset: new Cesium.HeadingPitchRange(0, -1.47, range),
             duration: 0,
         });
+
+        /// load cities from boundingsphere position / radius
+        cities.init(Loader.root.boundingSphere.center, range);
     });
 
 })
@@ -86,7 +91,8 @@ map.onReady.push(function () {
     // dispatcher.sendMessage("mapReady");
 
     /// LOAD CITIES
-    cities.loadAuto();
+    // cities.loadAuto();
+    // cities.init();
 
     /// LOAD POINTS OF INTEREST
     // pointsOfInterest.loadFromFile(asset);

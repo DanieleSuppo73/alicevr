@@ -9,22 +9,27 @@ import {
 
 
 function updateOpacity(entity) {
-    let minRange = map.range;
-    let maxRange = minRange * 4;
-    let pos = entity.position._value;
-    let dist = Cesium.Cartesian3.distance(map.viewer.camera.positionWC,
-        pos);
-
-    /// get multiplier by min-max range
-    let rangeMult = 1 - Maf.inverseLerp(minRange, maxRange,
-        Cesium.Math.clamp(dist, minRange, maxRange));
-
-    /// get multiplier by min-max distance
-    let distMult = 1 - Maf.inverseLerp(entity.minDistance, entity
-        .maxDistance,
-        Cesium.Math.clamp(dist, entity.minDistance, entity.maxDistance));
-
-    entity.opacity = rangeMult * distMult;
+    if (map.ready){
+        let minRange = map.range;
+        let maxRange = minRange * 4;
+        let pos = entity.position._value;
+        let dist = Cesium.Cartesian3.distance(map.viewer.camera.positionWC,
+            pos);
+    
+        /// get multiplier by min-max range
+        let rangeMult = 1 - Maf.inverseLerp(minRange, maxRange,
+            Cesium.Math.clamp(dist, minRange, maxRange));
+    
+        /// get multiplier by min-max distance
+        let distMult = 1 - Maf.inverseLerp(entity.minDistance, entity
+            .maxDistance,
+            Cesium.Math.clamp(dist, entity.minDistance, entity.maxDistance));
+    
+        entity.opacity = rangeMult * distMult;
+    }
+    else{
+        entity.opacity = 1;
+    }
 }
 
 

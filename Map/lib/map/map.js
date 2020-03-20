@@ -4,10 +4,6 @@ import {
 
 
 
-// export default Map {
-
-// }
-
 
 
 
@@ -31,7 +27,7 @@ const map = {
     canvas: null,
     _ready: false,
     get ready() {
-        return this.ready;
+        return this._ready;
     },
     entity: null,
 
@@ -71,7 +67,7 @@ const map = {
         if (callback) callback();
     },
     get range() {
-        if (_this.range === 0) console.error("range request too early");
+        if (this._range === 0) console.warn("range request too early");
         return this._range;
     },
 

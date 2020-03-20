@@ -55,60 +55,10 @@ function getPropertiesFromCategory(category, radius) {
 
 
 
-function drawEllipse(center, properties, collection){
-    const entity = map.viewer.entities.add({
-        position: center,
-        color: properties.color,
-        opacity: properties.opacity,
-        category: properties.category,
-        ellipse: {
-            semiMinorAxis: properties.semiMinorAxis,
-            semiMajorAxis: properties.semiMajorAxis,
-            height: properties.height,
-            material: new Cesium.ImageMaterialProperty({
-                image: properties.image,
-                color: new Cesium.CallbackProperty(function () {
-                    return new Cesium.Color(entity.color.x, entity.color.y, entity.color.z, entity.opacity)
-                }, false),
-                transparent: true,
-            }),
-            stRotation: 0,
-        }
-    });
-
-
-    /// update radius to keep it fixed
-    if (properties.category === "PLACEHOLDER" && !getFixedRadiusInterval) {
-        getFixedRadiusInterval = setInterval(function () {
-            const camPos = map.camera.positionWC;
-            const pos = entity.position._value;
-            const dist = Cesium.Cartesian3.distance(pos, camPos);
-            fixedHalfRadius = dist * Math.tan(semiAngle);
-        }, 10);
-    }
-
-    if (collection) collection.push(entity);
-
-    return entity;
-}
-
-
-
 
 
 export default class Ellipse {
 
-    
-    static drawFromCategory(center, category, radius = null, collection = null){
-
-        let properties = getPropertiesFromCategory(category, radius);
-
-        drawEllipse();
-
-    };
-    
-    
-  
     static draw(center, category = null, radius = null, collection = null) {
 
         let properties = getPropertiesFromCategory(category, radius);

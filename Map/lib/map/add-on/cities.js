@@ -11,6 +11,7 @@ let bigArea; /// the area that have been covered for big cities
 let mediumArea; /// the area that have been covered for small cities
 let smallArea; /// the area that have been covered for small cities
 let wait = null; /// the setTimeout to process the request
+let started = false;
 
 
 
@@ -20,47 +21,28 @@ let wait = null; /// the setTimeout to process the request
 ///////////////////////////////////////
 /// load cities by population
 ///////////////////////////////////////
-export function loadCitiesByPopulation(minPopulation, callback = null) {
-    loadCities(minPopulation, callback);
+export function loadCitiesByPopulation(minPopulation, position = null, radius = null, callback = null) {
+    loadCities(minPopulation, position, radius, callback);
 }
 
 
 
 
-
-
 ///////////////////////////////////////
-/// load all big cities
+/// load big cities 
 ///////////////////////////////////////
-export function loadBigCities(callback = null) {
-    loadCitiesByPopulation(500000, function () {
-        loadCitiesByPopulation(100000, function () {
-            loadCitiesByPopulation(50000, function () {
+export function loadBigCities(position, range, callback = null) {
+    console.log("500000")
+    loadCities(500000, position, range, function () {
+        console.log("100000")
+        loadCities(100000, position, range, function () {
+            console.log("50000")
+            loadCities(50000, position, range, function () {
                 if (callback) callback();
             });
         });
     });
-
-}
-
-
-
-///////////////////////////////////////
-/// automate the loading as camera move
-///////////////////////////////////////
-export function loadAuto() {
-    
-    bigArea = new coveredMap();
-    mediumArea = new coveredMap();
-    smallArea = new coveredMap();
-
-    onCameraChanged();
-
-    /// add listener
-    map.camera.changed.addEventListener(() => {
-        onCameraChanged();
-    });
-}
+};
 
 
 
@@ -68,30 +50,65 @@ export function loadAuto() {
 
 
 
-function onCameraChanged() {
+////////////////////////////////////////////
+/// start to a specified position / range,
+/// next automate the loading as camera move
+////////////////////////////////////////////
+export function init(position = null, range = null) {
 
-    let range = map.range;
+    if (!started) {
+        started = true;
+
+        bigArea = new coveredMap();
+        mediumArea = new coveredMap();
+        smallArea = new coveredMap();
+
+        onCameraChanged(position, range);
+
+        /// add listener
+        map.onReady.push(function () {
+            map.camera.changed.addEventListener(() => {
+                onCameraChanged();
+            });
+        })
+
+    } else {
+        console.warn("cities already started");
+    }
+};
+
+
+
+
+
+
+
+
+function onCameraChanged(position = null, range = null) {
+    console.log("********************** onCameraChanged ***********")
+
+    let _range = range ? range : map.range;
 
     if (!bigArea.isCovered()) {
         console.log("> load big cities <")
-        loadBigCities();
+        loadBigCities(position, range);
     }
 
-    if (range <= 100000) {
+    if (_range <= 100000) {
 
         if (!mediumArea.isCovered()) {
             console.log("> load small cities <")
-            loadCitiesByPopulation(10000, function () {
+            loadCities(10000, position, range, function () {
 
-                if (range <= 55000 && !smallArea.isCovered()) {
-                    console.log("> load very small cities <")
-                    // loadCitiesByPopulation(1000);
-                }
+                // if (range <= 55000 && !smallArea.isCovered()) {
+                //     console.log("> load very small cities <")
+                //     // loadCitiesByPopulation(1000);
+                // }
             });
         } else {
-            if (range <= 55000 && !smallArea.isCovered()) {
+            if (_range <= 55000 && !smallArea.isCovered()) {
                 console.log("> load very small cities <")
-                loadCitiesByPopulation(1000);
+                loadCities(1000, position, range);
             }
         }
 
@@ -101,7 +118,7 @@ function onCameraChanged() {
 
 
 /// main function
-function loadCities(minPopulation, callback = null) {
+function loadCities(minPopulation, position = null, range = null, callback = null) {
 
     /// if there's a previous request...
     if (wait) {
@@ -113,13 +130,15 @@ function loadCities(minPopulation, callback = null) {
             else {
                 wait = null;
 
-                let radius = map.range / 2000;
+                let radius = range ? range / 2000 : map.range / 2000;
                 /// if the radius is < 1km don't request
                 if (radius <= 1) {
                     console.warn("camera too near to terrain, don't request cities");
                 } else {
                     /// get the coordinates in the center of the window
-                    let cartographic = Cesium.Cartographic.fromCartesian(map.getPointFromCamera());
+                    let _position = position ? position : map.getPointFromCamera();
+
+                    let cartographic = Cesium.Cartographic.fromCartesian(_position);
                     let longitude = Cesium.Math.toDegrees(cartographic.longitude);
                     let latitude = Cesium.Math.toDegrees(cartographic.latitude);
                     console.info("? - looking for cities with min population = " + minPopulation);
@@ -174,14 +193,14 @@ function getDataFromWebServer(minPopulation, latitude, longitude, radius, callba
                         if (minPopulation >= 50000 && minPopulation < 100000) category = "A3";
                         if (minPopulation >= 10000 && minPopulation < 50000) category = "A4";
                         if (minPopulation < 10000) category = "A5";
-                        
+
                         let position = Cesium.Cartesian3.fromDegrees(result.longitude, result.latitude);
 
                         /// draw the label!
                         Label.draw(position, result.city, category)
 
                         console.info("--- new city: " + result.city);
-                    } 
+                    }
                     // else {
                     //     console.info("refused city: " + result.city);
                     // }
