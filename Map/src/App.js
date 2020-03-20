@@ -20,6 +20,9 @@ import * as entityTools from "../lib/map/utils/entity_utils.js";
 
 
 
+import Ellipse from '../lib/map/entity/Ellipse.js';
+
+
 
 
 
@@ -59,7 +62,16 @@ map.onStarted.push(function () {
     // TR3.load();
 
 
-    Loader.init();
+    Loader.init(() => {
+
+        /// DEBUG : show circle
+        Ellipse.draw(Loader.root.boundingSphere.center, "GREEN_TRANSPARENT", Loader.root.boundingSphere.radius);
+
+        map.camera.flyToBoundingSphere(Loader.root.boundingSphere, {
+            offset: new Cesium.HeadingPitchRange(0, -1.47, 140000),
+            duration: 0,
+        });
+    });
 
 })
 
@@ -92,7 +104,7 @@ map.onReady.push(function () {
 /// receive messages
 //////////////////////////////////////////////
 dispatcher.receiveMessage("playerPlaying", (data) => {
-    
+
     /// rotate placeholder texture with player angle
     placeholder.ellipse.stRotation = Cesium.Math.toRadians(data.angle);
 });
@@ -116,43 +128,42 @@ map.init();
 
 
 
-var center = new Cesium.Cartesian3(4410146, 966816, 4490121);
-// var radius = 6885;
-var radius = 50000;
-var boundingSphere = new Cesium.BoundingSphere(center, radius);
-map.camera.flyToBoundingSphere(boundingSphere, {
-    offset: new Cesium.HeadingPitchRange(0, -1.47, 140000),
-    duration: 0,
-    complete: function () {
-        console.log("DONE")
-        map.isReady = true;
-    }
-});
+// var center = new Cesium.Cartesian3(4410146, 966816, 4490121);
+// // var radius = 6885;
+// var radius = 50000;
+// var boundingSphere = new Cesium.BoundingSphere(center, radius);
+// map.camera.flyToBoundingSphere(boundingSphere, {
+//     offset: new Cesium.HeadingPitchRange(0, -1.47, 140000),
+//     duration: 0,
+//     complete: function () {
+//         console.log("DONE")
+//     }
+// });
 
 
 
-function zoomIn() {
-    boundingSphere.radius = 7000;
-    map.camera.flyToBoundingSphere(boundingSphere, {
-        // offset: offset,
-        complete: function () {
-            console.log("FLYING COMPLETE")
-        },
-        duration: 8,
-        easingFunction: Cesium.EasingFunction.QUADRACTIC_IN_OUT,
-    });
-}
+// function zoomIn() {
+//     boundingSphere.radius = 7000;
+//     map.camera.flyToBoundingSphere(boundingSphere, {
+//         // offset: offset,
+//         complete: function () {
+//             console.log("FLYING COMPLETE")
+//         },
+//         duration: 8,
+//         easingFunction: Cesium.EasingFunction.QUADRACTIC_IN_OUT,
+//     });
+// }
 
-window.zoomIn = zoomIn;
+// window.zoomIn = zoomIn;
 
-window.removePlaceholder = function(){
-    removeEllipse(placeholder);
-}
+// window.removePlaceholder = function () {
+//     removeEllipse(placeholder);
+// }
 
-window.fadeIn = function(){
-    entityTools.fadeIn(placeholder)
-}
+// window.fadeIn = function () {
+//     entityTools.fadeIn(placeholder)
+// }
 
-window.fadeOut = function(){
-    entityTools.fadeOut(placeholder)
-}
+// window.fadeOut = function () {
+//     entityTools.fadeOut(placeholder)
+// }

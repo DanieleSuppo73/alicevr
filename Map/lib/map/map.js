@@ -3,6 +3,14 @@ import {
 } from "../../../lib/Maf.js"
 
 
+
+// export default Map {
+
+// }
+
+
+
+
 const map = {
 
     /// startup parameters
@@ -21,7 +29,10 @@ const map = {
     viewer: null,
     camera: null,
     canvas: null,
-    ready: false,
+    _ready: false,
+    get ready() {
+        return this.ready;
+    },
     entity: null,
 
 
@@ -49,16 +60,18 @@ const map = {
 
     /// return range in meters
     _range: 0,
+    /// it will not fire until map is ready
     updateRange(callback = null) {
         let p = this.getPointFromCamera();
         if (p === undefined) {
             p = new Cesium.Cartesian3(0, 0, 0);
-            console.warn("Get camera range error!");
+            console.error("Get camera range error");
         }
         this._range = Cesium.Cartesian3.distance(this.camera.positionWC, p);
         if (callback) callback();
     },
     get range() {
+        if (_this.range === 0) console.error("range request too early");
         return this._range;
     },
 
@@ -260,10 +273,10 @@ const map = {
         /// register listeners
         //////////////////////////////
 
-        /// update range on camera changed
-        this.camera.changed.addEventListener(() => {
-            this.updateRange();
-        });
+        // /// update range on camera changed
+        // this.camera.changed.addEventListener(() => {
+        //     this.updateRange();
+        // });
 
 
         let _map = this;
@@ -323,8 +336,13 @@ const map = {
         /// check for ready
         //////////////////////////////
         this.viewer.scene.globe.tileLoadProgressEvent.addEventListener((value) => {
-            if (!this.ready && value === 0) {
-                this.ready = true;
+            if (!this._ready && value === 0) {
+                this._ready = true;
+
+                /// update range on camera changed
+                this.camera.changed.addEventListener(() => {
+                    this.updateRange();
+                });
 
                 ///update range
                 this.updateRange(() => {

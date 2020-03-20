@@ -2,7 +2,7 @@ import map from "../map.js";
 
 
 
-class coveredMap {
+export default class coveredMap {
     constructor(debugText = null, debugColor = null) {
         this.points = [];
         this.spheres = [];
@@ -86,6 +86,4 @@ class coveredMap {
             return isInside;
         }
     }
-}
-
-export default coveredMap;
+};

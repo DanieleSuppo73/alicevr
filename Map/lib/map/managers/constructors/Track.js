@@ -2,15 +2,11 @@ import {
     gpxParser
 } from "../../utils/gpxParser.js"
 
-// import {
-//     drawPolyline,
-// } from "../../entity/polyline.js";
-
 import Polyline from "../../entity/Polyline.js";
 
 
 
-class Track {
+export default class Track {
     constructor(gpxUrl) {
         this.gpxUrl = `data/gpx/${gpxUrl}`;
         this.positions = [];
@@ -62,6 +58,3 @@ class Track {
         xhttp.send();
     }
 };
-
-
-export default Track;
