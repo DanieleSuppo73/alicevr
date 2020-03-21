@@ -7,7 +7,7 @@ export default class Loader {
     static init(id, callback = null) {
 
         Loader.root = new Asset(id);
-        Loader.root.load(null, () => {
+        Loader.root.load(() => {
 
             /// if the root boundingSphere is null
             /// create if from childrens

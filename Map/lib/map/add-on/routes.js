@@ -7,6 +7,11 @@ class route {
 
 
 
+asset.route = new Route
+
+
+
+
 let routesCameraHeight = 0;
 let routesWidth = 6;
 let CCC = 0;
