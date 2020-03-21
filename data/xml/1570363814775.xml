@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-    <objType>event</objType>
-    <userName>Car And Drive</userName>
+    <type>event</type>
+    <owner>Car And Drive</owner>
     <title>Jeep Camp 2019</title>
     <description>'Car And Drive' event for the presentation of new Jeep 2019 models</description>
     <date>Sun Oct 10 2019</date>

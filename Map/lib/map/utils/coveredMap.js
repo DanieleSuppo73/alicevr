@@ -14,13 +14,11 @@ export default class coveredMap {
             /// if the request is too early wait for map ready,
             /// then create bounding sphere
             if (!map.ready){
-                console.log("!!!MAP NOT READY - waiting....");
                 let self = this;
                 function t() {
                     if (!map.ready) {
-                        setTimeout(t, 250);
+                        setTimeout(t, 200);
                     } else {
-                        console.log(" --------------- ok, proceed")
                         self.createBoundingSphere();
                     }
                 };
@@ -49,9 +47,17 @@ export default class coveredMap {
                 for (let i = 0; i < points.length; i++) {
                     let checked = 0;
                     for (let ii = 0; ii < this.spheres.length; ii++) {
-                        let dist = Cesium.Cartesian3.distance(points[i], this.spheres[ii].center)
-                        if (dist < this.spheres[ii].radius) {
+
+                        /// handle error
+                        if (typeof points[i] === "undefined" || points[i] === undefined){
                             checked++;
+                            break;
+                        }
+                        else{
+                            let dist = Cesium.Cartesian3.distance(points[i], this.spheres[ii].center)
+                            if (dist < this.spheres[ii].radius) {
+                                checked++;
+                            }
                         }
                     }
     
@@ -109,7 +115,6 @@ export default class coveredMap {
     };
 
     createBoundingSphere(position = null){
-        console.log("---------------createBoundingSphere")
         let pos = position ? position : map.getPointFromCamera();
         let radius = Cesium.Cartesian3.distance(map.camera.positionWC, pos) / 1.8
         this.spheres.push(new Cesium.BoundingSphere(pos, radius));

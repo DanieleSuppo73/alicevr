@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-    <objType>track</objType>
-    <userName>Daniele</userName>
+    <type>track</type>
+    <owner>Daniele</owner>
     <title>Jeep Camp Track 2</title>
     <description></description>
     <date>Sun Oct 10 2019</date>

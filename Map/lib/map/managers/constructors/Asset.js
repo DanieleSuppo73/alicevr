@@ -20,7 +20,7 @@ export default class Asset {
         Asset.loadingCount--;
 
         /// if all asset are loaded call the callback
-        if (Asset.loadingCount === 0){
+        if (Asset.loadingCount === 0) {
             if (callback) callback();
         }
     };
@@ -29,10 +29,8 @@ export default class Asset {
 
     load(parent = null, callback = null) {
 
-        // console.log(callback)
-
         /// increase the counter of asset loading
-        Asset.loadingCount++;
+        if (this.id !== "main") Asset.loadingCount++;
 
         //////////////////////////////////////////
         /// load the XML file
@@ -44,17 +42,17 @@ export default class Asset {
                 const xml = xhttp.responseXML;
 
 
-
                 //////////////////////////////////////////
                 /// create this asset properties from xml
                 //////////////////////////////////////////
                 const keys = ["type", "owner", "title", "description", "date", "gpxUrl", "videoUrl", "videoUrl_1",
-                    "location", "poster", "videoMarkers", "subtitles", "POI", "journal", "routes"];
+                    "location", "poster", "videoMarkers", "subtitles", "POI", "journal", "routes"
+                ];
 
 
                 for (let i = 0; i < keys.length; i++) {
                     const key = keys[i]
-                    _this[key] = null;
+                    // _this[key] = null;
                     if (xml.getElementsByTagName(key).length > 0) {
                         if (xml.getElementsByTagName(key)[0].childNodes.length > 0) {
                             _this[key] = xml.getElementsByTagName(key)[0].childNodes[0].nodeValue;
@@ -88,6 +86,7 @@ export default class Asset {
                 switch (_this.type) {
 
                     case "track":
+
                         /// create a new Track class property for this asset
                         _this.track = new Track(_this.gpxUrl);
                         _this.track.load((boundingSphere) => {
@@ -104,7 +103,6 @@ export default class Asset {
 
 
                     case "video":
-
 
                         // /// if there's not any track nested into this video create a boundingSphere
                         // /// from longitude/latitude from its marker.xml file

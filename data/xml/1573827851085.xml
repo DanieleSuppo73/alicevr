@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-    <objType>video</objType>
-    <userName>viagginbici</userName>
+    <type>video</type>
+    <owner>viagginbici</owner>
     <title>Il Lio Piccolo di Venezia</title>
     <description>Una delle isole più inesplorate ma anche più suggestive della laguna veneziana</description>
     <date>Fry Nov 15 2019</date>

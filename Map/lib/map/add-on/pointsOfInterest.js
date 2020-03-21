@@ -1,9 +1,9 @@
-import {
-    drawLabel,
-    removeLabel
-} from "./map/entity/label.js";
+// import {
+//     drawLabel,
+//     removeLabel
+// } from "./map/entity/Label.js";
 
-
+import Label from "../entity/label.js";
 
 let pointsOfInterest = [];
 
@@ -73,7 +73,7 @@ export function loadFromFile(asset) {
                     let position = Cesium.Cartesian3.fromDegrees(longitude, latitude);
 
                     if (type === "LABEL") {
-                        drawLabel(position, name, category, pointsOfInterest);
+                        Label.draw(position, name, category, pointsOfInterest);
                     }
                 }
             }

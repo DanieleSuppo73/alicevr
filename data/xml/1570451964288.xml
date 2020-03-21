@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-    <objType>video</objType>
-    <userName>Piemonte Bike</userName>
+    <type>video</type>
+    <owner>Piemonte Bike</owner>
     <title>Le strade di Fausto Coppi</title>
     <description>Le strade intorno alle colline di Alessandria, un giro sui percorsi dove si allenava il grande mito del ciclismo.</description>
     <date>Thu Sep 26 2019</date>

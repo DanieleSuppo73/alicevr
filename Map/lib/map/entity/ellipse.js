@@ -13,16 +13,18 @@ function getPropertiesFromCategory(category, radius) {
     let properties = {
         semiMinorAxis: radius,
         semiMajorAxis: radius,
-        height: 50,
+        height: 0,
+        heightReference: Cesium.HeightReference.RELATIVE_TO_GROUND,
         opacity: 1,
         color: new Cesium.Cartesian3(1, 1, 1),
         category: category,
+        image: null,
     };
 
     if (category) {
         switch (category) {
 
-            case "PLACEHOLDER":
+            case "RADAR":
                 properties.semiMinorAxis = new Cesium.CallbackProperty(function () {
                     return fixedHalfRadius;
                 }, false);
@@ -47,6 +49,12 @@ function getPropertiesFromCategory(category, radius) {
                 properties.opacity = 0.2;
                 break;
 
+            case "ANIM":
+                properties.color = new Cesium.Cartesian3(1, 1, 1);
+                properties.opacity = 1;
+                properties.image = "http://cesiumjs.org/videos/Sandcastle/big-buck-bunny_trailer.webm";
+                break;
+
         }
     }
     return properties;
@@ -59,7 +67,7 @@ function getPropertiesFromCategory(category, radius) {
 
 export default class Ellipse {
 
-    static draw(center, category = null, radius = null, collection = null) {
+    static draw(center, category, radius = null, collection = null) {
 
         let properties = getPropertiesFromCategory(category, radius);
         const entity = map.viewer.entities.add({
@@ -79,12 +87,13 @@ export default class Ellipse {
                     transparent: true,
                 }),
                 stRotation: 0,
+                heightReference: properties.heightReference,
             }
         });
 
 
         /// update radius to keep it fixed
-        if (category === "PLACEHOLDER" && !getFixedRadiusInterval) {
+        if (category === "RADAR" && !getFixedRadiusInterval) {
             getFixedRadiusInterval = setInterval(function () {
                 const camPos = map.camera.positionWC;
                 const pos = entity.position._value;
@@ -111,7 +120,3 @@ export default class Ellipse {
         getFixedRadiusInterval = null;
     };
 };
-
-
-
-

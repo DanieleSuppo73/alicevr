@@ -32,11 +32,8 @@ export function loadCitiesByPopulation(minPopulation, position = null, radius = 
 /// load big cities 
 ///////////////////////////////////////
 export function loadBigCities(position, range, callback = null) {
-    console.log("500000")
     loadCities(500000, position, range, function () {
-        console.log("100000")
         loadCities(100000, position, range, function () {
-            console.log("50000")
             loadCities(50000, position, range, function () {
                 if (callback) callback();
             });
@@ -85,7 +82,6 @@ export function init(position = null, range = null) {
 
 
 function onCameraChanged(position = null, range = null) {
-    console.log("********************** onCameraChanged ***********")
 
     let _range = range ? range : map.range;
 

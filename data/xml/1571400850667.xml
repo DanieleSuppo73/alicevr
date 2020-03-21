@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-    <objType>video</objType>
-    <userName>Car And Drive</userName>
+    <type>video</type>
+    <owner>Car And Drive</owner>
     <title>Jeep offroad Rubicon</title>
     <description></description>
     <date>Fry Oct 18 2019</date>

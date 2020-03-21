@@ -13,7 +13,7 @@ const map = {
     params: {
         useMapbox: false,
         fxaa: false,
-        maxScreenSpaceError: 6,
+        maxScreenSpaceError: 2,
         occlusion: true,
         brightness: 0.3,
         hue: 0.04,
@@ -57,8 +57,8 @@ const map = {
     /// return range in meters
     _range: 0,
     /// it will not fire until map is ready
-    updateRange(callback = null) {
-        let p = this.getPointFromCamera();
+    updateRange(position = null, callback = null) {
+        let p = position ? position : this.getPointFromCamera();
         if (p === undefined) {
             p = new Cesium.Cartesian3(0, 0, 0);
             console.error("Get camera range error");
@@ -92,7 +92,7 @@ const map = {
             yCanvas = canvas.clientHeight / 2;
         }
         const ray = this.camera.getPickRay(new Cesium.Cartesian2(
-            Math.round(xCanvas), Math.round(yCanvas)
+            xCanvas, yCanvas
         ));
         const point = this.viewer.scene.globe.pick(ray, this.viewer.scene);
         return point;
@@ -145,15 +145,31 @@ const map = {
     },
 
 
-
-    /// fix the camera to reference frame,
-    fixCameraToReferenceFrame(callback = null) {
-        let position = this.getPointFromCamera();
-        this.camera.lookAt(position,
-            new Cesium.HeadingPitchRange(this.camera.heading, this.camera.pitch, this.range));
-        if (callback) callback();
+    /// unfix the camera from reference frame
+    unlinkCamera() {
+        this.camera.lookAtTransform(Cesium.Matrix4.IDENTITY);
     },
 
+
+    /// fix the camera to reference frame
+    fixCamera(position = null, callback = null) {
+        let pos = position ? position : this.getPointFromCamera();
+        this.updateRange(pos, () => {
+            this.camera.lookAt(pos,
+                new Cesium.HeadingPitchRange(this.camera.heading, this.camera.pitch, this.range));
+            if (callback) callback();
+        })
+    },
+
+
+    enableCulling() {
+        this.viewer.scene.globe.depthTestAgainstTerrain = true;
+    },
+
+
+    disableCulling() {
+        this.viewer.scene.globe.depthTestAgainstTerrain = false;
+    },
 
 
     /// get heading & pitch as angles from 2 points
@@ -334,20 +350,18 @@ const map = {
         this.viewer.scene.globe.tileLoadProgressEvent.addEventListener((value) => {
             if (!this._ready && value === 0) {
                 this._ready = true;
+                // console.log("map is ready")
 
-                /// update range on camera changed
-                this.camera.changed.addEventListener(() => {
-                    this.updateRange();
-                });
-
-                ///update range
-                this.updateRange(() => {
-                    // console.log("map is ready")
-
-                    /// subscribed funcs
+                ///update range immediately and call onReady functions
+                this.updateRange(null, () => {
                     for (let i = 0; i < this.onReady.length; i++) {
                         this.onReady[i]();
                     }
+                });
+
+                /// add listener to update range on camera changed
+                this.camera.changed.addEventListener(() => {
+                    this.updateRange();
                 });
             }
         });
