@@ -8,32 +8,108 @@ import Polyline from "../../entity/Polyline.js";
 
 /* the single track */
 class TrackElement {
-    constructor(xmlElem) {
-        this.setup(xmlElem);
+    constructor(xmlElem, container) {
+        this.gpxFolder = "data/gpx/";
+        this.gpx_url = null;
+        this.boundingSphere = null;
+        this.positions = [];
+        this.times = [];
+        this.gpx = null;
+        this.entity = null;
+        this.setup(xmlElem, container);
     };
 
-    setup(xmlElem) {
+    /* setup */
+    setup(xmlElem, container) {
 
+        /* create parameters */
         const keys = ["title", "description", "gpx_url"];
-
         for (let i = 0; i < keys.length; i++) {
             let key = keys[i]
-
             this[key] = null;
             if (xmlElem.getElementsByTagName(key).length > 0) {
                 if (xmlElem.getElementsByTagName(key)[0].childNodes.length > 0) {
                     this[key] = xmlElem.getElementsByTagName(key)[0].childNodes[0].nodeValue;
                 }
-            }
+            };
         };
+
+        /* set the url */
+        this.gpx_url = `${this.gpxFolder}${this.gpx_url}`;
+
+
+        /* load GPX */
+        TrackElement.loadTxt(this.gpx_url)
+            .then((txt) => {
+
+                /* parse GPX */
+                this.gpx = new gpxParser();
+                this.gpx.parse(txt, () => {
+
+                    /// push 1st point
+                    this.positions.push(Cesium.Cartesian3.fromDegrees(this.gpx.waypoints[0].lon, this.gpx.waypoints[0].lat));
+                    if (this.gpx.waypoints[0].time)
+                        this.times.push(new Date(Date.parse(this.gpx.waypoints[0].time)).getTime());
+
+                    /// check distance for all others points
+                    for (let i = 1; i < this.gpx.waypoints.length; i++) {
+                        const pos1 = Cesium.Cartesian3.fromDegrees(this.gpx.waypoints[i].lon, this.gpx.waypoints[i].lat);
+                        const pos2 = Cesium.Cartesian3.fromDegrees(this.gpx.waypoints[i - 1].lon, this.gpx.waypoints[i - 1].lat);
+                        const dist = Cesium.Cartesian3.distance(pos1, pos2)
+
+                        if (dist > 5) {
+                            /// push point
+                            this.positions.push(pos1);
+                            if (this.gpx.waypoints[i].time)
+                                this.times.push(new Date(Date.parse(this.gpx.waypoints[i].time)).getTime());
+                        };
+                    };
+
+                    // /// draw the polyline
+                    // this.entity = Polyline.draw(this.positions, "TRACK");
+
+                    /* create bounding sphere from positions */
+                    this.boundingSphere = new Cesium.BoundingSphere.fromPoints(this.positions);
+
+                    /* add this boundingSphere to the container */
+                    container.setBoundingSphere(this.boundingSphere);
+
+
+                    // /// when all tracks are loaded end callback
+                    // Track.loadingCount--;
+                    // if (Track.loadingCount === 0) {
+                    //     console.log("FINITO");
+                    //     callback();
+                    // }
+                })
+            });
     };
 
+
+
+    /* STATIC */
+    /* load text file from url */
+    static loadTxt(url) {
+        return new Promise(function (resolve) {
+            const xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    resolve(xhttp.responseText);
+                };
+            };
+            xhttp.open("GET", url, true);
+            xhttp.send();
+        });
+    };
 };
 
 
 
 
-/* tracks container */
+
+
+
+/* the Class tracks container */
 export default class Track extends Asset {
     constructor(id, xml) {
         super(id);
@@ -44,9 +120,15 @@ export default class Track extends Asset {
     setup(xml) {
         let xmlElements = xml.getElementsByTagName("track");
         for (let i = 0; i < xmlElements.length; i++) {
-            this.tracks[i] = new TrackElement(xmlElements[i]);
+            this.tracks[i] = new TrackElement(xmlElements[i], this);
         };
     };
+
+    // setBoundingSphere(bdReceived) {
+    //     this.boundingSphere = this.boundingSphere ?
+    //         Cesium.BoundingSphere.union(bdReceived, this.boundingSphere) :
+    //         bdReceived;
+    // };
 };
 
 
@@ -54,77 +136,6 @@ export default class Track extends Asset {
 
 
 
-
-// export default class Track {
-
-//     constructor(id) {
-//         this.id = id;
-//         this.gpx_url = null;
-//         this.positions = [];
-//         this.times = [];
-//         this.gpx = null;
-//         this.entity = null;
-//         this.boundingSphere = null;
-//     };
-
-//     loadGpx(asset, callback) {
-//         Track.loadingCount++;
-//         const self = this;
-//         const xhttp = new XMLHttpRequest();
-//         xhttp.onreadystatechange = function () {
-//             if (this.readyState === 4 && this.status === 200) {
-
-//                 self.gpx = new gpxParser();
-
-//                 self.gpx.parse(xhttp.responseText, () => {
-
-//                     /// push 1st point
-//                     self.positions.push(Cesium.Cartesian3.fromDegrees(self.gpx.waypoints[0].lon, self.gpx.waypoints[0].lat));
-//                     if (self.gpx.waypoints[0].time)
-//                         self.times.push(new Date(Date.parse(self.gpx.waypoints[0].time)).getTime());
-
-//                     /// check distance for all others points
-//                     for (let i = 1; i < self.gpx.waypoints.length; i++) {
-//                         const pos1 = Cesium.Cartesian3.fromDegrees(self.gpx.waypoints[i].lon, self.gpx.waypoints[i].lat);
-//                         const pos2 = Cesium.Cartesian3.fromDegrees(self.gpx.waypoints[i - 1].lon, self.gpx.waypoints[i - 1].lat);
-//                         const dist = Cesium.Cartesian3.distance(pos1, pos2)
-
-//                         if (dist > 5) {
-//                             /// push point
-//                             self.positions.push(pos1);
-//                             if (self.gpx.waypoints[i].time)
-//                                 self.times.push(new Date(Date.parse(self.gpx.waypoints[i].time)).getTime());
-
-//                         }
-//                     };
-
-//                     /// draw the polyline
-//                     self.entity = Polyline.draw(self.positions, "TRACK");
-
-//                     /// return this boundingSphere to the Asset
-//                     self.boundingSphere = new Cesium.BoundingSphere.fromPoints(self.positions);
-
-//                     /// add this boundingSphere to the Asset
-//                     asset.boundingSphere = asset.boundingSphere ?
-//                         Cesium.BoundingSphere.union(asset.boundingSphere, self.boundingSphere) :
-//                         self.boundingSphere;
-
-//                     /// add this track to the Asset
-//                     asset.tracks.push(self);
-
-//                     /// when all tracks are loaded end callback
-//                     Track.loadingCount--;
-//                     if (Track.loadingCount === 0) {
-//                         console.log("FINITO");
-//                         callback();
-//                     }
-//                 })
-//             }
-//         };
-//         xhttp.open("GET", `data/gpx/${this.gpx_url}`, true);
-//         xhttp.send();
-//     }
-// };
 
 
 //////////////////////////
@@ -133,37 +144,3 @@ export default class Track extends Asset {
 
 /// counter
 Track.loadingCount = 0;
-
-/// load the XML file with all the tracks
-Track.loadXml = function (asset, callback) {
-    asset.tracks = [];
-    const xmlUrl = `data/xml/${asset.tracks_url}`;
-    const xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-        if (this.readyState === 4 && this.status === 200) {
-            const xml = xhttp.responseXML;
-
-            let elements = xml.getElementsByTagName("track");
-            const keys = ["title", "description", "gpx_url"];
-
-            for (let i = 0; i < elements.length; i++) {
-
-                let elem = elements[i];
-                let track = new Track(asset.id);
-
-                for (let ii = 0; ii < keys.length; ii++) {
-                    let key = keys[ii]
-                    // elem[key] = null;
-                    if (elem.getElementsByTagName(key).length > 0) {
-                        if (elem.getElementsByTagName(key)[0].childNodes.length > 0) {
-                            track[key] = elem.getElementsByTagName(key)[0].childNodes[0].nodeValue;
-                        }
-                    }
-                };
-                track.loadGpx(asset, callback);
-            };
-        }
-    };
-    xhttp.open("GET", xmlUrl, true);
-    xhttp.send();
-};

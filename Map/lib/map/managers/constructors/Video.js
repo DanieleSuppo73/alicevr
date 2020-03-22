@@ -3,7 +3,6 @@ import Asset from "./base/Asset.js";
 export default class Video extends Asset {
     constructor(id, xml) {
         super(id);
-        console.log("CREO UN NUOVO VIDEO")
         this.setup(xml);
     };
 

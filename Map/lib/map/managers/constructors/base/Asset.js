@@ -4,7 +4,13 @@ export default class Asset {
         this.id = id
         this.boundingSphere = null;
         this.children = [];
-        // this.setup(xml);
+    };
+
+
+    setBoundingSphere(bdReceived) {
+        this.boundingSphere = this.boundingSphere ?
+            Cesium.BoundingSphere.union(bdReceived, this.boundingSphere) :
+            bdReceived;
     };
 
 
@@ -14,40 +20,40 @@ export default class Asset {
     // };
 
 
-    static loadTxt(url) {
-        return new Promise(function (resolve) {
+    // static loadTxt(url) {
+    //     return new Promise(function (resolve) {
 
-            Asset.loadFileFromUrl(url).then((xhttp) => {
-                resolve(xhttp.responseText);
-            }).catch((err) => {
+    //         Asset.loadFileFromUrl(url).then((xhttp) => {
+    //             resolve(xhttp.responseText);
+    //         }).catch((err) => {
                 
-            });
+    //         });
 
 
-            // const xhttp = new XMLHttpRequest();
-            // xhttp.onreadystatechange = function () {
-            //     if (this.readyState === 4 && this.status === 200) {
-            //         resolve(xhttp.responseText);
-            //     };
-            // };
-            // xhttp.open("GET", url, true);
-            // xhttp.send();
-        });
-    };
+    //         // const xhttp = new XMLHttpRequest();
+    //         // xhttp.onreadystatechange = function () {
+    //         //     if (this.readyState === 4 && this.status === 200) {
+    //         //         resolve(xhttp.responseText);
+    //         //     };
+    //         // };
+    //         // xhttp.open("GET", url, true);
+    //         // xhttp.send();
+    //     });
+    // };
 
 
-    static loadFileFromUrl(url){
-        return new Promise(function (resolve) {
-            const xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function () {
-                if (this.readyState === 4 && this.status === 200) {
-                    resolve(xhttp);
-                };
-            };
-            xhttp.open("GET", url, true);
-            xhttp.send();
-        });
-    };
+    // static loadFileFromUrl(url){
+    //     return new Promise(function (resolve) {
+    //         const xhttp = new XMLHttpRequest();
+    //         xhttp.onreadystatechange = function () {
+    //             if (this.readyState === 4 && this.status === 200) {
+    //                 resolve(xhttp);
+    //             };
+    //         };
+    //         xhttp.open("GET", url, true);
+    //         xhttp.send();
+    //     });
+    // };
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
