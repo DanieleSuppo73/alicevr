@@ -1,18 +1,53 @@
 export default class Asset {
 
-    constructor(id, xml) {
+    constructor(id) {
         this.id = id
         this.boundingSphere = null;
         this.children = [];
-        this.setup(xml);
+        // this.setup(xml);
     };
 
 
-    /* this is a generic function that should be overrided */
-    setup(xml) {
-        console.log(xml);
+    // /* this is a generic function that should be overrided */
+    // setup(xml) {
+    //     console.log(xml);
+    // };
+
+
+    static loadTxt(url) {
+        return new Promise(function (resolve) {
+
+            Asset.loadFileFromUrl(url).then((xhttp) => {
+                resolve(xhttp.responseText);
+            }).catch((err) => {
+                
+            });
+
+
+            // const xhttp = new XMLHttpRequest();
+            // xhttp.onreadystatechange = function () {
+            //     if (this.readyState === 4 && this.status === 200) {
+            //         resolve(xhttp.responseText);
+            //     };
+            // };
+            // xhttp.open("GET", url, true);
+            // xhttp.send();
+        });
     };
 
+
+    static loadFileFromUrl(url){
+        return new Promise(function (resolve) {
+            const xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    resolve(xhttp);
+                };
+            };
+            xhttp.open("GET", url, true);
+            xhttp.send();
+        });
+    };
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

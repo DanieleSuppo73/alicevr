@@ -143,19 +143,6 @@ export default class Loader {
         //     if (callback) callback();
         // });
     };
-    /* load XML */
-    static loadXml(url) {
-        return new Promise(function (resolve) {
-            const xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function () {
-                if (this.readyState === 4 && this.status === 200) {
-                    resolve(xhttp.responseXML);
-                }
-            };
-            xhttp.open("GET", url, true);
-            xhttp.send();
-        });
-    };
 };
 
 

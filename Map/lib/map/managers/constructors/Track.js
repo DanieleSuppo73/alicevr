@@ -6,34 +6,51 @@ import Polyline from "../../entity/Polyline.js";
 
 
 
+/* the single track */
+class TrackElement {
+    constructor(xmlElem) {
+        this.setup(xmlElem);
+    };
+
+    setup(xmlElem) {
+
+        const keys = ["title", "description", "gpx_url"];
+
+        for (let i = 0; i < keys.length; i++) {
+            let key = keys[i]
+
+            this[key] = null;
+            if (xmlElem.getElementsByTagName(key).length > 0) {
+                if (xmlElem.getElementsByTagName(key)[0].childNodes.length > 0) {
+                    this[key] = xmlElem.getElementsByTagName(key)[0].childNodes[0].nodeValue;
+                }
+            }
+        };
+    };
+
+};
+
+
+
+
+/* tracks container */
 export default class Track extends Asset {
     constructor(id, xml) {
-        super(id, xml);
+        super(id);
         this.tracks = [];
+        this.setup(xml);
     };
 
-    /* override */
     setup(xml) {
-
-        // const keys = ["owner", "title", "description", "date", "video_url1", "video_url2",
-        //     "location", "poster_url", "markers_url", "subtitles_url"
-        // ];
-
-        // for (let i = 0; i < keys.length; i++) {
-        //     const key = keys[i]
-        //     this[key] = null;
-        //     if (xml.getElementsByTagName(key).length > 0) {
-        //         if (xml.getElementsByTagName(key)[0].childNodes.length > 0) {
-        //             this[key] = xml.getElementsByTagName(key)[0].childNodes[0].nodeValue;
-        //         }
-        //     }
-        // };
-
-       
-
-
+        let xmlElements = xml.getElementsByTagName("track");
+        for (let i = 0; i < xmlElements.length; i++) {
+            this.tracks[i] = new TrackElement(xmlElements[i]);
+        };
     };
-}
+};
+
+
+
 
 
 
