@@ -1,81 +1,113 @@
+import Asset from "./base/Asset.js";
 import {
     gpxParser
 } from "../../utils/gpxParser.js"
-
 import Polyline from "../../entity/Polyline.js";
 
 
 
-export default class Track {
-
-    constructor(id) {
-        this.id = id;
-        this.gpx_url = null;
-        this.positions = [];
-        this.times = [];
-        this.gpx = null;
-        this.entity = null;
-        this.boundingSphere = null;
+export default class Track extends Asset {
+    constructor(id, xml) {
+        super(id, xml);
+        this.tracks = [];
     };
 
-    loadGpx(asset, callback) {
-        Track.loadingCount++;
-        const self = this;
-        const xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState === 4 && this.status === 200) {
+    /* override */
+    setup(xml) {
 
-                self.gpx = new gpxParser();
+        // const keys = ["owner", "title", "description", "date", "video_url1", "video_url2",
+        //     "location", "poster_url", "markers_url", "subtitles_url"
+        // ];
 
-                self.gpx.parse(xhttp.responseText, () => {
+        // for (let i = 0; i < keys.length; i++) {
+        //     const key = keys[i]
+        //     this[key] = null;
+        //     if (xml.getElementsByTagName(key).length > 0) {
+        //         if (xml.getElementsByTagName(key)[0].childNodes.length > 0) {
+        //             this[key] = xml.getElementsByTagName(key)[0].childNodes[0].nodeValue;
+        //         }
+        //     }
+        // };
 
-                    /// push 1st point
-                    self.positions.push(Cesium.Cartesian3.fromDegrees(self.gpx.waypoints[0].lon, self.gpx.waypoints[0].lat));
-                    if (self.gpx.waypoints[0].time)
-                        self.times.push(new Date(Date.parse(self.gpx.waypoints[0].time)).getTime());
+       
 
-                    /// check distance for all others points
-                    for (let i = 1; i < self.gpx.waypoints.length; i++) {
-                        const pos1 = Cesium.Cartesian3.fromDegrees(self.gpx.waypoints[i].lon, self.gpx.waypoints[i].lat);
-                        const pos2 = Cesium.Cartesian3.fromDegrees(self.gpx.waypoints[i - 1].lon, self.gpx.waypoints[i - 1].lat);
-                        const dist = Cesium.Cartesian3.distance(pos1, pos2)
 
-                        if (dist > 5) {
-                            /// push point
-                            self.positions.push(pos1);
-                            if (self.gpx.waypoints[i].time)
-                                self.times.push(new Date(Date.parse(self.gpx.waypoints[i].time)).getTime());
+    };
+}
 
-                        }
-                    };
 
-                    /// draw the polyline
-                    self.entity = Polyline.draw(self.positions, "TRACK");
 
-                    /// return this boundingSphere to the Asset
-                    self.boundingSphere = new Cesium.BoundingSphere.fromPoints(self.positions);
 
-                    /// add this boundingSphere to the Asset
-                    asset.boundingSphere = asset.boundingSphere ?
-                        Cesium.BoundingSphere.union(asset.boundingSphere, self.boundingSphere) :
-                        self.boundingSphere;
+// export default class Track {
 
-                    /// add this track to the Asset
-                    asset.tracks.push(self);
+//     constructor(id) {
+//         this.id = id;
+//         this.gpx_url = null;
+//         this.positions = [];
+//         this.times = [];
+//         this.gpx = null;
+//         this.entity = null;
+//         this.boundingSphere = null;
+//     };
 
-                    /// when all tracks are loaded end callback
-                    Track.loadingCount--;
-                    if (Track.loadingCount === 0) {
-                        console.log("FINITO");
-                        callback();
-                    }
-                })
-            }
-        };
-        xhttp.open("GET", `data/gpx/${this.gpx_url}`, true);
-        xhttp.send();
-    }
-};
+//     loadGpx(asset, callback) {
+//         Track.loadingCount++;
+//         const self = this;
+//         const xhttp = new XMLHttpRequest();
+//         xhttp.onreadystatechange = function () {
+//             if (this.readyState === 4 && this.status === 200) {
+
+//                 self.gpx = new gpxParser();
+
+//                 self.gpx.parse(xhttp.responseText, () => {
+
+//                     /// push 1st point
+//                     self.positions.push(Cesium.Cartesian3.fromDegrees(self.gpx.waypoints[0].lon, self.gpx.waypoints[0].lat));
+//                     if (self.gpx.waypoints[0].time)
+//                         self.times.push(new Date(Date.parse(self.gpx.waypoints[0].time)).getTime());
+
+//                     /// check distance for all others points
+//                     for (let i = 1; i < self.gpx.waypoints.length; i++) {
+//                         const pos1 = Cesium.Cartesian3.fromDegrees(self.gpx.waypoints[i].lon, self.gpx.waypoints[i].lat);
+//                         const pos2 = Cesium.Cartesian3.fromDegrees(self.gpx.waypoints[i - 1].lon, self.gpx.waypoints[i - 1].lat);
+//                         const dist = Cesium.Cartesian3.distance(pos1, pos2)
+
+//                         if (dist > 5) {
+//                             /// push point
+//                             self.positions.push(pos1);
+//                             if (self.gpx.waypoints[i].time)
+//                                 self.times.push(new Date(Date.parse(self.gpx.waypoints[i].time)).getTime());
+
+//                         }
+//                     };
+
+//                     /// draw the polyline
+//                     self.entity = Polyline.draw(self.positions, "TRACK");
+
+//                     /// return this boundingSphere to the Asset
+//                     self.boundingSphere = new Cesium.BoundingSphere.fromPoints(self.positions);
+
+//                     /// add this boundingSphere to the Asset
+//                     asset.boundingSphere = asset.boundingSphere ?
+//                         Cesium.BoundingSphere.union(asset.boundingSphere, self.boundingSphere) :
+//                         self.boundingSphere;
+
+//                     /// add this track to the Asset
+//                     asset.tracks.push(self);
+
+//                     /// when all tracks are loaded end callback
+//                     Track.loadingCount--;
+//                     if (Track.loadingCount === 0) {
+//                         console.log("FINITO");
+//                         callback();
+//                     }
+//                 })
+//             }
+//         };
+//         xhttp.open("GET", `data/gpx/${this.gpx_url}`, true);
+//         xhttp.send();
+//     }
+// };
 
 
 //////////////////////////

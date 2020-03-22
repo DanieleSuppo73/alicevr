@@ -64,19 +64,19 @@ map.onStarted.push(function () {
 
     Loader.init("1579530506349_new", () => {
 
-        console.log(Loader.root)
+        // console.log(Loader.root)
 
-        // /// DEBUG : show circle
-        map.disableCulling();
-        Ellipse.draw(Loader.root.boundingSphere.center, "GREEN_TRANSPARENT", Loader.root.boundingSphere.radius);
+        // // /// DEBUG : show circle
+        // map.disableCulling();
+        // Ellipse.draw(Loader.root.boundingSphere.center, "GREEN_TRANSPARENT", Loader.root.boundingSphere.radius);
 
 
-        /// go there
-        let range = 140000;
-        map.camera.flyToBoundingSphere(Loader.root.boundingSphere, {
-            offset: new Cesium.HeadingPitchRange(0, -1.47, range),
-            duration: 0,
-        });
+        // /// go there
+        // let range = 140000;
+        // map.camera.flyToBoundingSphere(Loader.root.boundingSphere, {
+        //     offset: new Cesium.HeadingPitchRange(0, -1.47, range),
+        //     duration: 0,
+        // });
 
 
 
@@ -162,7 +162,9 @@ dispatcher.receiveMessage("playerPlaying", (data) => {
 //////////////////////////////////////////////
 /// INIT
 //////////////////////////////////////////////
-map.init();
+// map.init();
+
+Loader.init("1579530506349_newnew");
 
 
 
