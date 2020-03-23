@@ -107,35 +107,35 @@ map.onReady.push(function () {
     map.camera.percentageChanged = mapChangeSensitivity;
 
 
-    // /// fly
+    // // /// fly
 
-    // console.log(Loader.root.boundingSphere)
+    // // console.log(Loader.root.boundingSphere)
 
-    var newBoundingSphere = null;
-    newBoundingSphere = Loader.root.asset.boundingSphere;
-    let cartographic = Cesium.Cartographic.fromCartesian(newBoundingSphere.center);
-    let longitude = Cesium.Math.toDegrees(cartographic.longitude);
-    let latitude = Cesium.Math.toDegrees(cartographic.latitude);
-    let height = cartographic.height;
-    height -= 50;
-    height = Cesium.Math.toDegrees(height);
-    let finalPos = Cesium.Cartesian3.fromDegrees(longitude, latitude, height);
-    newBoundingSphere.center = finalPos;
+    // var newBoundingSphere = null;
+    // newBoundingSphere = Loader.root.asset.boundingSphere;
+    // let cartographic = Cesium.Cartographic.fromCartesian(newBoundingSphere.center);
+    // let longitude = Cesium.Math.toDegrees(cartographic.longitude);
+    // let latitude = Cesium.Math.toDegrees(cartographic.latitude);
+    // let height = cartographic.height;
+    // height -= 50;
+    // height = Cesium.Math.toDegrees(height);
+    // let finalPos = Cesium.Cartesian3.fromDegrees(longitude, latitude, height);
+    // newBoundingSphere.center = finalPos;
 
-    console.log(newBoundingSphere)
+    // console.log(newBoundingSphere)
    
     
-        map.camera.flyToBoundingSphere(newBoundingSphere, {
-            // offset: offset,
-            complete: function () {
-                console.log("FLYING COMPLETE");
-                map.fixCamera(newBoundingSphere.center);
-                // rotateCamera();
+    //     map.camera.flyToBoundingSphere(newBoundingSphere, {
+    //         // offset: offset,
+    //         complete: function () {
+    //             console.log("FLYING COMPLETE");
+    //             map.fixCamera(newBoundingSphere.center);
+    //             // rotateCamera();
                 
-            },
-            duration: 8,
-            easingFunction: Cesium.EasingFunction.QUADRACTIC_IN_OUT,
-        });
+    //         },
+    //         duration: 8,
+    //         easingFunction: Cesium.EasingFunction.QUADRACTIC_IN_OUT,
+    //     });
     
 
 

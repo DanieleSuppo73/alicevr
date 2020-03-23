@@ -1,12 +1,14 @@
 import Asset from "./base/Asset.js";
+import Billboard from '../../entity/Billboard.js';
+
 
 export default class Video extends Asset {
     constructor(id, xml, parent = null) {
         super(id, parent);
+        this.entity = null;
         this.setup(xml);
     };
 
-    /* override */
     setup(xml) {
 
         const keys = ["owner", "title", "description", "date", "video_url1", "video_url2",
@@ -22,5 +24,18 @@ export default class Video extends Asset {
                 }
             }
         };
+    };
+
+    /* extend default */
+    addBoundingSphere(bdReceived) {
+        super.addBoundingSphere(bdReceived);
+
+        /* set placeholder */
+        if (!this.entity){
+            this.entity = Billboard.draw(this.boundingSphere.center, "PLACEHOLDER");
+        }
+        else{
+            this.entity.position = this.boundingSphere.center;
+        }
     };
 }

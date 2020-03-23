@@ -1,7 +1,8 @@
-// import Asset from "./constructors/Asset.js";
 import Video from "./constructors/Video.js";
 import Track from "./constructors/Track.js";
+import Route from "./constructors/Route.js";
 import Asset from "./constructors/base/Asset.js";
+
 
 
 export default class Loader {
@@ -36,9 +37,9 @@ export default class Loader {
                         node.asset = new Track(this.id, xml, parent);
                         break;
 
-                        // case "route":
-                        //     node.asset = new Video(this.id, xml);
-                        //     break;
+                    case "route":
+                        node.asset = new Route(this.id, xml, parent);
+                        break;
 
                         // case "pointsOfInterest":
                         //     node.asset = new Video(this.id, xml);
@@ -71,7 +72,6 @@ export default class Loader {
     };
 
 
-    /* lod XMl */
     static loadXml(url) {
         return new Promise(function (resolve) {
             const xhttp = new XMLHttpRequest();
@@ -98,5 +98,41 @@ export default class Loader {
 
 /* the main root */
 Loader.root = {
-    asset: null
-}
+
+    asset: null,
+
+    /* utilities */
+    getAssetById: function (id, parentAsset = null) {
+        let parent = parentAsset ? parentAsset : this.asset;
+        return getAssetRecursive(parent, "id", id);
+    },
+
+    getAssetByClass: function (className, parentAsset = null) {
+        let parent = parentAsset ? parentAsset : this.asset;
+        for (let i = 0; i < parent.children.length; i++) {
+            if (!parent.children[i].asset) return null;
+            if (parent.children[i].asset.constructor.name === className) {
+                return parent.children[i].asset;
+            }
+        }
+    },
+};
+
+
+
+
+/* return an asset by property key-value,
+starting to search from a parent asset */
+function getAssetRecursive(parentAsset, key, value) {
+    if (parentAsset[key] === value)
+        return (parentAsset);
+    else {
+        for (let i = 0; i < parentAsset.children.length; i++) {
+            if (parentAsset.children[i].asset[key] === value) {
+                return (parentAsset.children[i].asset);
+            } else {
+                getAssetRecursive(parentAsset.childrens[i], key, value);
+            }
+        }
+    }
+};

@@ -1,4 +1,4 @@
-export var gpxParser = function () {
+var gpxParser = function () {
     this.xmlSource = "";
     this.metadata = {};
     this.waypoints = [];
@@ -208,3 +208,6 @@ gpxParser.prototype.isEmpty = function (obj) {
     }
     return true;
 };
+
+
+export default gpxParser;
