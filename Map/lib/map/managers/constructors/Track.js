@@ -2,7 +2,6 @@ import Asset from "./base/Asset.js";
 import Gpx from "./Gpx.js";
 
 
-
 export default class Track extends Asset {
     constructor(id, xml, parent = null) {
         super(id, parent);

@@ -34,52 +34,55 @@ export default class Gpx {
             };
         };
 
-        /* set the url */
-        this.gpx_url = `${this.gpxFolder}${this.gpx_url}`;
+        /* load GPX from file */
+        if (this.gpx_url) {
+            this.gpx_url = `${this.gpxFolder}${this.gpx_url}`;
 
+            Gpx.loadTxt(this.gpx_url)
+                .then((txt) => {
 
-        /* load GPX */
-        Gpx.loadTxt(this.gpx_url)
-            .then((txt) => {
+                    /* parse GPX */
+                    this.data = new gpxParser();
+                    this.data.parse(txt, () => {
 
-                /* parse GPX */
-                this.data = new gpxParser();
-                this.data.parse(txt, () => {
+                        /// push 1st point
+                        this.positions.push(Cesium.Cartesian3.fromDegrees(this.data.waypoints[0].lon, this.data.waypoints[0].lat));
+                        if (this.data.waypoints[0].time)
+                            this.times.push(new Date(Date.parse(this.data.waypoints[0].time)).getTime());
 
-                    /// push 1st point
-                    this.positions.push(Cesium.Cartesian3.fromDegrees(this.data.waypoints[0].lon, this.data.waypoints[0].lat));
-                    if (this.data.waypoints[0].time)
-                        this.times.push(new Date(Date.parse(this.data.waypoints[0].time)).getTime());
+                        /// check distance for all others points
+                        for (let i = 1; i < this.data.waypoints.length; i++) {
+                            const pos1 = Cesium.Cartesian3.fromDegrees(this.data.waypoints[i].lon, this.data.waypoints[i].lat);
+                            const pos2 = Cesium.Cartesian3.fromDegrees(this.data.waypoints[i - 1].lon, this.data.waypoints[i - 1].lat);
+                            const dist = Cesium.Cartesian3.distance(pos1, pos2)
 
-                    /// check distance for all others points
-                    for (let i = 1; i < this.data.waypoints.length; i++) {
-                        const pos1 = Cesium.Cartesian3.fromDegrees(this.data.waypoints[i].lon, this.data.waypoints[i].lat);
-                        const pos2 = Cesium.Cartesian3.fromDegrees(this.data.waypoints[i - 1].lon, this.data.waypoints[i - 1].lat);
-                        const dist = Cesium.Cartesian3.distance(pos1, pos2)
-
-                        if (dist > 5) {
-                            /// push point
-                            this.positions.push(pos1);
-                            if (this.data.waypoints[i].time)
-                                this.times.push(new Date(Date.parse(this.data.waypoints[i].time)).getTime());
+                            if (dist > 5) {
+                                /// push point
+                                this.positions.push(pos1);
+                                if (this.data.waypoints[i].time)
+                                    this.times.push(new Date(Date.parse(this.data.waypoints[i].time)).getTime());
+                            };
                         };
-                    };
 
-                    /* draw the polyline */
-                    this.entity = Polyline.draw(this.positions, this.category);
+                        /* draw the polyline */
+                        this.entity = Polyline.draw(this.positions, this.category);
 
-                    /* create bounding sphere from positions */
-                    this.boundingSphere = new Cesium.BoundingSphere.fromPoints(this.positions);
+                        /* create bounding sphere from positions */
+                        this.boundingSphere = new Cesium.BoundingSphere.fromPoints(this.positions);
 
 
-                    Asset.boundingSphereLoading--;
-                    parent.loading = parent._loading -1;
+                        Asset.boundingSphereLoading--;
+                        parent.loading = parent._loading - 1;
 
-                    /* add this boundingSphere to the parent */
-                    parent.addBoundingSphere(this.boundingSphere);
-                })
-            });
+                        /* add this boundingSphere to the parent */
+                        parent.addBoundingSphere(this.boundingSphere);
+                    })
+                });
+        };
     };
+
+
+
 
 
 
