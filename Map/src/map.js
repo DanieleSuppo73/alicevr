@@ -4,7 +4,7 @@ const map = {
     params: {
         useMapbox: false,
         fxaa: false,
-        maxScreenSpaceError: 2,
+        maxScreenSpaceError: 6,
         occlusion: true, // occlusion culling
         brightness: 0.3,
         hue: 0.04,

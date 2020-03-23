@@ -1,33 +1,39 @@
 // import Asset from "./constructors/Asset.js";
 import Video from "./constructors/Video.js";
 import Track from "./constructors/Track.js";
+import Asset from "./constructors/base/Asset.js";
 
 
 export default class Loader {
-    constructor(id, node, parent, onEndCallback) {
+    constructor(id, node, parent = null) {
         this.id = id;
         this.url = `data/xml/${id}.xml`;
-        this.loadAsset(node, parent, onEndCallback);
+        this.loadAsset(node, parent);
     };
 
 
-    loadAsset(node, parent, onEndCallback) {
+    loadAsset(node, parent) {
 
         /* load XML */
         Loader.loadXml(this.url)
             .then((xml) => {
 
-                const type = xml.getElementsByTagName("type")[0].childNodes[0].nodeValue;
+                let type = null;
+                if (xml.getElementsByTagName("type").length > 0) {
+                    if (xml.getElementsByTagName("type")[0].childNodes.length > 0) {
+                        type = xml.getElementsByTagName("type")[0].childNodes[0].nodeValue;
+                    }
+                }
 
                 /* get Class by type */
                 switch (type) {
 
                     case "video":
-                        node.asset = new Video(this.id, xml, parent, onEndCallback);
+                        node.asset = new Video(this.id, xml, parent);
                         break;
 
                     case "track":
-                        node.asset = new Track(this.id, xml, parent, onEndCallback);
+                        node.asset = new Track(this.id, xml, parent);
                         break;
 
                         // case "route":
@@ -41,6 +47,9 @@ export default class Loader {
                         // case "journal":
                         //     node.asset = new Video(this.id, xml);
                         //     break;
+
+                    default:
+                        node.asset = new Asset(this.id, parent);
                 };
 
 
@@ -55,36 +64,11 @@ export default class Loader {
 
                         /* create child asset */
                         node.asset.children[i] = child;
-                        const loader = new Loader(id, node.asset.children[i], node.asset, onEndCallback);
+                        const loader = new Loader(id, node.asset.children[i], node.asset);
                     };
                 };
             });
-
-
-        setTimeout(function () {
-            console.log(Loader.root)
-        }, 2000)
     };
-
-
-
-
-
-
-
-    /* STATICS */
-
-
-
-    /* init */
-    static init(id, callback = null) {
-
-        let loader = new Loader(id, Loader.root, null, () => {
-            console.log("FINITO!!!")
-        });
-    };
-
-
 
 
     /* lod XMl */
@@ -100,6 +84,13 @@ export default class Loader {
             xhttp.send();
         });
     };
+
+
+    /* init */
+    static init(id, callback = null) {
+        Asset.onEndLoadingCallback = callback;
+        let loader = new Loader(id, Loader.root);
+    };
 };
 
 
@@ -107,6 +98,5 @@ export default class Loader {
 
 /* the main root */
 Loader.root = {
-    asset: null,
-    childrens: []
+    asset: null
 }

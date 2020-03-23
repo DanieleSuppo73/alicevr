@@ -22,7 +22,7 @@ class TrackElement {
     /* setup */
     setup(xmlElem, parent) {
 
-        Asset.boundingSphereLoading ++;
+        Asset.boundingSphereLoading++;
 
         /* create parameters */
         const keys = ["title", "description", "gpx_url"];
@@ -67,37 +67,17 @@ class TrackElement {
                         };
                     };
 
-                    // /// draw the polyline
-                    // this.entity = Polyline.draw(this.positions, "TRACK");
+                    /* draw the polyline */
+                    this.entity = Polyline.draw(this.positions, "TRACK");
 
                     /* create bounding sphere from positions */
                     this.boundingSphere = new Cesium.BoundingSphere.fromPoints(this.positions);
 
 
-                    Asset.boundingSphereLoading --;
+                    Asset.boundingSphereLoading--;
 
                     /* add this boundingSphere to the parent */
                     parent.addBoundingSphere(this.boundingSphere);
-
-
-                    
-
-                    // console.log(Asset.boundingSphereLoading)
-
-
-                    // /* add this boundingSphere to the parent */
-                    // parent.boundingSphere = parent.boundingSphere ?
-                    //     Cesium.BoundingSphere.union(parent.boundingSphere, this.boundingSphere) :
-                    //     this.boundingSphere;
-
-
-
-                    // /// when all tracks are loaded end callback
-                    // Track.loadingCount--;
-                    // if (Track.loadingCount === 0) {
-                    //     console.log("FINITO");
-                    //     callback();
-                    // }
                 })
             });
     };
@@ -128,8 +108,8 @@ class TrackElement {
 
 /* the Track Class -- container for TrackeElements */
 export default class Track extends Asset {
-    constructor(id, xml, parent, onEndCallback) {
-        super(id, parent, onEndCallback);
+    constructor(id, xml, parent = null) {
+        super(id, parent);
         this.tracks = [];
         this.setup(xml);
     };
@@ -141,17 +121,3 @@ export default class Track extends Asset {
         };
     };
 };
-
-
-
-
-
-
-
-
-// //////////////////////////
-// /////// STATIC
-// //////////////////////////
-
-// /// counter
-// Track.loadingCount = 0;

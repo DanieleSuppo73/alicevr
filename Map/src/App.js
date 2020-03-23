@@ -62,21 +62,21 @@ map.onStarted.push(function () {
     // TR3.load();
 
 
-    Loader.init("1579530506349_new", () => {
+    Loader.init("1579530506349_newnew", () => {
 
-        // console.log(Loader.root)
+        console.log(Loader.root.asset)
 
         // // /// DEBUG : show circle
         // map.disableCulling();
         // Ellipse.draw(Loader.root.boundingSphere.center, "GREEN_TRANSPARENT", Loader.root.boundingSphere.radius);
 
 
-        // /// go there
-        // let range = 140000;
-        // map.camera.flyToBoundingSphere(Loader.root.boundingSphere, {
-        //     offset: new Cesium.HeadingPitchRange(0, -1.47, range),
-        //     duration: 0,
-        // });
+        /// go there
+        let range = 140000;
+        map.camera.flyToBoundingSphere(Loader.root.asset.boundingSphere, {
+            offset: new Cesium.HeadingPitchRange(0, -1.47, range),
+            duration: 0,
+        });
 
 
 
@@ -111,32 +111,32 @@ map.onReady.push(function () {
 
     // console.log(Loader.root.boundingSphere)
 
-    // var newBoundingSphere = null;
-    // newBoundingSphere = Loader.root.boundingSphere;
-    // let cartographic = Cesium.Cartographic.fromCartesian(newBoundingSphere.center);
-    // let longitude = Cesium.Math.toDegrees(cartographic.longitude);
-    // let latitude = Cesium.Math.toDegrees(cartographic.latitude);
-    // let height = cartographic.height;
-    // height -= 50;
-    // height = Cesium.Math.toDegrees(height);
-    // let finalPos = Cesium.Cartesian3.fromDegrees(longitude, latitude, height);
-    // newBoundingSphere.center = finalPos;
+    var newBoundingSphere = null;
+    newBoundingSphere = Loader.root.asset.boundingSphere;
+    let cartographic = Cesium.Cartographic.fromCartesian(newBoundingSphere.center);
+    let longitude = Cesium.Math.toDegrees(cartographic.longitude);
+    let latitude = Cesium.Math.toDegrees(cartographic.latitude);
+    let height = cartographic.height;
+    height -= 50;
+    height = Cesium.Math.toDegrees(height);
+    let finalPos = Cesium.Cartesian3.fromDegrees(longitude, latitude, height);
+    newBoundingSphere.center = finalPos;
 
-    // console.log(newBoundingSphere)
+    console.log(newBoundingSphere)
    
-    // if (Loader.root.type === "video") {
-    //     map.camera.flyToBoundingSphere(newBoundingSphere, {
-    //         // offset: offset,
-    //         complete: function () {
-    //             console.log("FLYING COMPLETE");
-    //             map.fixCamera(newBoundingSphere.center);
-    //             rotateCamera();
+    
+        map.camera.flyToBoundingSphere(newBoundingSphere, {
+            // offset: offset,
+            complete: function () {
+                console.log("FLYING COMPLETE");
+                map.fixCamera(newBoundingSphere.center);
+                // rotateCamera();
                 
-    //         },
-    //         duration: 8,
-    //         easingFunction: Cesium.EasingFunction.QUADRACTIC_IN_OUT,
-    //     });
-    // }
+            },
+            duration: 8,
+            easingFunction: Cesium.EasingFunction.QUADRACTIC_IN_OUT,
+        });
+    
 
 
 })
@@ -162,9 +162,9 @@ dispatcher.receiveMessage("playerPlaying", (data) => {
 //////////////////////////////////////////////
 /// INIT
 //////////////////////////////////////////////
-// map.init();
+map.init();
 
-Loader.init("1579530506349_newnew");
+// Loader.init("1579530506349_newnew");
 
 
 

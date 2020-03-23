@@ -1,8 +1,8 @@
 import Asset from "./base/Asset.js";
 
 export default class Video extends Asset {
-    constructor(id, xml, parent, onEndCallback) {
-        super(id, parent, onEndCallback);
+    constructor(id, xml, parent = null) {
+        super(id, parent);
         this.setup(xml);
     };
 
