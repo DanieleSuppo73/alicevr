@@ -8,7 +8,7 @@ import Polyline from "../../entity/Polyline.js";
 
 /* the single track */
 class TrackElement {
-    constructor(xmlElem, container) {
+    constructor(xmlElem, parent) {
         this.gpxFolder = "data/gpx/";
         this.gpx_url = null;
         this.boundingSphere = null;
@@ -16,11 +16,13 @@ class TrackElement {
         this.times = [];
         this.gpx = null;
         this.entity = null;
-        this.setup(xmlElem, container);
+        this.setup(xmlElem, parent);
     };
 
     /* setup */
-    setup(xmlElem, container) {
+    setup(xmlElem, parent) {
+
+        Asset.boundingSphereLoading ++;
 
         /* create parameters */
         const keys = ["title", "description", "gpx_url"];
@@ -71,8 +73,23 @@ class TrackElement {
                     /* create bounding sphere from positions */
                     this.boundingSphere = new Cesium.BoundingSphere.fromPoints(this.positions);
 
-                    /* add this boundingSphere to the container */
-                    container.setBoundingSphere(this.boundingSphere);
+
+                    Asset.boundingSphereLoading --;
+
+                    /* add this boundingSphere to the parent */
+                    parent.addBoundingSphere(this.boundingSphere);
+
+
+                    
+
+                    // console.log(Asset.boundingSphereLoading)
+
+
+                    // /* add this boundingSphere to the parent */
+                    // parent.boundingSphere = parent.boundingSphere ?
+                    //     Cesium.BoundingSphere.union(parent.boundingSphere, this.boundingSphere) :
+                    //     this.boundingSphere;
+
 
 
                     // /// when all tracks are loaded end callback
@@ -109,10 +126,10 @@ class TrackElement {
 
 
 
-/* the Class tracks container */
+/* the Track Class -- container for TrackeElements */
 export default class Track extends Asset {
-    constructor(id, xml) {
-        super(id);
+    constructor(id, xml, parent, onEndCallback) {
+        super(id, parent, onEndCallback);
         this.tracks = [];
         this.setup(xml);
     };
@@ -123,12 +140,6 @@ export default class Track extends Asset {
             this.tracks[i] = new TrackElement(xmlElements[i], this);
         };
     };
-
-    // setBoundingSphere(bdReceived) {
-    //     this.boundingSphere = this.boundingSphere ?
-    //         Cesium.BoundingSphere.union(bdReceived, this.boundingSphere) :
-    //         bdReceived;
-    // };
 };
 
 
@@ -138,9 +149,9 @@ export default class Track extends Asset {
 
 
 
-//////////////////////////
-/////// STATIC
-//////////////////////////
+// //////////////////////////
+// /////// STATIC
+// //////////////////////////
 
-/// counter
-Track.loadingCount = 0;
+// /// counter
+// Track.loadingCount = 0;

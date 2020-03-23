@@ -1,18 +1,49 @@
 export default class Asset {
 
-    constructor(id) {
+    constructor(id, parent, onEndCallback) {
         this.id = id
         this.boundingSphere = null;
         this.children = [];
+        // this.properties = {
+        //     id = id,
+        //     boundingSphere: null,
+        // };
+        // this.parentProperties = parent ? parent.properties : null;
+        this.parent = parent;
+        this.onEndCallback = onEndCallback;
     };
 
 
-    setBoundingSphere(bdReceived) {
+    addBoundingSphere(bdReceived) {
         this.boundingSphere = this.boundingSphere ?
             Cesium.BoundingSphere.union(bdReceived, this.boundingSphere) :
             bdReceived;
+
+        if (this.parent)
+            this.parent.addBoundingSphere(this.boundingSphere);
+
+
+        console.log(Asset.boundingSphereLoading)
+
+        if (Asset.boundingSphereLoading === 0)
+            this.onEndCallback();
     };
 
+    // addBoundingSphere(bdReceived) {
+
+    //     /* add received boundingsphere to this boundingsphere */
+    //     this.properties.boundingSphere = this.properties.boundingSphere ?
+    //         Cesium.BoundingSphere.union(bdReceived, this.properties.boundingSphere) :
+    //         bdReceived;
+
+    //     /* send this boundingsphere to the parent */
+    //     // if (this.parentProperties) {
+    //     //     this.parentProperties.boundingSphere = this.parentProperties.boundingSphere ?
+    //     //         Cesium.BoundingSphere.union(this.properties.boundingSphere, this.parentProperties.boundingSphere) :
+    //     //         this.properties.boundingSphere;
+    //     // }
+
+    // };
 
     // /* this is a generic function that should be overrided */
     // setup(xml) {
@@ -26,7 +57,7 @@ export default class Asset {
     //         Asset.loadFileFromUrl(url).then((xhttp) => {
     //             resolve(xhttp.responseText);
     //         }).catch((err) => {
-                
+
     //         });
 
 
@@ -104,3 +135,6 @@ export default class Asset {
     //         xhttp.send();
     //     };
 };
+
+
+Asset.boundingSphereLoading = 0;
