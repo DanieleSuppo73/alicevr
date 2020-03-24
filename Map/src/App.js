@@ -84,7 +84,7 @@ map.onStarted.push(function () {
 
 
         /// load cities from boundingsphere position / radius
-        // cities.init(Loader.root.boundingSphere.center, range);
+        cities.init(Loader.root.asset.boundingSphere.center, range);
 
 
         /// load PointOfInteres
@@ -130,7 +130,7 @@ map.onReady.push(function () {
         complete: function () {
             console.log("FLYING COMPLETE");
             map.fixCamera(Loader.root.asset.boundingSphere.center);
-            // rotateCamera();
+            rotateCamera();
 
         },
         duration: 8,
