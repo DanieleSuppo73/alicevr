@@ -1,7 +1,9 @@
 import Video from "./constructors/Video.js";
 import Track from "./constructors/Track.js";
 import Route from "./constructors/Route.js";
+import Point from "./constructors/Point.js";
 import Asset from "./constructors/base/Asset.js";
+import * as jsUtils from "../../../../lib/jsUtils.js";
 
 
 
@@ -15,10 +17,11 @@ export default class Loader {
 
     loadAsset(node, parent) {
 
-        /* load XML */
-        Loader.loadXml(this.url)
+        /* load xml file */
+        jsUtils.loadXml(this.url)
             .then((xml) => {
 
+                /* get type from xml */
                 let type = null;
                 if (xml.getElementsByTagName("type").length > 0) {
                     if (xml.getElementsByTagName("type")[0].childNodes.length > 0) {
@@ -26,7 +29,7 @@ export default class Loader {
                     }
                 }
 
-                /* get Class by type */
+                /* create Class by type */
                 switch (type) {
 
                     case "video":
@@ -41,13 +44,9 @@ export default class Loader {
                         node.asset = new Route(this.id, xml, parent);
                         break;
 
-                        // case "pointsOfInterest":
-                        //     node.asset = new Video(this.id, xml);
-                        //     break;
-
-                        // case "journal":
-                        //     node.asset = new Video(this.id, xml);
-                        //     break;
+                    case "point":
+                        node.asset = new Point(this.id, xml, parent);
+                        break;
 
                     default:
                         node.asset = new Asset(this.id, parent);
@@ -72,22 +71,27 @@ export default class Loader {
     };
 
 
-    static loadXml(url) {
-        return new Promise(function (resolve) {
-            const xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function () {
-                if (this.readyState === 4 && this.status === 200) {
-                    resolve(xhttp.responseXML);
-                };
-            };
-            xhttp.open("GET", url, true);
-            xhttp.send();
-        });
+    /* return an asset by property key-value,
+    starting to search from a parent asset */
+    static getAssetRecursive(parentAsset, key, value) {
+        if (parentAsset[key] === value)
+            return (parentAsset);
+        else {
+            for (let i = 0; i < parentAsset.children.length; i++) {
+                if (parentAsset.children[i].asset[key] === value) {
+                    return (parentAsset.children[i].asset);
+                } else {
+                    getAssetRecursive(parentAsset.childrens[i], key, value);
+                }
+            }
+        }
     };
 
 
-    /* init */
-    static init(id, callback = null) {
+    /*******************
+     ** load function **
+     *******************/
+    static load(id, callback = null) {
         Asset.onEndLoadingCallback = callback;
         let loader = new Loader(id, Loader.root);
     };
@@ -96,17 +100,22 @@ export default class Loader {
 
 
 
-/* the main root */
+/*******************
+ * *****************
+ ** the main root **
+ *******************
+ *******************/
 Loader.root = {
 
     asset: null,
 
-    /* utilities */
+    /* utility */
     getAssetById: function (id, parentAsset = null) {
         let parent = parentAsset ? parentAsset : this.asset;
-        return getAssetRecursive(parent, "id", id);
+        return Loader.getAssetRecursive(parent, "id", id);
     },
 
+    /* utility */
     getAssetByClass: function (className, parentAsset = null) {
         let parent = parentAsset ? parentAsset : this.asset;
         for (let i = 0; i < parent.children.length; i++) {
@@ -116,23 +125,4 @@ Loader.root = {
             }
         }
     },
-};
-
-
-
-
-/* return an asset by property key-value,
-starting to search from a parent asset */
-function getAssetRecursive(parentAsset, key, value) {
-    if (parentAsset[key] === value)
-        return (parentAsset);
-    else {
-        for (let i = 0; i < parentAsset.children.length; i++) {
-            if (parentAsset.children[i].asset[key] === value) {
-                return (parentAsset.children[i].asset);
-            } else {
-                getAssetRecursive(parentAsset.childrens[i], key, value);
-            }
-        }
-    }
 };

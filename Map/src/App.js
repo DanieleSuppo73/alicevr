@@ -62,7 +62,7 @@ map.onStarted.push(function () {
     // TR3.load();
 
 
-    Loader.init("1579530506349_newnew", () => {
+    Loader.load("1579530506349_newnew", () => {
 
         console.log(Loader.root.asset)
 
@@ -164,7 +164,7 @@ dispatcher.receiveMessage("playerPlaying", (data) => {
 //////////////////////////////////////////////
 map.init();
 
-// Loader.init("1579530506349_newnew");
+// Loader.load("1579530506349_newnew");
 
 
 
