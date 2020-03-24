@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <type>track</type>
+    <track>
+        <title>Alessandria track 1</title>
+        <description></description>
+        <gpx_url>Alessandria_20190620143007.gpx</gpx_url>
+    </track>
+    <track>
+        <title>Alessandria track 2</title>
+        <description></description>
+        <gpx_url>Alessandria_20190620152931.gpx</gpx_url>
+    </track>
+    <track>
+        <title>Alessandria track 3</title>
+        <description></description>
+        <gpx_url>Alessandria_20190620161704.gpx</gpx_url>
+    </track>
+</root>

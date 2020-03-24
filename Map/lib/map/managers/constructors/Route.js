@@ -12,64 +12,82 @@ export default class Route extends Asset {
 
     setup(xml) {
 
-        console.log("SETUP")
-
         /* sometimes "Asset.root" is not immediately available,
         so we must check when it's available */
         const waitRoot = () =>
-        new Promise(resolve => setTimeout(() => {
-            if (Asset.root) resolve();
-            else {
-                setTimeout(() => {
-                    resolve(waitRoot());
-                }, 0);
-            }
-        }, 50));
+            new Promise(resolve => setTimeout(() => {
+                if (Asset.root) resolve();
+                else {
+                    setTimeout(() => {
+                        resolve(waitRoot());
+                    }, 0);
+                }
+            }, 50));
 
 
         waitRoot().then(() => {
-
             let parent = Asset.root.getAssetById(this.parentId);
             let track = Asset.root.getAssetByClass("Track", parent);
             if (track) {
                 /* wait for Track asset ready */
                 jsUtils.waitObjectProperty(track, "ready", true).then(() => {
-
-                    /* if there are routes defined,
-                    get routes start-end from file */
-                    if (xml.getElementsByTagName("route").length > 0) {
-                        let xmlElements = xml.getElementsByTagName("route");
-
-
-                    }
-
-                    /* else, automatically create routes
-                    from start-end of each Track element */
-                    else {
-                        console.log("NO ROUTES");
-                        this.n = 0;
-                        this.getStartEndPointsAutomatically(track.tracks);
-                    }
+                    this.n = 0;
+                    this.getStartEndPoints(track.tracks, xml);
                 });
             };
         });
-
-        // let xmlElements = xml.getElementsByTagName("route");
-        // for (let i = 0; i < xmlElements.length; i++) {
-        //     this.tracks[i] = new TrackElement(xmlElements[i], this);
-        // };
     };
 
-    getStartEndPointsAutomatically(tracks) {
+    getStartEndPoints(tracks, xml) {
         if (this.n < tracks.length - 1) {
 
-            const waypoints_A = tracks[this.n].data.waypoints;
-            const lng_A = waypoints_A[waypoints_A.length - 1].lon;
-            const lat_A = waypoints_A[waypoints_A.length - 1].lat;
+            let waypoints_A;
+            let waypoints_B;
+            let lng_A, lat_A, lng_B, lat_B;
 
-            const waypoints_B = tracks[this.n + 1].data.waypoints;
-            const lng_B = waypoints_B[0].lon;
-            const lat_B = waypoints_B[0].lat;
+            /* if there are routes defined,
+            get routes start-end from file */
+            if (xml.getElementsByTagName("route").length > 0) {
+                const xmlElements = xml.getElementsByTagName("route");
+
+                const A = xmlElements[this.n].getElementsByTagName("start");
+                const trA = parseInt(A[0].getElementsByTagName("track")[0].childNodes[0].nodeValue) - 1;
+                let wpA = A[0].getElementsByTagName("wp")[0].childNodes[0].nodeValue;
+
+                waypoints_A = tracks[trA].data.waypoints;
+
+                if (wpA === "start") wpA = 0;
+                if (wpA === "end") wpA = waypoints_A.length - 1;
+
+                lng_A = waypoints_A[wpA].lon;
+                lat_A = waypoints_A[wpA].lat;
+
+                const B = xmlElements[this.n].getElementsByTagName("end");
+                const trB = parseInt(B[0].getElementsByTagName("track")[0].childNodes[0].nodeValue) - 1;
+                let wpB = B[0].getElementsByTagName("wp")[0].childNodes[0].nodeValue;
+
+                waypoints_B = tracks[trB].data.waypoints;
+
+                if (wpB === "start") wpB = 0;
+                if (wpB === "end") wpB = waypoints_B.length - 1;
+
+                lng_B = waypoints_B[wpB].lon;
+                lat_B = waypoints_B[wpB].lat;
+            }
+
+
+            /* else get start-end
+            from start-end of each Track element */
+            else {
+                waypoints_A = tracks[this.n].data.waypoints;
+                waypoints_B = tracks[this.n + 1].data.waypoints;
+
+                lng_A = waypoints_A[waypoints_A.length - 1].lon;
+                lat_A = waypoints_A[waypoints_A.length - 1].lat;
+                lng_B = waypoints_B[0].lon;
+                lat_B = waypoints_B[0].lat;
+            }
+
 
             APIrequest(lng_A, lat_A, lng_B, lat_B)
                 .then((responseText) => {
@@ -78,15 +96,12 @@ export default class Route extends Asset {
                     this.routes[this.n] = new Gpx(responseText, this, "ROUTE");
 
                     this.n++;
-                    this.getStartEndPointsAutomatically(tracks);
+                    this.getStartEndPoints(tracks, xml);
                 })
                 .catch((error) => {
                     console.log('Some error has occured' + error);
                 });
-
-
         } else {
-            console.log("FINITO!!")
             delete this.n;
         }
     };

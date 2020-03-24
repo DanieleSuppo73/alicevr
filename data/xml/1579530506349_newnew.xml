@@ -4,13 +4,10 @@
     <owner>Parco Regionale Veneto del Delta del Po</owner>
     <date>Mon Jan 20 2020</date>
     <location></location>
-
     <title>Via delle Valli</title>
     <description>Itinerario di grande suggestione che consente di ammirare luoghi naturalistici ricchi di rara avifauna tipica della zona salmastra, come il tratto che costeggia le valli da pesca e la laguna.
 La Via delle Valli, è forse quello che maggiormente soddisfa le esigenze degli amanti del birdwatching e del fotonaluralismo; grandi specchi vallivi e lagunari, tramonti di fuoco, migliaia di volatili in tutte le stagioni, germani reali, folaghe, aironi, limicoli.
 Sono visitabili alcuni centri vallivi per l'allevamento estensivo ed intensivo di orate, branzini, cefali.</description>
-
-
 
     <video_url1>https://player.vimeo.com/external/387913524.m3u8?s=8f08263cdc946708b67be75027cc77734e27f1b9</video_url1>
     <video_url2>47522</video_url2>
@@ -24,9 +21,4 @@ Sono visitabili alcuni centri vallivi per l'allevamento estensivo ed intensivo d
     
     <!--  <id>delta_POI</id>
     <id>delta_journal</id> -->
-
-
-   
-
-
 </root>

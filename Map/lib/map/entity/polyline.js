@@ -56,6 +56,7 @@ function getPropertiesFromCategory(category) {
                 properties.width = 5;
                 properties.outlineWidth = 2;
                 properties.color = new Cesium.Cartesian3(0.08, 1.0, 0.94);
+                properties.opacity = 0.5;
                 break;
 
             case "TRANSPARENT":

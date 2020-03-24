@@ -52,32 +52,6 @@ export default class Gpx {
                 this.parseAndCreate(txt, parent);
                 break;
         }
-
-
-        // Asset.boundingSphereLoading++;
-
-        // /* create parameters */
-        // const keys = ["title", "description", "gpx_url"];
-        // for (let i = 0; i < keys.length; i++) {
-        //     let key = keys[i]
-        //     this[key] = null;
-        //     if (xmlElem.getElementsByTagName(key).length > 0) {
-        //         if (xmlElem.getElementsByTagName(key)[0].childNodes.length > 0) {
-        //             this[key] = xmlElem.getElementsByTagName(key)[0].childNodes[0].nodeValue;
-        //         }
-        //     };
-        // };
-
-        // /* load GPX from file */
-        // this.gpx_url = `${this.gpxFolder}${this.gpx_url}`;
-        // Gpx.loadTxt(this.gpx_url)
-        //     .then((txt) => {
-        //         this.create(txt, parent);
-        //     });
-
-
-
-
     };
 
 
@@ -114,7 +88,7 @@ export default class Gpx {
                 };
             };
 
-            // /* draw the polyline */
+            /* draw the polyline */
             this.entity = Polyline.draw(this.positions, this.category);
 
             /* create bounding sphere from positions */
@@ -131,8 +105,8 @@ export default class Gpx {
 
 
 
-    /* STATIC */
-    /* load text file from url */
+    /* STATIC
+    load text file from url */
     static loadTxt(url) {
         return new Promise(function (resolve) {
             const xhttp = new XMLHttpRequest();

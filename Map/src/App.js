@@ -28,20 +28,20 @@ import Ellipse from '../lib/map/entity/Ellipse.js';
 
 
 
-let asset1 = {
-    POI: "delta_POI.xml",
-    gpx: "activity_4446943983.gpx",
-}
+// let asset1 = {
+//     POI: "delta_POI.xml",
+//     gpx: "activity_4446943983.gpx",
+// }
 
-let asset2 = {
-    // POI: "delta_POI.xml",
-    gpx: "activity_4446944479.gpx",
-}
+// let asset2 = {
+//     // POI: "delta_POI.xml",
+//     gpx: "activity_4446944479.gpx",
+// }
 
-let asset3 = {
-    // POI: "delta_POI.xml",
-    gpx: "activity_4447053939.gpx",
-}
+// let asset3 = {
+//     // POI: "delta_POI.xml",
+//     gpx: "activity_4447053939.gpx",
+// }
 
 
 
@@ -62,7 +62,7 @@ map.onStarted.push(function () {
     // TR3.load();
 
 
-    Loader.load("1579530506349_newnew", () => {
+    Loader.load("1570451964288", () => {
 
         console.log(Loader.root.asset)
 
@@ -107,9 +107,9 @@ map.onReady.push(function () {
     map.camera.percentageChanged = mapChangeSensitivity;
 
 
-    // // /// fly
+    // /// fly
 
-    // // console.log(Loader.root.boundingSphere)
+    // console.log(Loader.root.boundingSphere)
 
     // var newBoundingSphere = null;
     // newBoundingSphere = Loader.root.asset.boundingSphere;
@@ -123,20 +123,20 @@ map.onReady.push(function () {
     // newBoundingSphere.center = finalPos;
 
     // console.log(newBoundingSphere)
-   
-    
-    //     map.camera.flyToBoundingSphere(newBoundingSphere, {
-    //         // offset: offset,
-    //         complete: function () {
-    //             console.log("FLYING COMPLETE");
-    //             map.fixCamera(newBoundingSphere.center);
-    //             // rotateCamera();
-                
-    //         },
-    //         duration: 8,
-    //         easingFunction: Cesium.EasingFunction.QUADRACTIC_IN_OUT,
-    //     });
-    
+
+
+    map.camera.flyToBoundingSphere(Loader.root.asset.boundingSphere, {
+        // offset: offset,
+        complete: function () {
+            console.log("FLYING COMPLETE");
+            map.fixCamera(Loader.root.asset.boundingSphere.center);
+            // rotateCamera();
+
+        },
+        duration: 8,
+        easingFunction: Cesium.EasingFunction.QUADRACTIC_IN_OUT,
+    });
+
 
 
 })
