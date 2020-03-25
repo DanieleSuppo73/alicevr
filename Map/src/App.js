@@ -5,7 +5,7 @@ import {
 import map from "../lib/map/map.js";
 
 import * as cities from "../lib/map/add-on/cities.js";
-import * as pointsOfInterest from "../lib/map/add-on/pointsOfInterest.js";
+
 
 import Track from "../lib/map/managers/constructors/Track.js"
 
@@ -84,11 +84,9 @@ map.onStarted.push(function () {
 
 
         /// load cities from boundingsphere position / radius
-        cities.init(Loader.root.asset.boundingSphere.center, range);
+        // cities.init(Loader.root.asset.boundingSphere.center, range);
 
 
-        /// load PointOfInteres
-        // pointsOfInterest.loadFromFile(Loader.root);
     });
 
 })
@@ -111,31 +109,19 @@ map.onReady.push(function () {
 
     // console.log(Loader.root.boundingSphere)
 
-    // var newBoundingSphere = null;
-    // newBoundingSphere = Loader.root.asset.boundingSphere;
-    // let cartographic = Cesium.Cartographic.fromCartesian(newBoundingSphere.center);
-    // let longitude = Cesium.Math.toDegrees(cartographic.longitude);
-    // let latitude = Cesium.Math.toDegrees(cartographic.latitude);
-    // let height = cartographic.height;
-    // height -= 50;
-    // height = Cesium.Math.toDegrees(height);
-    // let finalPos = Cesium.Cartesian3.fromDegrees(longitude, latitude, height);
-    // newBoundingSphere.center = finalPos;
+  
 
-    // console.log(newBoundingSphere)
+    // map.camera.flyToBoundingSphere(Loader.root.asset.boundingSphere, {
+    //     // offset: offset,
+    //     complete: function () {
+    //         console.log("FLYING COMPLETE");
+    //         map.fixCamera(Loader.root.asset.boundingSphere.center);
+    //         rotateCamera();
 
-
-    map.camera.flyToBoundingSphere(Loader.root.asset.boundingSphere, {
-        // offset: offset,
-        complete: function () {
-            console.log("FLYING COMPLETE");
-            map.fixCamera(Loader.root.asset.boundingSphere.center);
-            rotateCamera();
-
-        },
-        duration: 8,
-        easingFunction: Cesium.EasingFunction.QUADRACTIC_IN_OUT,
-    });
+    //     },
+    //     duration: 8,
+    //     easingFunction: Cesium.EasingFunction.QUADRACTIC_IN_OUT,
+    // });
 
 
 
@@ -164,7 +150,7 @@ dispatcher.receiveMessage("playerPlaying", (data) => {
 //////////////////////////////////////////////
 map.init();
 
-// Loader.load("1579530506349_newnew");
+// Loader.load("1570451964288");
 
 
 

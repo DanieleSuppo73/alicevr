@@ -16,17 +16,15 @@
 
 
 
-    <!-- <id>1571313244130</id>
-    <id>1571313271465</id> 
-    <id>1571313279009</id>
-    <videoMarkers>coppi_video.xml</videoMarkers>
-    <subtitles>coppi_subtitles.xml</subtitles>
-    <POI>coppi_POI.xml</POI>
-    <guide>Coppi_guide.html</guide>
-    <routes>Coppi_routes.xml</routes> -->
+   
+    
+    
+    <!-- <guide>Coppi_guide.html</guide> -->
+    
 
     <id>coppi_tracks</id>
     <id>coppi_routes</id>
+    <id>coppi_points</id>
 
 
 

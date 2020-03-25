@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <type>point</type>
+    <point>
+        <longitude>8.9303561</longitude>
+        <latitude>44.7991574</latitude>
+        <type>BILLBOARD</type>
+        <category>MUSEUM</category>
+        <title>Mausoleo Fausto Coppi</title>
+        <description></description>
+    </point>
+    <point>
+        <longitude>8.9283101</longitude>
+        <latitude>44.8432724</latitude>
+        <type>LABEL</type>
+        <category>A5</category>
+        <title>Cerreto Grue</title>
+    </point>
+    <point>
+        <longitude>8.9634148</longitude>
+        <latitude>44.8028246</latitude>
+        <type>LABEL</type>
+        <category>A5</category>
+        <title>Avolasca</title>
+    </point>
+    <point>
+        <longitude>8.929228</longitude>
+        <latitude>44.7986384</latitude>
+        <type>LABEL</type>
+        <category>A5</category>
+        <title>Castellania Coppi</title>
+    </point>
+</root>

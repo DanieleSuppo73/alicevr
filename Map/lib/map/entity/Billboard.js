@@ -48,16 +48,23 @@ function getPropertiesFromCategory(category) {
         translucencyByDistance: null,
         // minDistance: 50000,
         // maxDistance: 800000,
-        
+
     };
 
     switch (category) {
         case "PLACEHOLDER":
-            properties.image = "Map/images/icon_placeholder-video.svg";
-            properties.minDistance = 800000;
-            properties.maxDistance = 2000000;
+            properties.image = "Map/images/billboards/icon_placeholder-video.svg";
+            // properties.minDistance = 800000;
+            // properties.maxDistance = 2000000;
             properties.width = 50;
             properties.height = 50;
+            properties.translucencyByDistance = new Cesium.NearFarScalar(60000, 0, 200000, 1)
+            break;
+
+        case "MUSEUM":
+            properties.image = "Map/images/billboards/monument.svg";
+            properties.width = 30;
+            properties.height = 30;
             properties.translucencyByDistance = new Cesium.NearFarScalar(60000, 0, 200000, 1)
             break;
 

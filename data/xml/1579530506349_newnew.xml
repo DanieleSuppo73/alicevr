@@ -17,8 +17,8 @@ Sono visitabili alcuni centri vallivi per l'allevamento estensivo ed intensivo d
 
     <id>delta_tracks</id>
     <id>delta_routes</id>
+    <id>delta_points</id>
     
     
-    <!--  <id>delta_POI</id>
-    <id>delta_journal</id> -->
+    <!--  <id>delta_journal</id> -->
 </root>
