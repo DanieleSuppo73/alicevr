@@ -20,7 +20,7 @@ export default class Loader {
         /* load xml file */
         jsUtils.loadXml(this.url)
             .then((xml) => {
-
+               
                 /* get type from xml */
                 let type = null;
                 if (xml.getElementsByTagName("type").length > 0) {

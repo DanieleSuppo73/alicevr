@@ -7,28 +7,35 @@ import {
 } from "../../../../lib/Maf.js"
 
 
+const entityCollection = [];
+
+map.onReady.push(() => {
+    for (let i = 0; i < entityCollection.length; i++) {
+        updateOpacity(entityCollection[i]);
+    }
+});
+
 
 function updateOpacity(entity) {
-    if (map.ready){
+    if (map.ready) {
         let minRange = map.range;
         let maxRange = minRange * 4;
         let pos = entity.position._value;
         let dist = Cesium.Cartesian3.distance(map.viewer.camera.positionWC,
             pos);
-    
+
         /// get multiplier by min-max range
         let rangeMult = 1 - Maf.inverseLerp(minRange, maxRange,
             Cesium.Math.clamp(dist, minRange, maxRange));
-    
+
         /// get multiplier by min-max distance
         let distMult = 1 - Maf.inverseLerp(entity.minDistance, entity
             .maxDistance,
             Cesium.Math.clamp(dist, entity.minDistance, entity.maxDistance));
-    
+
         entity.opacity = rangeMult * distMult;
-    }
-    else{
-        entity.opacity = 1;
+    } else {
+        entity.opacity = 0;
     }
 }
 
@@ -43,7 +50,7 @@ function getPropertiesFromCategory(category) {
         outlineColor: new Cesium.Cartesian3(0, 0, 0),
         style: Cesium.LabelStyle.FILL_AND_OUTLINE,
         verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-        heightReference: Cesium.HeightReference.NONE,
+        heightReference: Cesium.HeightReference.RELATIVE_TO_GROUND,
         pixelOffset: new Cesium.Cartesian2(0, -5),
         disableDepthTestDistance: Number.POSITIVE_INFINITY,
         minDistance: 50000,
@@ -137,6 +144,7 @@ export default class Label {
         });
         if (collection) collection.push(entity);
 
+        entityCollection.push(entity);
 
         /// register the listener to camerachanged, 
         /// to update this label opacity

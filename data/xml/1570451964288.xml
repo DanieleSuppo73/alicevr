@@ -14,19 +14,19 @@
     <subtitles_url>coppi_subtitles.xml</subtitles_url>
 
 
-
-
-   
-    
-    
-    <!-- <guide>Coppi_guide.html</guide> -->
-    
-
     <id>coppi_tracks</id>
     <id>coppi_routes</id>
     <id>coppi_points</id>
 
 
 
-   
+
+
+    <!-- <guide>Coppi_guide.html</guide> -->
+
+
+
+
+
+
 </root>

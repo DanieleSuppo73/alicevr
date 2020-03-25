@@ -7,15 +7,15 @@ import map from "../lib/map/map.js";
 import * as cities from "../lib/map/add-on/cities.js";
 
 
-import Track from "../lib/map/managers/constructors/Track.js"
+
 
 import Loader from "../lib/map/managers/Loader.js"
 
 
+import PlayerManager from "../lib/map/managers/PlayerManager.js"
 
 
 
-// import * as entityTools from "../lib/map/utils/entity_utils.js";
 
 
 
@@ -65,6 +65,8 @@ map.onStarted.push(function () {
     Loader.load("1570451964288", () => {
 
         console.log(Loader.root.asset)
+
+        PlayerManager.init();
 
         // // /// DEBUG : show circle
         // map.disableCulling();
@@ -138,7 +140,7 @@ map.onReady.push(function () {
 dispatcher.receiveMessage("playerPlaying", (data) => {
 
     /// rotate placeholder texture with player angle
-    placeholder.ellipse.stRotation = Cesium.Math.toRadians(data.angle);
+    // placeholder.ellipse.stRotation = Cesium.Math.toRadians(data.angle);
 });
 
 

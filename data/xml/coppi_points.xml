@@ -30,4 +30,18 @@
         <category>A5</category>
         <title>Castellania Coppi</title>
     </point>
+    <point>
+        <longitude>8.8859548</longitude>
+        <latitude>44.850111</latitude>
+        <type>LABEL</type>
+        <category>A5</category>
+        <title>Villaromagnano</title>
+    </point>
+    <point>
+        <longitude>8.864223</longitude>
+        <latitude>44.8486784</latitude>
+        <type>LABEL</type>
+        <category>A5</category>
+        <title>Carbonara Scrivia</title>
+    </point>
 </root>

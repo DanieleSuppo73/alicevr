@@ -30,7 +30,6 @@ export default class Point extends Asset {
                 };
             };
 
-
             const pos = Cesium.Cartesian3.fromDegrees(elem.longitude, elem.latitude);
 
             switch (elem.type) {
@@ -44,8 +43,6 @@ export default class Point extends Asset {
             };
 
             this.points[i] = elem;
-
-            console.log(elem)
         };
     };
 };

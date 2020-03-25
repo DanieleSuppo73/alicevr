@@ -41,7 +41,7 @@ function getPropertiesFromCategory(category) {
         alignedAxis: Cesium.Cartesian3.ZERO,
         horizontalOrigin: Cesium.VerticalOrigin.CENTER,
         verticalOrigin: Cesium.VerticalOrigin.CENTER,
-        heightReference: Cesium.HeightReference.NONE,
+        heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
         disableDepthTestDistance: Number.POSITIVE_INFINITY,
         scale: 1,
         color: Cesium.Color.WHITE,
@@ -62,10 +62,10 @@ function getPropertiesFromCategory(category) {
             break;
 
         case "MUSEUM":
-            properties.image = "Map/images/billboards/monument.svg";
-            properties.width = 30;
-            properties.height = 30;
-            properties.translucencyByDistance = new Cesium.NearFarScalar(60000, 0, 200000, 1)
+            properties.image = "Map/images/billboards/mausoleum.png";
+            properties.width = 25;
+            properties.height = 25;
+            properties.translucencyByDistance = new Cesium.NearFarScalar(80000, 0, 17000, 1)
             break;
 
     }
@@ -103,6 +103,7 @@ export default class Billboard {
                 alignedAxis: properties.alignedAxis,
                 width: properties.width,
                 height: properties.height,
+                heightReference: properties.heightReference,
                 disableDepthTestDistance: properties.disableDepthTestDistance,
                 translucencyByDistance: properties.translucencyByDistance,
             }
