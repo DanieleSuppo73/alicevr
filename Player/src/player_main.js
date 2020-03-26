@@ -38,21 +38,21 @@ player.onReadyHandlers.push(function () {
 });
 
 player.onStartedHandlers.push(function () {
-    dispatcher.sendMessage("started");
+    dispatcher.sendMessage("playerStarted");
     overlay.showOnPlay();
 });
 
 player.onPausedHandlers.push(function () {
-    dispatcher.sendMessage("paused");
+    dispatcher.sendMessage("playerPaused");
 });
 
 player.onSeekedHandlers.push(function () {
-    dispatcher.sendMessage("seeking");
+    dispatcher.sendMessage("playerSeeking");
     subtitles.restart();
 });
 
 player.onEndedHandlers.push(function () {
-    dispatcher.sendMessage("ended");
+    dispatcher.sendMessage("playerEnded");
     overlay.showOnReady();
 });
 

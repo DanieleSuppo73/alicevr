@@ -97,6 +97,7 @@ const OmniVirt_player = {
             this.isPlaying = false;
             this.isPaused = true;
             console.log('------ video is paused ------')
+            for (let i in this.onPausedHandlers) this.onPausedHandlers[i]();
         });
 
 
@@ -104,6 +105,7 @@ const OmniVirt_player = {
             this.isStarted = false;
             this.isPlaying = false;
             console.log('------ video is ended ------')
+            for (let i in this.onEndedHandlers) this.onEndedHandlers[i]();
         });
 
 
