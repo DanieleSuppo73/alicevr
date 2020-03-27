@@ -12,7 +12,7 @@ import * as cities from "../lib/map/add-on/cities.js";
 import Loader from "../lib/map/managers/Loader.js"
 
 
-import PlayerManager from "../lib/map/managers/PlayerManager.js"
+import Player from "../lib/map/managers/Player.js"
 
 
 
@@ -66,7 +66,7 @@ map.onStarted.push(function () {
 
         console.log(Loader.root.asset)
 
-        PlayerManager.init();
+        Player.init();
 
         // // /// DEBUG : show circle
         // map.disableCulling();
@@ -167,14 +167,14 @@ map.init();
 let rotate = null;
 
 
-map.onDown.push(function () {
-    if (rotate) {
-        map.unlinkCamera();
-        clearInterval(rotate);
-        rotate = null;
-    }
+// map.onDown.push(function () {
+//     if (rotate) {
+//         map.unlinkCamera();
+//         clearInterval(rotate);
+//         rotate = null;
+//     }
 
-})
+// })
 
 
 

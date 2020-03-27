@@ -1,7 +1,7 @@
 import Asset from "./../base/Asset.js";
 import gpxParser from "../../../utils/gpxParser.js";
 import Polyline from "../../../entity/Polyline.js";
-
+import map from "../../../map.js";
 
 
 export default class Gpx {
@@ -60,48 +60,86 @@ export default class Gpx {
         this.data = new gpxParser();
         this.data.parse(txt, () => {
 
-            let points = [];
+            let points = []; //lon-lat
             if (this.data.waypoints.length !== 0) points = this.data.waypoints; /// for regular gpx
             else points = this.data.routes[0].points; /// for routes from API
 
+
             /// push 1st point
+            let lonLatArray = [];
+            lonLatArray.push(points[0].lon, points[0].lat);
             this.positions.push(Cesium.Cartesian3.fromDegrees(points[0].lon, points[0].lat));
-            if (typeof points[0].time !== "undefined"){
+            if (typeof points[0].time !== "undefined") {
                 if (points[0].time)
-                this.times.push(new Date(Date.parse(points[0].time)).getTime());
+                    this.times.push(new Date(Date.parse(points[0].time)).getTime());
             }
-            
+
 
             /// check distance for all others points
             for (let i = 1; i < points.length; i++) {
-                const pos1 = Cesium.Cartesian3.fromDegrees(points[i].lon, points[i].lat);
-                const pos2 = Cesium.Cartesian3.fromDegrees(points[i - 1].lon, points[i - 1].lat);
-                const dist = Cesium.Cartesian3.distance(pos1, pos2)
-
+                const dist = this.data.calcDistanceBetween(points[i], points[i - 1]);
                 if (dist > 5) {
                     /// push point
-                    this.positions.push(pos1);
-                    if (typeof points[i].time !== "undefined"){
+                    lonLatArray.push(points[i].lon, points[i].lat);
+                    this.positions.push(Cesium.Cartesian3.fromDegrees(points[i].lon, points[i].lat));
+                    if (typeof points[i].time !== "undefined") {
                         if (points[i].time)
-                        this.times.push(new Date(Date.parse(points[i].time)).getTime());
+                            this.times.push(new Date(Date.parse(points[i].time)).getTime());
                     }
                 };
             };
 
-            /* draw the polyline */
-            this.entity = Polyline.draw(this.positions, this.category);
 
-            /* create bounding sphere from positions */
-            this.boundingSphere = new Cesium.BoundingSphere.fromPoints(this.positions);
+            this.addHeightToCoordinatesAndReturnCartesians(lonLatArray, 5, (cartesians) => {
+                this.positions = cartesians;
 
+                /* draw the polyline */
+                this.entity = Polyline.draw(this.positions, this.category);
 
-            Asset.boundingSphereLoading--;
-            parent.loading = parent._loading - 1;
+                /* create bounding sphere from positions */
+                this.boundingSphere = new Cesium.BoundingSphere.fromPoints(this.positions);
 
-            /* add this boundingSphere to the parent */
-            parent.addBoundingSphere(this.boundingSphere);
+                Asset.boundingSphereLoading--;
+                parent.loading = parent._loading - 1;
+
+                /* add this boundingSphere to the parent */
+                parent.addBoundingSphere(this.boundingSphere);
+            });
         });
     };
+
+
+
+
+    /* take an array of lon-lat and return Cartesian positions
+    with the height sampled from the terrain plus @meters */
+    addHeightToCoordinatesAndReturnCartesians(lonLatArray, meters, callback) {
+        let cartographics = [];
+        for (let i = 0; i < lonLatArray.length; i += 2) {
+            cartographics.push(Cesium.Cartographic.fromDegrees(lonLatArray[i], lonLatArray[i + 1]));
+        }
+        let promise = Cesium.sampleTerrainMostDetailed(map.viewer.terrainProvider, cartographics);
+        Cesium.when(promise, function () {
+            /// add the height from cartesian to the array of log lat coordinates
+            let i = 0;
+            let ii = 0;
+            while (i <= lonLatArray.length) {
+                i += 2;
+                if (ii == cartographics.length) {
+                    ii = cartographics.length - 1;
+                }
+                lonLatArray.splice(i, 0, cartographics[ii].height + meters);
+                i++;
+                ii++;
+            }
+            /// remove last element (...?)
+            lonLatArray.pop();
+            const cartesians = Cesium.Cartesian3.fromDegreesArrayHeights(lonLatArray);
+            callback(cartesians);
+        });
+    };
+
+
 
 
 

@@ -68,6 +68,12 @@ function getPropertiesFromCategory(category) {
             properties.translucencyByDistance = new Cesium.NearFarScalar(80000, 0, 17000, 1)
             break;
 
+        case "TEST":
+            properties.image = "Map/images/billboards/test.svg";
+            properties.width = 25;
+            properties.height = 25;
+            properties.heightReference = Cesium.HeightReference.NONE;
+            break;
     }
 
     return properties;

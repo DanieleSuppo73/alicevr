@@ -14,7 +14,7 @@ const map = {
         useMapbox: false,
         fxaa: false,
         maxScreenSpaceError: 2,
-        occlusion: true,
+        occlusion: false,
         brightness: 0.3,
         hue: 0.04,
         saturation: -0.01,

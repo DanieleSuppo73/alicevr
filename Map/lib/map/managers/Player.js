@@ -3,8 +3,9 @@ import {
 } from "../../../../lib/dispatcher.js";
 import Loader from "../managers/Loader.js";
 import Ellipse from "../entity/Ellipse.js";
+import Billboard from "../entity/Billboard.js";
 import * as jsUtils from "../../../../lib/jsUtils.js";
-
+import map from "../map.js";
 
 
 export default class Player {
@@ -96,7 +97,9 @@ const onFoundMarkerIndex = i => {
                     /* draw RADAR if not exist */
                     if (!Player.radar) {
                         const position = gpxFound.positions[wpIndex];
-                        Player.radar = Ellipse.draw(position, "RADAR");
+                        // Player.radar = Ellipse.draw(position, "RADAR");
+                        Player.radar = Billboard.draw(position, "TEST");
+                        flyAndLinkCameraToEntity();
                     } 
 
                     moveRadar(gpxFound, wpIndex);
@@ -114,6 +117,59 @@ const onFoundMarkerIndex = i => {
 
 
 }
+
+
+
+
+
+function flyAndLinkCameraToEntity(heading, pitch, range) {
+
+    console.log("flyAndLinkCameraToEntity")
+
+    /// create boundingsphere around billboard
+    // var billboardPos = mapPlaceholder.entity.position._value;
+    var billboardPos = Player.radar.position._value;
+
+
+    var boundingSphere = new Cesium.BoundingSphere(billboardPos, 1000);
+
+    let h = typeof heading === "undefined" ? map.viewer.scene.camera.heading : heading;
+
+    let p;
+    if (typeof pitch === "undefined") {
+        p =  -0.52;
+    } else p = pitch;
+
+    let r;
+    if (typeof range === "undefined") {
+        r = 500;
+    } else r = range;
+
+    // if (!videoMarkers.firstReached) videoMarkers.firstReached = true;
+
+    // viewer.trackedEntity = mapPlaceholder.entity;
+    map.viewer.trackedEntity = Player.radar;
+    map.viewer.camera.flyToBoundingSphere(boundingSphere, {
+        offset: new Cesium.HeadingPitchRange(h, p, r),
+
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -197,4 +253,13 @@ var fakePlayer = () => {
         }
     }, samplerate);
 };
-fakePlayer();
+window.play = fakePlayer;
+window.stop = function(){
+    play = false;
+}
+
+
+
+setInterval(function(){
+    console.log(map.viewer.trackedEntity)
+}, 3000)
