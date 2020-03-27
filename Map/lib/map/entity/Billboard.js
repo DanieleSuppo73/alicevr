@@ -54,8 +54,6 @@ function getPropertiesFromCategory(category) {
     switch (category) {
         case "PLACEHOLDER":
             properties.image = "Map/images/billboards/icon_placeholder-video.svg";
-            // properties.minDistance = 800000;
-            // properties.maxDistance = 2000000;
             properties.width = 50;
             properties.height = 50;
             properties.translucencyByDistance = new Cesium.NearFarScalar(60000, 0, 200000, 1)
@@ -73,6 +71,13 @@ function getPropertiesFromCategory(category) {
             properties.width = 25;
             properties.height = 25;
             properties.heightReference = Cesium.HeightReference.NONE;
+            break;
+
+        case "PROXY":
+            properties.width = 25;
+            properties.height = 25;
+            properties.heightReference = Cesium.HeightReference.NONE;
+            properties.color = Cesium.Color.RED.withAlpha(0);
             break;
     }
 

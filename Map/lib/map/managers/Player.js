@@ -3,9 +3,9 @@ import {
 } from "../../../../lib/dispatcher.js";
 import Loader from "../managers/Loader.js";
 import Ellipse from "../entity/Ellipse.js";
-import Billboard from "../entity/Billboard.js";
 import * as jsUtils from "../../../../lib/jsUtils.js";
 import map from "../map.js";
+import * as entityUtils from "../../../lib/map/utils/entity_utils.js";
 
 
 export default class Player {
@@ -15,8 +15,19 @@ export default class Player {
         markers = jsUtils.arrayOfObjectsCloneAndIncrease(video.markers);
         markers[markers.length - 1].timecode += 1000; /// add 100 sec to last marker
         gpx = t.tracks;
+
+
+        Player.radarProxy = map.viewer.entities.add({
+            position: new Cesium.Cartesian3(0, 0, 0),
+            point: {
+                pixelSize: 10,
+                color: new Cesium.Color(1, 0.9, 0, 0),
+                disableDepthTestDistance: Number.POSITIVE_INFINITY,
+            }
+        });
     };
 };
+Player.radarProxy = null;
 Player.radar = null;
 
 
@@ -35,6 +46,12 @@ dispatcher.receiveMessage("playerPaused", () => {
 dispatcher.receiveMessage("playerSeeking", () => {
     foundIndex = null;
 });
+dispatcher.receiveMessage("playerEnded", () => {
+    foundIndex = null;
+    entityUtils.fadeOut(Player.radar, () => {
+        Player.radar = null;
+    });
+});
 
 
 
@@ -48,6 +65,7 @@ var gpx = [];
 var moveRadarLerp = null;
 var playerPlaying = false;
 var radarAngle = 0;
+var radarLinked = true;
 
 
 
@@ -60,8 +78,7 @@ const check = time => {
         const y = foundIndex ? foundIndex : 0;
         for (let i = y; i < markers.length; i++) {
             if (time >= markers[i].timecode && time < markers[i + 1].timecode &&
-                foundIndex !== i)
-            {
+                foundIndex !== i) {
                 /* when a marker is reached */
                 foundIndex = i;
                 onFoundMarkerIndex(i);
@@ -93,24 +110,24 @@ const onFoundMarkerIndex = i => {
                     let wpIndex = gpxTime - gpxFound.times[ii] <
                         gpxFound.times[ii + 1] - gpxTime ?
                         ii : ii + 1;
-                   
+
                     /* draw RADAR if not exist */
                     if (!Player.radar) {
                         const position = gpxFound.positions[wpIndex];
-                        // Player.radar = Ellipse.draw(position, "RADAR");
-                        Player.radar = Billboard.draw(position, "TEST");
-                        flyAndLinkCameraToEntity();
-                    } 
+                        Player.radar = Ellipse.draw(position, "TEST");
+                        Player.radar.opacity = 0;
+                    }
 
-                    moveRadar(gpxFound, wpIndex);
+                    map.viewer.trackedEntity = null;
+                    moveMap(gpxFound, wpIndex);
                     break;
                 };
             };
         };
 
 
-    /* use "longitude" and "latitude" 
-    properties of the marker */
+        /* use "longitude" and "latitude" 
+        properties of the marker */
     } else {
 
     }
@@ -122,58 +139,28 @@ const onFoundMarkerIndex = i => {
 
 
 
-function flyAndLinkCameraToEntity(heading, pitch, range) {
+const jumpMap = (heading = null, pitch = null, range = null) => {
 
-    console.log("flyAndLinkCameraToEntity")
+    /* create boundingsphere around new position */
+    const pos = Player.radarProxy.position._value;
+    const boundingSphere = new Cesium.BoundingSphere(pos, 1000);
 
-    /// create boundingsphere around billboard
-    // var billboardPos = mapPlaceholder.entity.position._value;
-    var billboardPos = Player.radar.position._value;
-
-
-    var boundingSphere = new Cesium.BoundingSphere(billboardPos, 1000);
-
-    let h = typeof heading === "undefined" ? map.viewer.scene.camera.heading : heading;
-
-    let p;
-    if (typeof pitch === "undefined") {
-        p =  -0.52;
-    } else p = pitch;
-
-    let r;
-    if (typeof range === "undefined") {
-        r = 500;
-    } else r = range;
+    let h = heading ? heading : map.viewer.scene.camera.heading;
+    let p = pitch ? pitch : -0.52;
+    let r = range ? range : 500;
 
     // if (!videoMarkers.firstReached) videoMarkers.firstReached = true;
 
-    // viewer.trackedEntity = mapPlaceholder.entity;
-    map.viewer.trackedEntity = Player.radar;
+    map.viewer.trackedEntity = Player.radarProxy;
     map.viewer.camera.flyToBoundingSphere(boundingSphere, {
         offset: new Cesium.HeadingPitchRange(h, p, r),
-
     });
 }
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-const moveRadar = (gpxFound, wpIndex) => {
+const moveMap = (gpxFound, wpIndex) => {
     if (moveRadarLerp) {
         clearInterval(moveRadarLerp);
         moveRadarLerp = null;
@@ -201,7 +188,7 @@ const moveRadar = (gpxFound, wpIndex) => {
         return (gpxFound.times[wpIndex + 1] - gpxFound.times[wpIndex]);
     };
     const lerpTime = getLerpTime();
-    
+
 
     /* the lerp
     interval routine */
@@ -213,9 +200,43 @@ const moveRadar = (gpxFound, wpIndex) => {
             if (t < lerpTime) {
                 let lerpValue = t / lerpTime;
                 Cesium.Cartesian3.lerp(initPos, endPos, lerpValue, radarPos)
-                Player.radar.position = radarPos;
+                Player.radarProxy.position = radarPos;
+
+                if (!map.viewer.trackedEntity) {
+
+                    /// this code will be executed every time a new marker is reached,
+                    /// or when we seek the video.
+                    /// I don't know exactly when it's called but it work...
+
+                    // /// get the heading from initPos - endPos
+                    // let heading = getHeadingPitchFromPoints(initPos, endPos);
+
+                    // /// unlink the placeholder, fade out, link again and fade in
+                    // mapPlaceholder.linkedEntity = null;
+                    // mapPlaceholder.fadeOut(null, function () {
+                    //     mapPlaceholder.heading = heading;
+                    //     mapPlaceholder.linkedEntity = cameraTarget;
+                    //     mapPlaceholder.fadeIn();
+                    // })
+
+                    // if (cameraLinkButton.isLinked) {
+                    // jumpMap(heading);
+                    // }
+                    radarLinked = false;
+                    entityUtils.fadeOut(Player.radar, () => {
+                        Player.radar.center = Player.radarProxy.position._value;
+                        entityUtils.fadeIn(Player.radar);
+                        radarLinked = true;
+                    });
+                    jumpMap();
+
+                } else {
+                    if (radarLinked)
+                        Player.radar.center = Player.radarProxy.position._value;
+                }
+
             } else {
-                moveRadar(gpxFound, wpIndex + 1);
+                moveMap(gpxFound, wpIndex + 1);
             }
         };
     }, sampleInterval);
@@ -254,12 +275,7 @@ var fakePlayer = () => {
     }, samplerate);
 };
 window.play = fakePlayer;
-window.stop = function(){
-    play = false;
+window.stop = function () {
+    console.log("STOP")
+    playerPlaying = false;
 }
-
-
-
-setInterval(function(){
-    console.log(map.viewer.trackedEntity)
-}, 3000)

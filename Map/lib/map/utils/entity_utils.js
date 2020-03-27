@@ -4,30 +4,34 @@ import {
 
 
 export function fadeIn(entity, callback = null, time = null) {
+    console.log("fade in")
     if (entity.opacity !== 1)
-        fade(entity, 0, 1, callback, time);
-    // this.isVisible = true;
+        fadeFunc(entity, 0, 1, callback, time);
+    else {
+        if (callback) callback();
+    }
 };
 
 export function fadeOut(entity, callback = null, time = null) {
+    console.log("fade out")
     if (entity.opacity !== 0)
-        fade(entity, 1, 0, callback, time);
-    // this.isVisible = false;
+        fadeFunc(entity, 1, 0, callback, time);
+    else {
+        if (callback) callback();
+    }
 };
 
 export function show(entity) {
-    this.entity.billboard.color = new Cesium.Color(1.0, 1.0, 1.0, 1.0);
-    // this.isVisible = true;
+    entity.billboard.color = new Cesium.Color(1.0, 1.0, 1.0, 1.0);
 };
 
 export function hide(entity) {
-    this.entity.billboard.color = new Cesium.Color(1.0, 1.0, 1.0, 0.0);
-    // this.isVisible = false;
+    entity.billboard.color = new Cesium.Color(1.0, 1.0, 1.0, 0.0);
 };
 
 var lerp = null;
 
-function fade(entity, from, to, callback, time) {
+function fadeFunc(entity, from, to, callback, time) {
     let lerpTime = time ? time : 1000; /// default fade time
     let sampleInterval = 50;
     let initTime = 0;

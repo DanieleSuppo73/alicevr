@@ -66,7 +66,7 @@ map.onStarted.push(function () {
 
         console.log(Loader.root.asset)
 
-        Player.init();
+        
 
         // // /// DEBUG : show circle
         // map.disableCulling();
@@ -106,6 +106,7 @@ map.onReady.push(function () {
     const mapChangeSensitivity = 0.3; /// default 0.5
     map.camera.percentageChanged = mapChangeSensitivity;
 
+    Player.init();
 
     // /// fly
 

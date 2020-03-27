@@ -1,7 +1,6 @@
 import map from "../map.js";
 
 
-
 var fixedHalfRadius = 0;
 var semiAngle = 2 * Math.PI / 180;
 var getFixedRadiusInterval = null;
@@ -13,8 +12,8 @@ function getPropertiesFromCategory(category, radius) {
     let properties = {
         semiMinorAxis: radius,
         semiMajorAxis: radius,
-        height: 5,
-        heightReference: Cesium.HeightReference.RELATIVE_TO_GROUND,
+        height: 0,
+        heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
         opacity: 1,
         color: new Cesium.Cartesian3(1, 1, 1),
         category: category,
@@ -48,6 +47,12 @@ function getPropertiesFromCategory(category, radius) {
                 properties.color = new Cesium.Cartesian3(0, 0, 1);
                 properties.opacity = 0.2;
                 break;
+
+            case "TEST":
+                properties.semiMinorAxis = 100;
+                properties.semiMajorAxis = 100;
+                properties.image = "Map/images/billboards/test.svg";
+                break;
         }
     }
     return properties;
@@ -60,11 +65,15 @@ function getPropertiesFromCategory(category, radius) {
 
 export default class Ellipse {
 
-    static draw(center, category, radius = null, collection = null) {
+    static draw(pos, category, radius = null, collection = null) {
 
         let properties = getPropertiesFromCategory(category, radius);
         const entity = map.viewer.entities.add({
-            position: center,
+            // position: center,
+            center: pos,
+            position: new Cesium.CallbackProperty(function () {
+                return entity.center;
+            }, false),
             color: properties.color,
             opacity: properties.opacity,
             category: category,
@@ -89,10 +98,10 @@ export default class Ellipse {
         if (category === "RADAR" && !getFixedRadiusInterval) {
             getFixedRadiusInterval = setInterval(function () {
                 const camPos = map.camera.positionWC;
-                const pos = entity.position._value;
+                const pos = entity.center;
                 const dist = Cesium.Cartesian3.distance(pos, camPos);
                 fixedHalfRadius = dist * Math.tan(semiAngle);
-            }, 10);
+            }, 1000);
         }
 
         if (collection) collection.push(entity);
