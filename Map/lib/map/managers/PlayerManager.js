@@ -7,7 +7,7 @@ import * as jsUtils from "../../../../lib/jsUtils.js";
 
 
 
-export default class PlayerManager {
+export default class Player {
     static init() {
         let video = Loader.root.asset;
         let t = Loader.root.getAssetByClass("Track", video);
@@ -16,7 +16,7 @@ export default class PlayerManager {
         gpx = t.tracks;
     };
 };
-PlayerManager.radar = null;
+Player.radar = null;
 
 
 
@@ -94,9 +94,9 @@ const onFoundMarkerIndex = i => {
                         ii : ii + 1;
                    
                     /* draw RADAR if not exist */
-                    if (!PlayerManager.radar) {
+                    if (!Player.radar) {
                         const position = gpxFound.positions[wpIndex];
-                        PlayerManager.radar = Ellipse.draw(position, "RADAR");
+                        Player.radar = Ellipse.draw(position, "RADAR");
                     } 
 
                     moveRadar(gpxFound, wpIndex);
@@ -157,7 +157,7 @@ const moveRadar = (gpxFound, wpIndex) => {
             if (t < lerpTime) {
                 let lerpValue = t / lerpTime;
                 Cesium.Cartesian3.lerp(initPos, endPos, lerpValue, radarPos)
-                PlayerManager.radar.position = radarPos;
+                Player.radar.position = radarPos;
             } else {
                 moveRadar(gpxFound, wpIndex + 1);
             }

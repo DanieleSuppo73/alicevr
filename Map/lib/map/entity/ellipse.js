@@ -13,7 +13,7 @@ function getPropertiesFromCategory(category, radius) {
     let properties = {
         semiMinorAxis: radius,
         semiMajorAxis: radius,
-        height: 0,
+        height: 5,
         heightReference: Cesium.HeightReference.RELATIVE_TO_GROUND,
         opacity: 1,
         color: new Cesium.Cartesian3(1, 1, 1),
@@ -48,13 +48,6 @@ function getPropertiesFromCategory(category, radius) {
                 properties.color = new Cesium.Cartesian3(0, 0, 1);
                 properties.opacity = 0.2;
                 break;
-
-            case "ANIM":
-                properties.color = new Cesium.Cartesian3(1, 1, 1);
-                properties.opacity = 1;
-                properties.image = "http://cesiumjs.org/videos/Sandcastle/big-buck-bunny_trailer.webm";
-                break;
-
         }
     }
     return properties;
