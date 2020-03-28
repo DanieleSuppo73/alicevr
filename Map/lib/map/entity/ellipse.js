@@ -25,12 +25,17 @@ function getPropertiesFromCategory(category, radius) {
 
             case "RADAR":
                 properties.semiMinorAxis = new Cesium.CallbackProperty(function () {
-                    return fixedHalfRadius;
+                    let dist = Cesium.Cartesian3.distance(map.camera.positionWC, entity.center);
+                    return dist * Math.tan(semiAngle) * 3;
                 }, false);
                 properties.semiMajorAxis = new Cesium.CallbackProperty(function () {
-                    return fixedHalfRadius;
+                    let dist = Cesium.Cartesian3.distance(map.camera.positionWC, entity.center);
+                    return dist * Math.tan(semiAngle) * 3;
                 }, false);
+                properties.semiMinorAxis = 100;
+                properties.semiMajorAxis = 100;
                 properties.image = "Map/images/billboard_radar.svg";
+                properties.opacity = 0;
                 break;
 
             case "RED_TRANSPARENT":
@@ -69,8 +74,8 @@ export default class Ellipse {
 
         let properties = getPropertiesFromCategory(category, radius);
         const entity = map.viewer.entities.add({
-            // position: center,
             center: pos,
+            size: 2,
             position: new Cesium.CallbackProperty(function () {
                 return entity.center;
             }, false),
@@ -78,8 +83,14 @@ export default class Ellipse {
             opacity: properties.opacity,
             category: category,
             ellipse: {
-                semiMinorAxis: properties.semiMinorAxis,
-                semiMajorAxis: properties.semiMajorAxis,
+                semiMinorAxis: new Cesium.CallbackProperty(function () {
+                    let dist = Cesium.Cartesian3.distance(map.camera.positionWC, entity.center);
+                    return dist * Math.tan(semiAngle) * entity.size;
+                }, false),
+                semiMajorAxis: new Cesium.CallbackProperty(function () {
+                    let dist = Cesium.Cartesian3.distance(map.camera.positionWC, entity.center);
+                    return dist * Math.tan(semiAngle) * entity.size;
+                }, false),
                 height: properties.height,
                 material: new Cesium.ImageMaterialProperty({
                     image: properties.image,
@@ -94,31 +105,13 @@ export default class Ellipse {
         });
 
 
-        /// update radius to keep it fixed
-        if (category === "RADAR" && !getFixedRadiusInterval) {
-            getFixedRadiusInterval = setInterval(function () {
-                const camPos = map.camera.positionWC;
-                const pos = entity.center;
-                const dist = Cesium.Cartesian3.distance(pos, camPos);
-                fixedHalfRadius = dist * Math.tan(semiAngle);
-            }, 1000);
-        }
-
         if (collection) collection.push(entity);
-
         return entity;
     };
 
 
 
-
-    /// REMOVE
     static remove(entity) {
-
         map.viewer.entities.remove(entity);
-
-        /// clear interval
-        if (getFixedRadiusInterval) clearInterval(getFixedRadiusInterval);
-        getFixedRadiusInterval = null;
     };
 };

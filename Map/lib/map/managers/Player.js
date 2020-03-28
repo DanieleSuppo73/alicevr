@@ -25,6 +25,14 @@ export default class Player {
                 disableDepthTestDistance: Number.POSITIVE_INFINITY,
             }
         });
+
+
+       
+        let pos = gpx[0].positions[0];
+        Player.radar = Ellipse.draw(pos, "RADAR");
+        // Player.radar.show = false;
+
+
     };
 };
 Player.radarProxy = null;
@@ -49,7 +57,8 @@ dispatcher.receiveMessage("playerSeeking", () => {
 dispatcher.receiveMessage("playerEnded", () => {
     foundIndex = null;
     entityUtils.fadeOut(Player.radar, () => {
-        Player.radar = null;
+        Player.radar.show = false;
+        idle = true;
     });
 });
 
@@ -66,7 +75,7 @@ var moveRadarLerp = null;
 var playerPlaying = false;
 var radarAngle = 0;
 var radarLinked = true;
-
+var idle = true;
 
 
 
@@ -111,24 +120,17 @@ const onFoundMarkerIndex = i => {
                         gpxFound.times[ii + 1] - gpxTime ?
                         ii : ii + 1;
 
-                    /* draw RADAR if not exist */
-                    if (!Player.radar) {
-                        const position = gpxFound.positions[wpIndex];
-                        Player.radar = Ellipse.draw(position, "TEST");
-                        Player.radar.opacity = 0;
-                    }
-
                     map.viewer.trackedEntity = null;
-                    moveMap(gpxFound, wpIndex);
+                    lerp(gpxFound, wpIndex);
                     break;
                 };
             };
         };
+    }
 
-
-        /* use "longitude" and "latitude" 
-        properties of the marker */
-    } else {
+    /* use "longitude" and "latitude" 
+    properties of the marker */
+    else {
 
     }
 
@@ -138,42 +140,46 @@ const onFoundMarkerIndex = i => {
 
 
 
-
-const jumpMap = (heading = null, pitch = null, range = null) => {
+/*****************
+jump to new marker position
+******************/
+const jump = (heading) => {
 
     /* create boundingsphere around new position */
     const pos = Player.radarProxy.position._value;
     const boundingSphere = new Cesium.BoundingSphere(pos, 1000);
 
     let h = heading ? heading : map.viewer.scene.camera.heading;
-    let p = pitch ? pitch : -0.52;
-    let r = range ? range : 500;
-
-    // if (!videoMarkers.firstReached) videoMarkers.firstReached = true;
+    let p = idle ? -0.52 : map.viewer.scene.camera.pitch;
+    let r = idle ? 500 : map.range;
+    let easingFunction = idle ? Cesium.EasingFunction.QUADRACTIC_IN_OUT : null;
 
     map.viewer.trackedEntity = Player.radarProxy;
     map.viewer.camera.flyToBoundingSphere(boundingSphere, {
         offset: new Cesium.HeadingPitchRange(h, p, r),
+        easingFunction: easingFunction,
     });
+
+    if (idle) idle = false;
 }
 
 
 
 
-const moveMap = (gpxFound, wpIndex) => {
+const lerp = (gpxFound, wpIndex) => {
     if (moveRadarLerp) {
         clearInterval(moveRadarLerp);
         moveRadarLerp = null;
     };
     const initPos = gpxFound.positions[wpIndex];
     const endPos = gpxFound.positions[wpIndex + 1];
+    const travelHeading = map.getHeadingPitchFromPoints(initPos, endPos);
+
     let radarPos = new Cesium.Cartesian3();
 
-    // /// we want to update the placeholder rotation
-    // /// at least every time the lerp is started
-    // if (!newMarkerReached)
-    //     mapPlaceholder.heading = getHeadingPitchFromPoints(initPos, endPos);
-    // else newMarkerReached = false;
+    /* rotate the texture of the RADAR */
+    if (map.viewer.trackedEntity || idle)
+        Player.radar.ellipse.stRotation = travelHeading;
 
 
     const getLerpTime = () => {
@@ -199,36 +205,23 @@ const moveMap = (gpxFound, wpIndex) => {
             t += sampleInterval;
             if (t < lerpTime) {
                 let lerpValue = t / lerpTime;
-                Cesium.Cartesian3.lerp(initPos, endPos, lerpValue, radarPos)
+                Cesium.Cartesian3.lerp(initPos, endPos, lerpValue, radarPos);
                 Player.radarProxy.position = radarPos;
 
+                /* when a new marker is reached */
                 if (!map.viewer.trackedEntity) {
 
-                    /// this code will be executed every time a new marker is reached,
-                    /// or when we seek the video.
-                    /// I don't know exactly when it's called but it work...
-
-                    // /// get the heading from initPos - endPos
-                    // let heading = getHeadingPitchFromPoints(initPos, endPos);
-
-                    // /// unlink the placeholder, fade out, link again and fade in
-                    // mapPlaceholder.linkedEntity = null;
-                    // mapPlaceholder.fadeOut(null, function () {
-                    //     mapPlaceholder.heading = heading;
-                    //     mapPlaceholder.linkedEntity = cameraTarget;
-                    //     mapPlaceholder.fadeIn();
-                    // })
-
                     // if (cameraLinkButton.isLinked) {
-                    // jumpMap(heading);
+                    // jump(heading);
                     // }
                     radarLinked = false;
                     entityUtils.fadeOut(Player.radar, () => {
                         Player.radar.center = Player.radarProxy.position._value;
+                        Player.radar.show = true;
                         entityUtils.fadeIn(Player.radar);
                         radarLinked = true;
                     });
-                    jumpMap();
+                    jump(travelHeading);
 
                 } else {
                     if (radarLinked)
@@ -236,7 +229,7 @@ const moveMap = (gpxFound, wpIndex) => {
                 }
 
             } else {
-                moveMap(gpxFound, wpIndex + 1);
+                lerp(gpxFound, wpIndex + 1);
             }
         };
     }, sampleInterval);
