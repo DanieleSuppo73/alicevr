@@ -100,36 +100,33 @@ const map = {
 
 
 
-    /// return the coordinates with the elevation sampled from the terrain
-    insertHeightInCoordinates(Obj, callback) {
-        let positions = [];
-        for (let i = 0; i < Obj.coordinates.length; i += 2) {
-            positions.push(Cesium.Cartographic.fromDegrees(Obj.coordinates[i], Obj.coordinates[i + 1]));
+    /* take an array of lon-lat and return Cartesian positions
+    with the height sampled from the terrain plus @meters */
+    addHeightToCoordinatesAndReturnCartesians(lonLatArray, meters, callback) {
+        let cartographics = [];
+        for (let i = 0; i < lonLatArray.length; i += 2) {
+            cartographics.push(Cesium.Cartographic.fromDegrees(lonLatArray[i], lonLatArray[i + 1]));
         }
 
-        let promise = Cesium.sampleTerrainMostDetailed(terrainProvider, positions);
-        Cesium.when(promise, function (updatedPositions) {
-            // positions[0].height and positions[1].height have been updated.
-            // updatedPositions is just a reference to positions.
-
+        /// add height to the cartographics array
+        let promise = Cesium.sampleTerrainMostDetailed(map.viewer.terrainProvider, cartographics);
+        Cesium.when(promise, function () {
             /// add the height from cartesian to the array of log lat coordinates
             let i = 0;
             let ii = 0;
-            while (i <= Obj.coordinates.length) {
+            while (i <= lonLatArray.length) {
                 i += 2;
-                if (ii == positions.length) {
-                    ii = positions.length - 1;
+                if (ii == cartographics.length) {
+                    ii = cartographics.length - 1;
                 }
-                let metersToAddToHeight = 5;
-                Obj.coordinates.splice(i, 0, positions[ii].height + metersToAddToHeight);
+                lonLatArray.splice(i, 0, cartographics[ii].height + meters);
                 i++;
                 ii++;
             }
-
             /// remove last element (...?)
-            Obj.coordinates.pop();
-
-            callback(Obj);
+            lonLatArray.pop();
+            const cartesians = Cesium.Cartesian3.fromDegreesArrayHeights(lonLatArray);
+            callback(cartesians);
         });
     },
 

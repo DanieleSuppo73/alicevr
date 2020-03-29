@@ -90,7 +90,7 @@ export default class Gpx {
             };
 
 
-            this.addHeightToCoordinatesAndReturnCartesians(lonLatArray, 5, (cartesians) => {
+            map.addHeightToCoordinatesAndReturnCartesians(lonLatArray, 5, (cartesians) => {
                 this.positions = cartesians;
 
                 /* draw the polyline */
@@ -111,38 +111,7 @@ export default class Gpx {
 
 
 
-    /* take an array of lon-lat and return Cartesian positions
-    with the height sampled from the terrain plus @meters */
-    addHeightToCoordinatesAndReturnCartesians(lonLatArray, meters, callback) {
-        let cartographics = [];
-        for (let i = 0; i < lonLatArray.length; i += 2) {
-            cartographics.push(Cesium.Cartographic.fromDegrees(lonLatArray[i], lonLatArray[i + 1]));
-        }
-        let promise = Cesium.sampleTerrainMostDetailed(map.viewer.terrainProvider, cartographics);
-        Cesium.when(promise, function () {
-            /// add the height from cartesian to the array of log lat coordinates
-            let i = 0;
-            let ii = 0;
-            while (i <= lonLatArray.length) {
-                i += 2;
-                if (ii == cartographics.length) {
-                    ii = cartographics.length - 1;
-                }
-                lonLatArray.splice(i, 0, cartographics[ii].height + meters);
-                i++;
-                ii++;
-            }
-            /// remove last element (...?)
-            lonLatArray.pop();
-            const cartesians = Cesium.Cartesian3.fromDegreesArrayHeights(lonLatArray);
-            callback(cartesians);
-        });
-    };
-
-
-
-
-
+  
     /* STATIC
     load text file from url */
     static loadTxt(url) {

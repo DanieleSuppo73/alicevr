@@ -62,7 +62,7 @@ map.onStarted.push(function () {
     // TR3.load();
 
 
-    Loader.load("1570451964288", () => {
+    Loader.load("1573827851085", () => {
 
         console.log(Loader.root.asset)
 
@@ -106,6 +106,9 @@ map.onReady.push(function () {
     const mapChangeSensitivity = 0.3; /// default 0.5
     map.camera.percentageChanged = mapChangeSensitivity;
 
+    
+    
+    
     Player.init();
 
     // /// fly

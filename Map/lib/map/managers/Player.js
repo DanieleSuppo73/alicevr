@@ -2,23 +2,29 @@ import {
     dispatcher
 } from "../../../../lib/dispatcher.js";
 import Loader from "../managers/Loader.js";
+import map from "../map.js";
 import Ellipse from "../entity/Ellipse.js";
 import * as jsUtils from "../../../../lib/jsUtils.js";
-import map from "../map.js";
 import * as entityUtils from "../../../lib/map/utils/entity_utils.js";
 
 
 export default class Player {
     static init() {
         let video = Loader.root.asset;
-        let t = Loader.root.getAssetByClass("Track", video);
+
+        let Track = Loader.root.getAssetByClass("Track", video);
+        if (typeof Track !== "undefined") gpx = Track.tracks;
+
         markers = jsUtils.arrayOfObjectsCloneAndIncrease(video.markers);
         markers[markers.length - 1].timecode += 1000; /// add 100 sec to last marker
-        gpx = t.tracks;
+
+
+
+
 
 
         Player.radarProxy = map.viewer.entities.add({
-            position: new Cesium.Cartesian3(0, 0, 0),
+            position: video.boundingSphere.center,
             point: {
                 pixelSize: 10,
                 color: new Cesium.Color(1, 0.9, 0, 0),
@@ -27,10 +33,8 @@ export default class Player {
         });
 
 
-       
-        let pos = gpx[0].positions[0];
-        Player.radar = Ellipse.draw(pos, "RADAR");
-        // Player.radar.show = false;
+        Player.radar = Ellipse.draw(video.boundingSphere.center, "RADAR");
+
 
 
     };
@@ -57,8 +61,9 @@ dispatcher.receiveMessage("playerSeeking", () => {
 dispatcher.receiveMessage("playerEnded", () => {
     foundIndex = null;
     entityUtils.fadeOut(Player.radar, () => {
-        Player.radar.show = false;
         idle = true;
+        Player.radarProxy = null;
+        Player.radar = null;
     });
 });
 
@@ -106,8 +111,9 @@ on new marker detected
 **********************/
 const onFoundMarkerIndex = i => {
 
-    /* get the position from
-    the gpx array of the video */
+
+    /* get the Cartesian position from
+    the gpx time, if provided */
     if (markers[i].gpxTime) {
         const gpxTime = markers[i].gpxTime;
 
@@ -115,7 +121,7 @@ const onFoundMarkerIndex = i => {
             for (let ii = 0; ii < gpx[i].times.length - 1; ii++) {
                 if (gpxTime >= gpx[i].times[ii] && gpxTime < gpx[i].times[ii + 1]) {
 
-                    let gpxFound = gpx[i];
+                    const gpxFound = gpx[i];
                     let wpIndex = gpxTime - gpxFound.times[ii] <
                         gpxFound.times[ii + 1] - gpxTime ?
                         ii : ii + 1;
@@ -128,14 +134,66 @@ const onFoundMarkerIndex = i => {
         };
     }
 
-    /* use "longitude" and "latitude" 
-    properties of the marker */
+
+
+    /* or get the Cartesian position from
+    the gpx longitude and latitude */
     else {
 
+        console.log("USE LONG - LAT !!")
+
+        const lonLatArray = [markers[i].longitude, markers[i].latitude];
+        console.log(lonLatArray)
+
+        map.addHeightToCoordinatesAndReturnCartesians(lonLatArray, 5, (cartesians) => {
+            const position = cartesians[0];
+
+            // console.log(cartesians)
+            console.log(position)
+
+
+
+            // return;
+
+
+
+            /* if in markers has been
+            specified a track to follow */
+            if (markers[i].trackToFollow) {
+                const gpxFound = gpx[trackToFollow];
+
+                /// find the nearest waypoint
+                let minDist = 9999999;
+                let wpIndex = 0;
+                for (let i = 0; i < gpxFound.positions.length; i++) {
+                    const dist = Cesium.Cartesian3.distance(position, gpxFound.positions[i]);
+                    if (dist < minDist) {
+                        minDist = dist;
+                        wpIndex = i;
+                    }
+                }
+                console.log(wpIndex)
+                lerp(gpxFound, wpIndex);
+            }
+
+
+            /* or simply jump the radar
+            without lerp */
+            else {
+                console.log("SIMPLY JUMP!!")
+                Player.radarProxy.position = position;
+
+                entityUtils.fadeOut(Player.radar, () => {
+                    Player.radar.center = Player.radarProxy.position._value;
+                    entityUtils.fadeIn(Player.radar);
+                });
+                jump();
+            }
+        });
+
     }
+};
 
-
-}
 
 
 
@@ -143,7 +201,7 @@ const onFoundMarkerIndex = i => {
 /*****************
 jump to new marker position
 ******************/
-const jump = (heading) => {
+const jump = (heading = null) => {
 
     /* create boundingsphere around new position */
     const pos = Player.radarProxy.position._value;
@@ -166,6 +224,9 @@ const jump = (heading) => {
 
 
 
+/*****************
+lerp the radar position
+******************/
 const lerp = (gpxFound, wpIndex) => {
     if (moveRadarLerp) {
         clearInterval(moveRadarLerp);
@@ -175,7 +236,7 @@ const lerp = (gpxFound, wpIndex) => {
     const endPos = gpxFound.positions[wpIndex + 1];
     const travelHeading = map.getHeadingPitchFromPoints(initPos, endPos);
 
-    let radarPos = new Cesium.Cartesian3();
+    let position = new Cesium.Cartesian3();
 
     /* rotate the texture of the RADAR */
     if (map.viewer.trackedEntity || idle)
@@ -205,8 +266,8 @@ const lerp = (gpxFound, wpIndex) => {
             t += sampleInterval;
             if (t < lerpTime) {
                 let lerpValue = t / lerpTime;
-                Cesium.Cartesian3.lerp(initPos, endPos, lerpValue, radarPos);
-                Player.radarProxy.position = radarPos;
+                Cesium.Cartesian3.lerp(initPos, endPos, lerpValue, position);
+                Player.radarProxy.position = position;
 
                 /* when a new marker is reached */
                 if (!map.viewer.trackedEntity) {
@@ -217,7 +278,6 @@ const lerp = (gpxFound, wpIndex) => {
                     radarLinked = false;
                     entityUtils.fadeOut(Player.radar, () => {
                         Player.radar.center = Player.radarProxy.position._value;
-                        Player.radar.show = true;
                         entityUtils.fadeIn(Player.radar);
                         radarLinked = true;
                     });
