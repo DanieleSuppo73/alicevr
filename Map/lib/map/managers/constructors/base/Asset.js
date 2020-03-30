@@ -34,16 +34,3 @@ export default class Asset {
 
 Asset.boundingSphereLoading = 0;
 Asset.onEndLoadingCallback = null;
-Asset.root = {
-    asset: null
-}; /// it will be the clone of "Loader.root"
-
-
-/* load async "Loader.root",
-to derive funcionalities to "Asset.root"
-(just not to have to load "Loader" module) */
-async function loadRoot() {
-    let loader = await import('../../Loader.js');
-    Asset.root = loader.default.root;
-}
-loadRoot();

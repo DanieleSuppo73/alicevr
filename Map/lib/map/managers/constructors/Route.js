@@ -1,4 +1,5 @@
 import Asset from "./base/Asset.js";
+import Loader from "../Loader.js";
 import Gpx from "./extensions/Gpx.js";
 import * as jsUtils from "../../../../../lib/jsUtils.js";
 
@@ -12,30 +13,15 @@ export default class Route extends Asset {
 
     setup(xml) {
 
-        /* sometimes "Asset.root" is not immediately available,
-        so we must check when it's available */
-        const waitRoot = () =>
-            new Promise(resolve => setTimeout(() => {
-                if (Asset.root) resolve();
-                else {
-                    setTimeout(() => {
-                        resolve(waitRoot());
-                    }, 0);
-                }
-            }, 50));
-
-
-        waitRoot().then(() => {
-            let parent = Asset.root.getAssetById(this.parentId);
-            let track = Asset.root.getAssetByClass("Track", parent);
-            if (track) {
-                /* wait for Track asset ready */
-                jsUtils.waitObjectProperty(track, "ready", true).then(() => {
-                    this.n = 0;
-                    this.getStartEndPoints(track.tracks, xml);
-                });
-            };
-        });
+        let parent = Loader.root.getAssetById(this.parentId);
+        let track = Loader.root.getAssetByClass("Track", parent);
+        if (track) {
+            /* wait for Track asset ready */
+            jsUtils.waitObjectProperty(track, "ready", true).then(() => {
+                this.n = 0;
+                this.getStartEndPoints(track.tracks, xml);
+            });
+        };
     };
 
     getStartEndPoints(tracks, xml) {
