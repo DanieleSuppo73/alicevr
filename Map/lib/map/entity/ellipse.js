@@ -1,9 +1,9 @@
 import map from "../map.js";
 
 
-var fixedHalfRadius = 0;
-var semiAngle = 2 * Math.PI / 180;
-var getFixedRadiusInterval = null;
+
+const semiAngle = 2 * Math.PI / 180;
+
 
 
 
@@ -34,7 +34,22 @@ function getPropertiesFromCategory(category, radius) {
                 }, false);
                 properties.semiMinorAxis = 100;
                 properties.semiMajorAxis = 100;
-                properties.image = "Map/images/billboard_radar.svg";
+                properties.image = "Map/images/billboards/radar.svg";
+                properties.opacity = 0;
+                break;
+
+            case "POSITION":
+                properties.semiMinorAxis = new Cesium.CallbackProperty(function () {
+                    let dist = Cesium.Cartesian3.distance(map.camera.positionWC, entity.center);
+                    return dist * Math.tan(semiAngle) * 3;
+                }, false);
+                properties.semiMajorAxis = new Cesium.CallbackProperty(function () {
+                    let dist = Cesium.Cartesian3.distance(map.camera.positionWC, entity.center);
+                    return dist * Math.tan(semiAngle) * 3;
+                }, false);
+                properties.semiMinorAxis = 100;
+                properties.semiMajorAxis = 100;
+                properties.image = "Map/images/billboards/position.svg";
                 properties.opacity = 0;
                 break;
 
@@ -74,10 +89,10 @@ export default class Ellipse {
 
         let entity;
 
-        
-        if (category === "RADAR"){
+
+        if (category === "RADAR" || category === "POSITION") {
             let properties = getPropertiesFromCategory(category, radius);
-        
+
             entity = map.viewer.entities.add({
                 center: pos,
                 size: 2,
@@ -112,41 +127,8 @@ export default class Ellipse {
 
 
 
-        if (category === "NO_RADAR"){
-            let properties = getPropertiesFromCategory(category, radius);
-        
-            entity = map.viewer.entities.add({
-                center: pos,
-                size: 2,
-                position: entity.center,
-                color: properties.color,
-                opacity: properties.opacity,
-                category: category,
-                ellipse: {
-                    semiMinorAxis: new Cesium.CallbackProperty(function () {
-                        let dist = Cesium.Cartesian3.distance(map.camera.positionWC, entity.center);
-                        return dist * Math.tan(semiAngle) * entity.size;
-                    }, false),
-                    semiMajorAxis: new Cesium.CallbackProperty(function () {
-                        let dist = Cesium.Cartesian3.distance(map.camera.positionWC, entity.center);
-                        return dist * Math.tan(semiAngle) * entity.size;
-                    }, false),
-                    height: properties.height,
-                    material: new Cesium.ImageMaterialProperty({
-                        image: properties.image,
-                        color: new Cesium.CallbackProperty(function () {
-                            return new Cesium.Color(entity.color.x, entity.color.y, entity.color.z, entity.opacity)
-                        }, false),
-                        transparent: true,
-                    }),
-                    stRotation: 0,
-                    heightReference: properties.heightReference,
-                }
-            });
-        }
 
 
-        
 
 
         if (collection) collection.push(entity);

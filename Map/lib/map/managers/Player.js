@@ -4,39 +4,33 @@ import {
 import Loader from "../managers/Loader.js";
 import map from "../map.js";
 import Ellipse from "../entity/Ellipse.js";
+import Point from "../entity/Point.js";
 import * as jsUtils from "../../../../lib/jsUtils.js";
 import * as entityUtils from "../../../lib/map/utils/entity_utils.js";
 
 
 export default class Player {
     static init() {
-        let video = Loader.root.asset;
+        const video = Loader.root.asset;
 
-        let Track = Loader.root.getAssetByClass("Track", video);
-        if (typeof Track !== "undefined") gpx = Track.tracks;
+        /* create proxy */
+        Player.radarProxy = Point.draw(video.boundingSphere.center, "PROXY");
 
+        let track = Loader.root.getAssetByClass("Track", video);
+
+        if (typeof track !== "undefined") {
+            gpx = track.tracks;
+
+            /* create radar */
+            if (!Player.radar) Player.radar = Ellipse.draw(video.boundingSphere.center, "RADAR");
+        } else {
+            /* create radar */
+            if (!Player.radar) Player.radar = Ellipse.draw(video.boundingSphere.center, "POSITION");
+        }
+
+        /* create markers */
         markers = jsUtils.arrayOfObjectsCloneAndIncrease(video.markers);
         markers[markers.length - 1].timecode += 1000; /// add 100 sec to last marker
-
-
-
-
-
-
-        Player.radarProxy = map.viewer.entities.add({
-            position: video.boundingSphere.center,
-            point: {
-                pixelSize: 10,
-                color: new Cesium.Color(1, 0.9, 0, 0),
-                disableDepthTestDistance: Number.POSITIVE_INFINITY,
-            }
-        });
-
-
-        Player.radar = Ellipse.draw(video.boundingSphere.center, "RADAR");
-
-
-
     };
 };
 Player.radarProxy = null;
@@ -60,11 +54,8 @@ dispatcher.receiveMessage("playerSeeking", () => {
 });
 dispatcher.receiveMessage("playerEnded", () => {
     foundIndex = null;
-    entityUtils.fadeOut(Player.radar, () => {
-        idle = true;
-        Player.radarProxy = null;
-        Player.radar = null;
-    });
+    idle = true;
+    entityUtils.fadeOut(Player.radar);
 });
 
 
@@ -111,7 +102,6 @@ on new marker detected
 **********************/
 const onFoundMarkerIndex = i => {
 
-
     /* get the Cartesian position from
     the gpx time, if provided */
     if (markers[i].gpxTime) {
@@ -140,28 +130,17 @@ const onFoundMarkerIndex = i => {
     the gpx longitude and latitude */
     else {
 
-        console.log("USE LONG - LAT !!")
-
+        /* create position */
         const lonLatArray = [markers[i].longitude, markers[i].latitude];
-        console.log(lonLatArray)
-
         map.addHeightToCoordinatesAndReturnCartesians(lonLatArray, 5, (cartesians) => {
             const position = cartesians[0];
-
-            // console.log(cartesians)
-            console.log(position)
-
-
-
-            // return;
-
 
 
             /* if in markers has been
             specified a track to follow */
             if (markers[i].trackToFollow) {
-                const gpxFound = gpx[trackToFollow];
 
+                const gpxFound = gpx[markers[i].trackToFollow];
                 /// find the nearest waypoint
                 let minDist = 9999999;
                 let wpIndex = 0;
@@ -172,7 +151,7 @@ const onFoundMarkerIndex = i => {
                         wpIndex = i;
                     }
                 }
-                console.log(wpIndex)
+                map.viewer.trackedEntity = null;
                 lerp(gpxFound, wpIndex);
             }
 
@@ -180,18 +159,15 @@ const onFoundMarkerIndex = i => {
             /* or simply jump the radar
             without lerp */
             else {
-                console.log("SIMPLY JUMP!!")
                 Player.radarProxy.position = position;
-
                 entityUtils.fadeOut(Player.radar, () => {
-                    Player.radar.center = Player.radarProxy.position._value;
+                    Player.radar.position = Player.radarProxy.position._value;
                     entityUtils.fadeIn(Player.radar);
                 });
                 jump();
             }
         });
-
-    }
+    };
 };
 
 
@@ -212,7 +188,7 @@ const jump = (heading = null) => {
     let r = idle ? 500 : map.range;
     let easingFunction = idle ? Cesium.EasingFunction.QUADRACTIC_IN_OUT : null;
 
-    map.viewer.trackedEntity = Player.radarProxy;
+    if (heading) map.viewer.trackedEntity = Player.radarProxy;
     map.viewer.camera.flyToBoundingSphere(boundingSphere, {
         offset: new Cesium.HeadingPitchRange(h, p, r),
         easingFunction: easingFunction,
@@ -220,6 +196,26 @@ const jump = (heading = null) => {
 
     if (idle) idle = false;
 }
+// const jump = (heading = null) => {
+
+//     /* create boundingsphere around new position */
+//     const pos = Player.radarProxy.position._value;
+//     const boundingSphere = new Cesium.BoundingSphere(pos, 1000);
+
+//     let h = heading ? heading : map.viewer.scene.camera.heading;
+//     let p = idle ? -0.52 : map.viewer.scene.camera.pitch;
+//     let r = idle ? 500 : map.range;
+//     let easingFunction = idle ? Cesium.EasingFunction.QUADRACTIC_IN_OUT : null;
+
+//     map.viewer.trackedEntity = Player.radarProxy;
+//     map.viewer.camera.flyToBoundingSphere(boundingSphere, {
+//         offset: new Cesium.HeadingPitchRange(h, p, r),
+//         easingFunction: easingFunction,
+//     });
+
+//     if (idle) idle = false;
+// }
+
 
 
 
@@ -278,6 +274,7 @@ const lerp = (gpxFound, wpIndex) => {
                     radarLinked = false;
                     entityUtils.fadeOut(Player.radar, () => {
                         Player.radar.center = Player.radarProxy.position._value;
+                        Player.radar.ellipse.stRotation = travelHeading;
                         entityUtils.fadeIn(Player.radar);
                         radarLinked = true;
                     });
@@ -319,7 +316,7 @@ var samplerate = 1000;
 var fakePlayer = () => {
     setInterval(() => {
         if (play) {
-            time += 1000 / samplerate;
+            time += samplerate / 1000;
             dispatcher.sendMessage("playerPlaying", {
                 time: time,
                 angle: 0,

@@ -1,35 +1,4 @@
 import map from "../map.js";
-// import {
-//     Maf
-// } from "../../../../lib/Maf.js"
-
-
-
-// function updateOpacity(entity) {
-//     if (map.ready){
-//         let minRange = map.range;
-//         let maxRange = minRange * 4;
-//         let pos = entity.position._value;
-//         let dist = Cesium.Cartesian3.distance(map.viewer.camera.positionWC,
-//             pos);
-
-//         /// get multiplier by min-max range
-//         let rangeMult = 1 - Maf.inverseLerp(minRange, maxRange,
-//             Cesium.Math.clamp(dist, minRange, maxRange));
-
-//         /// get multiplier by min-max distance
-//         let distMult = 1 - Maf.inverseLerp(entity.minDistance, entity
-//             .maxDistance,
-//             Cesium.Math.clamp(dist, entity.minDistance, entity.maxDistance));
-
-//         entity.opacity = rangeMult * distMult;
-//     }
-//     else{
-//         entity.opacity = 1;
-//     }
-// }
-
-
 
 
 function getPropertiesFromCategory(category) {
@@ -46,8 +15,7 @@ function getPropertiesFromCategory(category) {
         scale: 1,
         color: Cesium.Color.WHITE,
         translucencyByDistance: null,
-        // minDistance: 50000,
-        // maxDistance: 800000,
+
 
     };
 
@@ -79,6 +47,12 @@ function getPropertiesFromCategory(category) {
             properties.heightReference = Cesium.HeightReference.NONE;
             properties.color = Cesium.Color.RED.withAlpha(0);
             break;
+
+        case "RADAR":
+            properties.width = 25;
+            properties.height = 25;
+            properties.heightReference = Cesium.HeightReference.NONE;
+            break;
     }
 
     return properties;
@@ -95,49 +69,65 @@ export default class Billboard {
 
         const properties = getPropertiesFromCategory(category)
 
-        const entity = map.viewer.entities.add({
-            opacity: 1, /// default value at start
-            minDistance: properties.minDistance,
-            maxDistance: properties.maxDistance,
-            position: position,
-            category: category,
-            billboard: {
-                image: properties.image,
-                show: properties.show,
-                pixelOffset: properties.pixelOffset,
-                eyeOffset: properties.eyeOffset,
-                horizontalOrigin: properties.horizontalOrigin,
-                verticalOrigin: properties.verticalOrigin,
-                scale: properties.scale,
-                color: properties.color,
-                rotation: properties.rotation,
-                alignedAxis: properties.alignedAxis,
-                width: properties.width,
-                height: properties.height,
-                heightReference: properties.heightReference,
-                disableDepthTestDistance: properties.disableDepthTestDistance,
-                translucencyByDistance: properties.translucencyByDistance,
-            }
-        });
+        let entity;
+
+        switch (category) {
+
+            case "RADAR":
+                entity = map.viewer.entities.add({
+                    opacity: 0, /// default value at start
+                    position: position,
+                    category: category,
+                    billboard: {
+                        image: properties.image,
+                        show: properties.show,
+                        horizontalOrigin: properties.horizontalOrigin,
+                        verticalOrigin: properties.verticalOrigin,
+                        scale: properties.scale,
+                        color: new Cesium.CallbackProperty(function () {
+                            return new Cesium.Color(entity.color.x, entity.color.y, entity.color.z, entity.opacity)
+                        }, false),
+                        width: properties.width,
+                        height: properties.height,
+                        heightReference: properties.heightReference,
+                        disableDepthTestDistance: properties.disableDepthTestDistance,
+                    }
+                });
+                break;
+
+            default:
+                entity = map.viewer.entities.add({
+                    opacity: 1, /// default value at start
+                    position: position,
+                    category: category,
+                    billboard: {
+                        image: properties.image,
+                        show: properties.show,
+                        pixelOffset: properties.pixelOffset,
+                        eyeOffset: properties.eyeOffset,
+                        horizontalOrigin: properties.horizontalOrigin,
+                        verticalOrigin: properties.verticalOrigin,
+                        scale: properties.scale,
+                        color: properties.color,
+                        rotation: properties.rotation,
+                        alignedAxis: properties.alignedAxis,
+                        width: properties.width,
+                        height: properties.height,
+                        heightReference: properties.heightReference,
+                        disableDepthTestDistance: properties.disableDepthTestDistance,
+                        translucencyByDistance: properties.translucencyByDistance,
+                    }
+                });
+        }
+
+
         if (collection) collection.push(entity);
-
-
-        // /// register the listener to camerachanged, 
-        // /// to update this billboard opacity
-        // map.camera.changed.addEventListener(() => {
-        //     updateOpacity(entity);
-        // });
-
-        // /// update opacity immediately
-        // updateOpacity(entity);
-
         return entity;
     };
 
 
     /// REMOVE
     static remove(entity) {
-
         map.viewer.entities.remove(entity);
     };
 };

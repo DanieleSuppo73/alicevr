@@ -52,7 +52,8 @@ export default class Video extends Asset {
                             };
                         };
                         if (elem.timecode) elem.timecode = jsUtils.convertTimeCodeToSeconds(elem.timecode);
-                        if (elem.gpxTime) elem.gpxTime = new Date(Date.parse(elem.gpxTime)).getTime()
+                        if (elem.gpxTime) elem.gpxTime = new Date(Date.parse(elem.gpxTime)).getTime();
+                        if (elem.trackToFollow) elem.trackToFollow = parseInt(elem.trackToFollow) - 1;
 
                         this.markers[i] = elem;
 

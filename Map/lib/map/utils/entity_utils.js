@@ -4,7 +4,6 @@ import {
 
 
 export function fadeIn(entity, callback = null, time = null) {
-    console.log("fade in")
     if (entity.opacity !== 1)
         fadeFunc(entity, 0, 1, callback, time);
     else {
@@ -13,7 +12,6 @@ export function fadeIn(entity, callback = null, time = null) {
 };
 
 export function fadeOut(entity, callback = null, time = null) {
-    console.log("fade out")
     if (entity.opacity !== 0)
         fadeFunc(entity, 1, 0, callback, time);
     else {

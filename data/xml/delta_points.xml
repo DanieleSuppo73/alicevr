@@ -1,43 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ALL_POI>
-    <!-- <POI>
-        <LONGITUDE>12.3884377</LONGITUDE>
-        <LATITUDE>45.0174729</LATITUDE>
-        <TYPE>LABEL</TYPE>
-        <NAME>Scanerello</NAME>
-    </POI>
-    <POI>
-        <LONGITUDE>12.362106</LONGITUDE>
-        <LATITUDE>45.0484923</LATITUDE>
-        <TYPE>LABEL</TYPE>
-        <NAME>Porto Levante</NAME>
-    </POI>
-    <POI>
-        <LONGITUDE>12.3429</LONGITUDE>
-        <LATITUDE>45.0775</LATITUDE>
-        <TYPE>LABEL</TYPE>
-        <NAME>Isola Albarella</NAME>
-    </POI>
-    <POI>
-        <LONGITUDE>12.4198126</LONGITUDE>
-        <LATITUDE>44.9983542</LATITUDE>
-        <TYPE>LABEL</TYPE>
-        <NAME>Boccasette</NAME>
-    </POI>
-    <POI>
-        <LONGITUDE>12.2616788</LONGITUDE>
-        <LATITUDE>45.0565128</LATITUDE>
-        <TYPE>LABEL</TYPE>
-        <NAME>Ca' Cappello</NAME>
-    </POI> -->
-    <POI>
-        <LONGITUDE>12.3293</LONGITUDE>
-        <LATITUDE>45.0048</LATITUDE>
-        <TYPE>LABEL</TYPE>
-        <NAME>Parco Regionale Veneto del Delta del Po</NAME>
-        <CATEGORY>BIG_PARK</CATEGORY>
-    </POI>
+<root>
+    <type>point</type>
+    <!-- <point>
+        <longitude>12.3884377</longitude>
+        <latitude>45.0174729</latitude>
+        <type>LABEL</type>
+        <title>Scanerello</title>
+    </point>
+    <point>
+        <longitude>12.362106</longitude>
+        <latitude>45.0484923</latitude>
+        <type>LABEL</type>
+        <title>Porto Levante</title>
+    </point>
+    <point>
+        <longitude>12.3429</longitude>
+        <latitude>45.0775</latitude>
+        <type>LABEL</type>
+        <title>Isola Albarella</title>
+    </point>
+    <point>
+        <longitude>12.4198126</longitude>
+        <latitude>44.9983542</latitude>
+        <type>LABEL</type>
+        <title>Boccasette</title>
+    </point>
+    <point>
+        <longitude>12.2616788</longitude>
+        <latitude>45.0565128</latitude>
+        <type>LABEL</type>
+        <title>Ca' Cappello</title>
+    </point> -->
+    <point>
+        <longitude>12.3293</longitude>
+        <latitude>45.0048</latitude>
+        <type>LABEL</type>
+        <title>Parco Regionale Veneto del Delta del Po</title>
+        <category>BIG_PARK</category>
+    </point>
    
 
 
-</ALL_POI>
+</root>
