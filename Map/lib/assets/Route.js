@@ -1,7 +1,7 @@
-import Asset from "./base/Asset.js";
-import Loader from "../Loader.js";
+import Asset from "./Asset.js";
+import Loader from "../managers/Loader.js";
 import Gpx from "./extensions/Gpx.js";
-import * as jsUtils from "../../../../../lib/jsUtils.js";
+import * as jsUtils from "../../../lib/jsUtils.js";
 
 
 export default class Route extends Asset {

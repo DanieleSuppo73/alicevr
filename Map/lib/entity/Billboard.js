@@ -21,21 +21,21 @@ function getPropertiesFromCategory(category) {
 
     switch (category) {
         case "PLACEHOLDER":
-            properties.image = "Map/images/billboards/icon_placeholder-video.svg";
+            properties.image = "images/billboards/icon_placeholder-video.svg";
             properties.width = 50;
             properties.height = 50;
             properties.translucencyByDistance = new Cesium.NearFarScalar(60000, 0, 200000, 1)
             break;
 
         case "MUSEUM":
-            properties.image = "Map/images/billboards/mausoleum.png";
+            properties.image = "images/billboards/mausoleum.png";
             properties.width = 25;
             properties.height = 25;
             properties.translucencyByDistance = new Cesium.NearFarScalar(80000, 0, 17000, 1)
             break;
 
         case "TEST":
-            properties.image = "Map/images/billboards/test.svg";
+            properties.image = "images/billboards/test.svg";
             properties.width = 25;
             properties.height = 25;
             properties.heightReference = Cesium.HeightReference.NONE;

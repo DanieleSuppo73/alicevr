@@ -1,13 +1,13 @@
-import Asset from "./../base/Asset.js";
-import gpxParser from "../../../utils/gpxParser.js";
-import Polyline from "../../../entity/Polyline.js";
-import map from "../../../map.js";
+import Asset from "../Asset.js";
+import gpxParser from "../../utils/gpxParser.js";
+import Polyline from "../../entity/Polyline.js";
+import map from "../../map.js";
 
 
 export default class Gpx {
     constructor(input, parent, category) {
         this.category = category;
-        this.gpxFolder = "data/gpx/";
+        this.gpxFolder = "../data/gpx/";
         this.gpx_url = null;
         this.boundingSphere = null;
         this.positions = [];

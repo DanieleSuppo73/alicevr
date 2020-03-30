@@ -1,6 +1,6 @@
 import {
     Maf
-} from "../../../lib/Maf.js"
+} from "../../lib/Maf.js"
 
 
 

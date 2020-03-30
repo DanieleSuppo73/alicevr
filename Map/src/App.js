@@ -1,13 +1,15 @@
 import {
     dispatcher
 } from "../../lib/dispatcher.js";
-import map from "../lib/map/map.js";
-import * as cities from "../lib/map/add-on/cities.js";
-import Loader from "../lib/map/managers/Loader.js"
-import Player from "../lib/map/managers/Player.js"
-import Ellipse from '../lib/map/entity/Ellipse.js';
+import map from "../lib/map.js";
+import * as cities from "../lib/add-on/cities.js";
+import Loader from "../lib/managers/Loader.js"
+import Player from "../lib/managers/Player.js"
+import Ellipse from '../lib/entity/Ellipse.js';
+import Preloader from "../lib/UI/Preloader.js";
 
 
+let selectedAsset = null;
 
 
 //////////////////////////////////////////////
@@ -15,8 +17,15 @@ import Ellipse from '../lib/map/entity/Ellipse.js';
 //////////////////////////////////////////////
 map.onStarted.push(function () {
 
- 
-    const idToLoad = "1579530506349";
+    Preloader.init();
+
+
+    // const idToLoad = "1579530506349";
+    // const idToLoad = "1573827851085";
+    const idToLoad = "1570451964288";
+    
+
+    
     Loader.load(idToLoad, () => {
 
         console.log(Loader.root.asset)
@@ -34,7 +43,7 @@ map.onStarted.push(function () {
 
 
         /// load cities from boundingsphere position / radius
-        // cities.init(Loader.root.asset.boundingSphere.center, range);
+        cities.init(Loader.root.asset.boundingSphere.center, range);
     });
 })
 
@@ -52,27 +61,32 @@ map.onReady.push(function () {
     map.camera.percentageChanged = mapChangeSensitivity;
 
 
-    if (Loader.root.asset.constructor.name === "Video"){
+
+    if (Loader.root.asset.constructor.name === "Video") {
         Player.init(Loader.root.asset);
+
+        const timeBeforeFly = 4000;
+
+        setTimeout(() => {
+            map.camera.flyToBoundingSphere(Loader.root.asset.boundingSphere, {
+                offset: new Cesium.HeadingPitchRange(0, -0.5, Loader.root.asset.boundingSphere.radius * 2),
+                complete: function () {
+                    console.log("FLYING COMPLETE");
+                    map.fixCamera(Loader.root.asset.boundingSphere.center);
+                    rotateCamera();
+                },
+                duration: 8,
+                easingFunction: Cesium.EasingFunction.QUADRACTIC_IN_OUT,
+            });
+        }, timeBeforeFly)
+
     }
 
 
 
-    const timeBeforeFly = 1000;
 
-    setTimeout(()=>{
-        map.camera.flyToBoundingSphere(Loader.root.asset.boundingSphere, {
-            complete: function () {
-                console.log("FLYING COMPLETE");
-                map.fixCamera(Loader.root.asset.boundingSphere.center);
-                rotateCamera();
-            },
-            duration: 8,
-            easingFunction: Cesium.EasingFunction.QUADRACTIC_IN_OUT,
-        });
-    }, timeBeforeFly)
 
-    
+
 
 
 

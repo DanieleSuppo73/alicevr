@@ -34,7 +34,7 @@ function getPropertiesFromCategory(category, radius) {
                 }, false);
                 properties.semiMinorAxis = 100;
                 properties.semiMajorAxis = 100;
-                properties.image = "Map/images/billboards/radar.svg";
+                properties.image = "images/billboards/radar.svg";
                 properties.opacity = 0;
                 break;
 
@@ -49,7 +49,7 @@ function getPropertiesFromCategory(category, radius) {
                 }, false);
                 properties.semiMinorAxis = 100;
                 properties.semiMajorAxis = 100;
-                properties.image = "Map/images/billboards/position.svg";
+                properties.image = "images/billboards/position.svg";
                 properties.opacity = 0;
                 break;
 

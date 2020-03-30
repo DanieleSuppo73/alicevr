@@ -1,36 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
     <type>point</type>
-    <!-- <point>
+    <point>
         <longitude>12.3884377</longitude>
         <latitude>45.0174729</latitude>
         <type>LABEL</type>
+        <category>A5</category>
         <title>Scanerello</title>
     </point>
     <point>
         <longitude>12.362106</longitude>
         <latitude>45.0484923</latitude>
         <type>LABEL</type>
+        <category>A5</category>
         <title>Porto Levante</title>
     </point>
     <point>
         <longitude>12.3429</longitude>
         <latitude>45.0775</latitude>
         <type>LABEL</type>
+        <category>A5</category>
         <title>Isola Albarella</title>
     </point>
     <point>
         <longitude>12.4198126</longitude>
         <latitude>44.9983542</latitude>
         <type>LABEL</type>
+        <category>A5</category>
         <title>Boccasette</title>
     </point>
     <point>
         <longitude>12.2616788</longitude>
         <latitude>45.0565128</latitude>
         <type>LABEL</type>
+        <category>A5</category>
         <title>Ca' Cappello</title>
-    </point> -->
+    </point>
     <point>
         <longitude>12.3293</longitude>
         <latitude>45.0048</latitude>

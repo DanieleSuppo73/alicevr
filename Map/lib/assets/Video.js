@@ -1,6 +1,6 @@
-import Asset from "./base/Asset.js";
-import Billboard from '../../entity/Billboard.js';
-import * as jsUtils from "../../../../../lib/jsUtils.js";
+import Asset from "./Asset.js";
+import Billboard from "../entity/Billboard.js";
+import * as jsUtils from "../../../lib/jsUtils.js";
 
 
 export default class Video extends Asset {
@@ -35,7 +35,7 @@ export default class Video extends Asset {
             const coordForBoundigSphere = [];
             const keys = ["longitude", "latitude", "title", "gpxTime", "timecode", "trackToFollow"];
 
-            jsUtils.loadXml(`data/xml/${this.markers_url}`)
+            jsUtils.loadXml(`../data/xml/${this.markers_url}`)
                 .then((xml) => {
 
                     /* create marker */

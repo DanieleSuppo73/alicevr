@@ -1,4 +1,4 @@
-import Asset from "./base/Asset.js";
+import Asset from "./Asset.js";
 import Gpx from "./extensions/Gpx.js";
 
 

@@ -1,22 +1,22 @@
-import Video from "./constructors/Video.js";
-import Track from "./constructors/Track.js";
-import Route from "./constructors/Route.js";
-import Point from "./constructors/Point.js";
-import Asset from "./constructors/base/Asset.js";
-import * as jsUtils from "../../../../lib/jsUtils.js";
+import Video from "../assets/Video.js";
+import Track from "../assets/Track.js";
+import Route from "../assets/Route.js";
+import Point from "../assets/Point.js";
+import Asset from "../assets/Asset.js";
+import * as jsUtils from "../../../lib/jsUtils.js";
 
 
 
 export default class Loader {
     constructor(id, node, parent = null) {
         this.id = id;
-        this.url = `data/xml/${id}.xml`;
+        this.url = `../data/xml/${id}.xml`;
         this.loadAsset(node, parent);
     };
 
 
     loadAsset(node, parent) {
-
+        
         /* load xml file */
         jsUtils.loadXml(this.url)
             .then((xml) => {

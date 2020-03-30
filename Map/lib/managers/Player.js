@@ -1,12 +1,12 @@
 import {
     dispatcher
-} from "../../../../lib/dispatcher.js";
-import Loader from "../managers/Loader.js";
+} from "../../../lib/dispatcher.js";
+import Loader from "./Loader.js";
 import map from "../map.js";
 import Ellipse from "../entity/Ellipse.js";
 import Point from "../entity/Point.js";
-import * as jsUtils from "../../../../lib/jsUtils.js";
-import * as entityUtils from "../../../lib/map/utils/entity_utils.js";
+import * as jsUtils from "../../../lib/jsUtils.js";
+import * as entityUtils from "../utils/entity_utils.js";
 
 
 export default class Player {
