@@ -10,11 +10,10 @@ import * as entityUtils from "../../../lib/map/utils/entity_utils.js";
 
 
 export default class Player {
-    static init() {
-        const video = Loader.root.asset;
+    static init(video) {
 
         /* create proxy */
-        Player.radarProxy = Point.draw(video.boundingSphere.center, "PROXY");
+        if (!Player.radarProxy) Player.radarProxy = Point.draw(video.boundingSphere.center, "PROXY");
 
         let track = Loader.root.getAssetByClass("Track", video);
 
@@ -196,26 +195,6 @@ const jump = (heading = null) => {
 
     if (idle) idle = false;
 }
-// const jump = (heading = null) => {
-
-//     /* create boundingsphere around new position */
-//     const pos = Player.radarProxy.position._value;
-//     const boundingSphere = new Cesium.BoundingSphere(pos, 1000);
-
-//     let h = heading ? heading : map.viewer.scene.camera.heading;
-//     let p = idle ? -0.52 : map.viewer.scene.camera.pitch;
-//     let r = idle ? 500 : map.range;
-//     let easingFunction = idle ? Cesium.EasingFunction.QUADRACTIC_IN_OUT : null;
-
-//     map.viewer.trackedEntity = Player.radarProxy;
-//     map.viewer.camera.flyToBoundingSphere(boundingSphere, {
-//         offset: new Cesium.HeadingPitchRange(h, p, r),
-//         easingFunction: easingFunction,
-//     });
-
-//     if (idle) idle = false;
-// }
-
 
 
 
@@ -291,41 +270,3 @@ const lerp = (gpxFound, wpIndex) => {
         };
     }, sampleInterval);
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-var play = true
-var time = 0;
-var samplerate = 1000;
-var fakePlayer = () => {
-    setInterval(() => {
-        if (play) {
-            time += samplerate / 1000;
-            dispatcher.sendMessage("playerPlaying", {
-                time: time,
-                angle: 0,
-            });
-        }
-    }, samplerate);
-};
-window.play = fakePlayer;
-window.stop = function () {
-    console.log("STOP")
-    playerPlaying = false;
-}
