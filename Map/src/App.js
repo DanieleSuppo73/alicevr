@@ -12,41 +12,32 @@ import Preloader from "../lib/UI/Preloader.js";
 let selectedAsset = null;
 
 
-//////////////////////////////////////////////
-/// ON MAP STARTED
-//////////////////////////////////////////////
-map.onStarted.push(function () {
 
+
+/*******************************************
+*********** ON MAP STARTED
+*******************************************/
+map.onStarted.push(() => {
+
+    /* init preloader DIV */
     Preloader.init();
 
-
-
-
-
-
-
-    const idToLoad = "1579530506349";
+    /* load main asset */
+    const idToLoad = "1573827877573";
+    // const idToLoad = "1579530506349";
     // const idToLoad = "1573827851085";
     // const idToLoad = "1570451964288";
-
-
-
     Loader.load(idToLoad, () => {
-
         console.log(Loader.root.asset)
 
 
 
         // /// DEBUG : show circle
         // Ellipse.draw(Loader.root.asset.boundingSphere.center, "ORANGE", Loader.root.asset.boundingSphere.radius);
-        Ellipse.draw(Loader.root.asset.boundingSphere.center, "BLUE", 100);
+        // Ellipse.draw(Loader.root.asset.boundingSphere.center, "BLUE", 100);
 
 
-       
-
-
-
-        /// go there
+        /* go there */
         let range = 140000;
         map.camera.flyToBoundingSphere(Loader.root.asset.boundingSphere, {
             offset: new Cesium.HeadingPitchRange(0, -1.47, range),
@@ -54,23 +45,25 @@ map.onStarted.push(function () {
         });
 
 
-        // / load cities from boundingsphere position / radius
+        /* load cities from boundingsphere position - radius */
         cities.init(Loader.root.asset.boundingSphere.center, range);
     });
 })
 
 
 
-//////////////////////////////////////////////
-/// ON MAP READY
-//////////////////////////////////////////////
+
+
+
+/*******************************************
+*********** ON MAP READY
+*******************************************/
 map.onReady.push(function () {
 
-    /// SEND MAP READY MESSAGE
-    // dispatcher.sendMessage("mapReady");
+    dispatcher.sendMessage("mapReady");
 
-    const mapChangeSensitivity = 0.3; /// default 0.5
-    map.camera.percentageChanged = mapChangeSensitivity;
+    /* change map changed sensitivity */
+    map.camera.percentageChanged = 0.3; /// default 0.5
 
 
 
@@ -170,9 +163,9 @@ dispatcher.receiveMessage("playerPlaying", (data) => {
 /// INIT
 //////////////////////////////////////////////
 map.init();
-console.log("INITTTTTTTTTTTTTTTTTTT")
 
-// Loader.load("1570451964288");
+
+
 
 
 

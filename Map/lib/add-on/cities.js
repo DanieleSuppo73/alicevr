@@ -58,7 +58,7 @@ export function init(position = null, range = null) {
 
         bigArea = new coveredMap("bigArea");
         mediumArea = new coveredMap("mediumArea");
-        smallArea = new coveredMap("smallArea", Cesium.Color.RED.withAlpha(0.2));
+        smallArea = new coveredMap("smallArea");
 
         onCameraChanged(position, range);
 
