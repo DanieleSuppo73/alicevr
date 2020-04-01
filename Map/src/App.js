@@ -20,19 +20,31 @@ map.onStarted.push(function () {
     Preloader.init();
 
 
-    // const idToLoad = "1579530506349";
-    // const idToLoad = "1573827851085";
-    const idToLoad = "1570451964288";
-    
 
-    
+
+
+
+
+    const idToLoad = "1579530506349";
+    // const idToLoad = "1573827851085";
+    // const idToLoad = "1570451964288";
+
+
+
     Loader.load(idToLoad, () => {
 
         console.log(Loader.root.asset)
 
-        // // /// DEBUG : show circle
-        // map.disableCulling();
-        // Ellipse.draw(Loader.root.boundingSphere.center, "GREEN_TRANSPARENT", Loader.root.boundingSphere.radius);
+
+
+        // /// DEBUG : show circle
+        // Ellipse.draw(Loader.root.asset.boundingSphere.center, "ORANGE", Loader.root.asset.boundingSphere.radius);
+        Ellipse.draw(Loader.root.asset.boundingSphere.center, "BLUE", 100);
+
+
+       
+
+
 
         /// go there
         let range = 140000;
@@ -42,7 +54,7 @@ map.onStarted.push(function () {
         });
 
 
-        /// load cities from boundingsphere position / radius
+        // / load cities from boundingsphere position / radius
         cities.init(Loader.root.asset.boundingSphere.center, range);
     });
 })
@@ -65,7 +77,20 @@ map.onReady.push(function () {
     if (Loader.root.asset.constructor.name === "Video") {
         Player.init(Loader.root.asset);
 
-        const timeBeforeFly = 4000;
+       
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        const timeBeforeFly = 5000;
 
         setTimeout(() => {
             map.camera.flyToBoundingSphere(Loader.root.asset.boundingSphere, {
@@ -78,6 +103,7 @@ map.onReady.push(function () {
                 duration: 8,
                 easingFunction: Cesium.EasingFunction.QUADRACTIC_IN_OUT,
             });
+
         }, timeBeforeFly)
 
     }

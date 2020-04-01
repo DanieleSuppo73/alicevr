@@ -56,9 +56,9 @@ export function init(position = null, range = null) {
     if (!started) {
         started = true;
 
-        bigArea = new coveredMap();
-        mediumArea = new coveredMap();
-        smallArea = new coveredMap();
+        bigArea = new coveredMap("bigArea");
+        mediumArea = new coveredMap("mediumArea");
+        smallArea = new coveredMap("smallArea", Cesium.Color.RED.withAlpha(0.2));
 
         onCameraChanged(position, range);
 
@@ -77,44 +77,98 @@ export function init(position = null, range = null) {
 
 
 
-
-
-
-
 function onCameraChanged(position = null, range = null) {
 
     let _range = range ? range : map.range;
 
-    if (!bigArea.isCovered()) {
-        console.log("> load big cities <")
-        loadBigCities(position, range);
-    }
+
+    bigArea.check()
+        .then((response) => {
+            if (!response.isInside) {
+                console.log("> load big cities <");
+                loadBigCities(response.position ? response.position : position,
+                    response.range ? response.range : range);
+            }
+        });
+
+
+
 
     if (_range <= 100000) {
-
-        if (!mediumArea.isCovered()) {
-            console.log("> load small cities <")
-            loadCities(10000, position, range, function () {
-
-                // if (range <= 55000 && !smallArea.isCovered()) {
-                //     console.log("> load very small cities <")
-                //     // loadCitiesByPopulation(1000);
-                // }
+        mediumArea.check()
+            .then((response) => {
+                if (!response.isInside) {
+                    console.log("> load small cities <");
+                    loadCities(10000, response.position ? response.position : position,
+                        response.range ? response.range : range,
+                        () => {
+                            if (_range <= 55000) {
+                                smallArea.check()
+                                    .then((response) => {
+                                        if (!response.isInside) {
+                                            console.log("> load very small cities <");
+                                            loadCities(1000, response.position ? response.position : position,
+                                                response.range ? response.range : range);
+                                        }
+                                    });
+                            }
+                        });
+                } else {
+                    if (_range <= 55000) {
+                        smallArea.check()
+                            .then((response) => {
+                                if (!response.isInside) {
+                                    console.log("> load very small cities <");
+                                    loadCities(1000, response.position ? response.position : position,
+                                        response.range ? response.range : range);
+                                }
+                            });
+                    }
+                }
             });
-        } else {
-            if (_range <= 55000 && !smallArea.isCovered()) {
-                console.log("> load very small cities <")
-                loadCities(1000, position, range);
-            }
-        }
-
     }
 }
 
 
 
+
+
+// function onCameraChanged(position = null, range = null) {
+
+//     let _range = range ? range : map.range;
+
+//     if (!bigArea.isCovered()) {
+//         console.log("> load big cities <")
+//         loadBigCities(position, range);
+//     }
+
+//     if (_range <= 100000) {
+
+//         if (!mediumArea.isCovered()) {
+//             console.log("> load small cities <")
+//             loadCities(10000, position, range, function () {
+
+//                 // if (range <= 55000 && !smallArea.isCovered()) {
+//                 //     console.log("> load very small cities <")
+//                 //     // loadCitiesByPopulation(1000);
+//                 // }
+//             });
+//         } else {
+//             if (_range <= 55000 && !smallArea.isCovered()) {
+//                 console.log("> load very small cities <")
+//                 loadCities(1000, position, range);
+//             }
+//         }
+
+//     }
+// }
+
+
+
 /// main function
 function loadCities(minPopulation, position = null, range = null, callback = null) {
+
+    // return;
 
     /// if there's a previous request...
     if (wait) {

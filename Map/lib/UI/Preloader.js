@@ -4,28 +4,32 @@ export default class Preloader {
 
     static init = () => {
 
-        // show();
-
         map.viewer.scene.globe.tileLoadProgressEvent.addEventListener((valProgress) => {
-
             if (!map.ready) {
-                if (!isProgressing) {
+                if (valProgress === 0) {
+                    hide();
+                } else {
+                    if (!isProgressing) {
 
-                    /// flag as started to download tiles
-                    if (valProgress >= minProgress) {
-                        isProgressing = true;
-                        maxProgress = valProgress;
+                        /// flag as started to download tiles
+                        if (valProgress >= minProgress) {
+                            isProgressing = true;
+                            maxProgress = valProgress;
+                        }
+                    }
+                    /// get the progress in percentage
+                    if (isProgressing) {
+                        if (valProgress > maxProgress) maxProgress = valProgress;
+                        let mapLoadingPercent = (100 - (valProgress / maxProgress * 100)).toFixed(0);
+                        $("#progressBar").css("right", (100 - mapLoadingPercent) + '%');
                     }
                 }
-                /// get the progress in percentage
-                if (isProgressing) {
-                    if (valProgress > maxProgress) maxProgress = valProgress;
-                    let mapLoadingPercent = (100 - (valProgress / maxProgress * 100)).toFixed(0);
-                    $("#progressBar").css("right", (100 - mapLoadingPercent) + '%');
-                }
-            } else {
-                hide();
-            }
+
+            } 
+            // else {
+            //     console.log("//////////// FADE OUTTTTTTTTTTT")
+            //     hide();
+            // }
         });
     };
 }

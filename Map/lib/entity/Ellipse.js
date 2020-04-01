@@ -53,18 +53,23 @@ function getPropertiesFromCategory(category, radius) {
                 properties.opacity = 0;
                 break;
 
-            case "RED_TRANSPARENT":
-                properties.color = new Cesium.Cartesian3(1, 0, 0);
+            case "RED":
+                properties.color = Cesium.Color.RED.withAlpha(0.2)
                 properties.opacity = 0.2;
                 break;
 
-            case "GREEN_TRANSPARENT":
-                properties.color = new Cesium.Cartesian3(0, 1, 0);
+            case "GREEN":
+                properties.color = Cesium.Color.GREEN.withAlpha(0.5)
                 properties.opacity = 0.2;
                 break;
 
-            case "BLUE_TRANSPARENT":
-                properties.color = new Cesium.Cartesian3(0, 0, 1);
+            case "ORANGE":
+                properties.color = Cesium.Color.ORANGE.withAlpha(0.5)
+                properties.opacity = 0.2;
+                break;
+
+            case "BLUE":
+                properties.color = Cesium.Color.BLUE.withAlpha(0.5)
                 properties.opacity = 0.2;
                 break;
 
@@ -88,10 +93,11 @@ export default class Ellipse {
     static draw(pos, category, radius = null, collection = null) {
 
         let entity;
+        let properties = getPropertiesFromCategory(category, radius);
 
 
         if (category === "RADAR" || category === "POSITION") {
-            let properties = getPropertiesFromCategory(category, radius);
+            // let properties = getPropertiesFromCategory(category, radius);
 
             entity = map.viewer.entities.add({
                 center: pos,
@@ -120,6 +126,25 @@ export default class Ellipse {
                         transparent: true,
                     }),
                     stRotation: 0,
+                    heightReference: properties.heightReference,
+                }
+            });
+        } else {
+            // console.log("draw standard ellipse:")
+            // console.log(pos)
+            // console.log(properties.color)
+            // console.log(properties.semiMinorAxis)
+            // console.log(properties.semiMajorAxis)
+            entity = map.viewer.entities.add({
+                position: pos,
+                color: properties.color,
+                opacity: properties.opacity,
+                category: category,
+                ellipse: {
+                    semiMinorAxis: properties.semiMinorAxis,
+                    semiMajorAxis: properties.semiMajorAxis,
+                    height: properties.height,
+                    material: properties.color,
                     heightReference: properties.heightReference,
                 }
             });
