@@ -1,7 +1,7 @@
 import {
     dispatcher
 } from "../../lib/dispatcher.js";
-import map from "../lib/map.js";
+import Map from "../lib/Map.js";
 import * as cities from "../lib/add-on/cities.js";
 import Loader from "../lib/managers/Loader.js"
 import Player from "../lib/managers/Player.js"
@@ -17,16 +17,16 @@ let selectedAsset = null;
 /*******************************************
 *********** ON MAP STARTED
 *******************************************/
-map.onStarted.push(() => {
+Map.onStarted.push(() => {
 
     /* init preloader DIV */
     Preloader.init();
 
     /* load main asset */
-    const idToLoad = "1573827877573";
+    // const idToLoad = "1573827877573";
     // const idToLoad = "1579530506349";
     // const idToLoad = "1573827851085";
-    // const idToLoad = "1570451964288";
+    const idToLoad = "1570451964288";
     Loader.load(idToLoad, () => {
         console.log(Loader.root.asset)
 
@@ -39,14 +39,14 @@ map.onStarted.push(() => {
 
         /* go there */
         let range = 140000;
-        map.camera.flyToBoundingSphere(Loader.root.asset.boundingSphere, {
+        Map.camera.flyToBoundingSphere(Loader.root.asset.boundingSphere, {
             offset: new Cesium.HeadingPitchRange(0, -1.47, range),
             duration: 0,
         });
 
 
         /* load cities from boundingsphere position - radius */
-        cities.init(Loader.root.asset.boundingSphere.center, range);
+        // cities.init(Loader.root.asset.boundingSphere.center, range);
     });
 })
 
@@ -58,12 +58,12 @@ map.onStarted.push(() => {
 /*******************************************
 *********** ON MAP READY
 *******************************************/
-map.onReady.push(function () {
+Map.onReady.push(function () {
 
     dispatcher.sendMessage("mapReady");
 
-    /* change map changed sensitivity */
-    map.camera.percentageChanged = 0.3; /// default 0.5
+    /* change Map changed sensitivity */
+    Map.camera.percentageChanged = 0.3; /// default 0.5
 
 
 
@@ -83,14 +83,16 @@ map.onReady.push(function () {
         
         
         
-        const timeBeforeFly = 5000;
-
+        const timeBeforeFly = 2000;
         setTimeout(() => {
-            map.camera.flyToBoundingSphere(Loader.root.asset.boundingSphere, {
+            Map.camera.flyToBoundingSphere(Loader.root.asset.boundingSphere, {
                 offset: new Cesium.HeadingPitchRange(0, -0.5, Loader.root.asset.boundingSphere.radius * 2),
                 complete: function () {
                     console.log("FLYING COMPLETE");
-                    map.fixCamera(Loader.root.asset.boundingSphere.center);
+
+                    Player.showStartPoints();
+
+                    Map.fixCamera(Loader.root.asset.boundingSphere.center);
                     rotateCamera();
                 },
                 duration: 8,
@@ -121,7 +123,7 @@ map.onReady.push(function () {
 const onPlay = () => {
 
     console.log("PLAY")
-    map.unlinkCamera();
+    Map.unfixCamera();
     clearInterval(rotate);
 
     /// fake player
@@ -142,6 +144,8 @@ const onPlay = () => {
 
 window.play = onPlay;
 
+window.hide = Player.hideStartPoints;
+window.show = Player.showStartPoints;
 
 
 
@@ -162,7 +166,7 @@ dispatcher.receiveMessage("playerPlaying", (data) => {
 //////////////////////////////////////////////
 /// INIT
 //////////////////////////////////////////////
-map.init();
+Map.init();
 
 
 
@@ -180,9 +184,9 @@ map.init();
 let rotate = null;
 
 
-// map.onDown.push(function () {
+// Map.onDown.push(function () {
 //     if (rotate) {
-//         map.unlinkCamera();
+//         Map.unlinkCamera();
 //         clearInterval(rotate);
 //         rotate = null;
 //     }
@@ -193,9 +197,9 @@ let rotate = null;
 
 
 function rotateCamera() {
-    // map.fixCamera(Loader.root.boundingSphere.center);
+    // Map.fixCamera(Loader.root.boundingSphere.center);
     rotate = setInterval(function () {
-        map.camera.rotateLeft(0.0015);
+        Map.camera.rotateLeft(0.0015);
     }, 50);
 };
 
@@ -204,5 +208,5 @@ window.rotateCamera = function () {
 }
 
 window.unlink = function () {
-    map.unlinkCamera();
+    Map.unlinkCamera();
 }

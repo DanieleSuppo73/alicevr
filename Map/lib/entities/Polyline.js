@@ -1,4 +1,4 @@
-import map from "../map.js";
+import Map from "../Map.js";
 import {
     Maf
 } from "../../../lib/Maf.js"
@@ -13,10 +13,10 @@ var globalWidth = 1;
 
 
 
-map.onReady.push(function () {
+Map.onReady.push(function () {
     update();
 
-    map.camera.changed.addEventListener(() => {
+    Map.camera.changed.addEventListener(() => {
         update();
     });
 });
@@ -24,7 +24,7 @@ map.onReady.push(function () {
 
 
 function update() {
-    let r = Maf.clamp(map.range, minRange, maxRange);
+    let r = Maf.clamp(Map.range, minRange, maxRange);
     globalOpacity = Maf.inverseLerp(maxRange, minRange, r);
     globalWidth = Maf.inverseLerp(maxRange * 2, minRange, r);
 };
@@ -81,7 +81,7 @@ export default class Polyline {
 
         const properties = getPropertiesFromCategory(category);
 
-        const entity = map.viewer.entities.add({
+        const entity = Map.viewer.entities.add({
             opacity: properties.opacity, /// change this value to set the opacity individually
             color: properties.color,
             outlineColor: properties.outlineColor,
@@ -111,9 +111,9 @@ export default class Polyline {
         });
 
         if (collection) collection.push(entity);
-        if (onOverFunc) map.onOverEntity.push(onOverFunc);
-        if (onExitFunc) map.onExitEntity.push(onExitFunc);
-        if (onClickFunc) map.onClickEntity.push(onClickFunc);
+        if (onOverFunc) Map.onOverEntity.push(onOverFunc);
+        if (onExitFunc) Map.onExitEntity.push(onExitFunc);
+        if (onClickFunc) Map.onClickEntity.push(onClickFunc);
 
         return entity;
     }

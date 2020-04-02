@@ -1,4 +1,4 @@
-import map from "../map.js";
+import Map from "../Map.js";
 import Label from "../entities/label.js";
 import coveredMap from "../utils/coveredMap.js"
 
@@ -63,8 +63,8 @@ export function init(position = null, range = null) {
         onCameraChanged(position, range);
 
         /// add listener
-        map.onReady.push(function () {
-            map.camera.changed.addEventListener(() => {
+        Map.onReady.push(function () {
+            Map.camera.changed.addEventListener(() => {
                 onCameraChanged();
             });
         })
@@ -79,7 +79,7 @@ export function init(position = null, range = null) {
 
 function onCameraChanged(position = null, range = null) {
 
-    let _range = range ? range : map.range;
+    let _range = range ? range : Map.range;
 
 
     bigArea.check()
@@ -135,7 +135,7 @@ function onCameraChanged(position = null, range = null) {
 
 // function onCameraChanged(position = null, range = null) {
 
-//     let _range = range ? range : map.range;
+//     let _range = range ? range : Map.range;
 
 //     if (!bigArea.isCovered()) {
 //         console.log("> load big cities <")
@@ -164,6 +164,22 @@ function onCameraChanged(position = null, range = null) {
 // }
 
 
+const queueManager = (minPopulation, position, range, callback) => {
+    let waitForRequest = function () {
+        setTimeout(() => {
+            if (wait){
+                waitForRequest();
+            }
+            else{
+                console.warn("! --> cities request resumed from queue");
+                loadCities(minPopulation, position, range, callback);
+            }
+        }, 200);
+    }
+    waitForRequest();
+};
+
+
 
 /// main function
 function loadCities(minPopulation, position = null, range = null, callback = null) {
@@ -173,6 +189,7 @@ function loadCities(minPopulation, position = null, range = null, callback = nul
     /// if there's a previous request...
     if (wait) {
         console.warn("! --> cities request not allowed because there's another one in queue");
+        queueManager(minPopulation, position, range, callback);
     } else {
         wait = function () {
             if (!isServerAvailable) setTimeout(wait, 100);
@@ -180,13 +197,13 @@ function loadCities(minPopulation, position = null, range = null, callback = nul
             else {
                 wait = null;
 
-                let radius = range ? range / 2000 : map.range / 2000;
+                let radius = range ? range / 2000 : Map.range / 2000;
                 /// if the radius is < 1km don't request
                 if (radius <= 1) {
                     console.warn("camera too near to terrain, don't request cities");
                 } else {
                     /// get the coordinates in the center of the window
-                    let _position = position ? position : map.getPointFromCamera();
+                    let _position = position ? position : Map.getPointFromCamera();
 
                     let cartographic = Cesium.Cartographic.fromCartesian(_position);
                     let longitude = Cesium.Math.toDegrees(cartographic.longitude);

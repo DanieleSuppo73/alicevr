@@ -1,11 +1,11 @@
-import map from "../map.js";
+import Map from "../Map.js";
 
 export default class Preloader {
 
     static init = () => {
 
-        map.viewer.scene.globe.tileLoadProgressEvent.addEventListener((valProgress) => {
-            if (!map.ready) {
+        Map.viewer.scene.globe.tileLoadProgressEvent.addEventListener((valProgress) => {
+            if (!Map.ready) {
                 if (valProgress === 0) {
                     hide();
                 } else {

@@ -1,4 +1,4 @@
-import map from "../map.js";
+import Map from "../Map.js";
 
 
 
@@ -25,11 +25,11 @@ function getPropertiesFromCategory(category, radius) {
 
             case "RADAR":
                 properties.semiMinorAxis = new Cesium.CallbackProperty(function () {
-                    let dist = Cesium.Cartesian3.distance(map.camera.positionWC, entity.center);
+                    let dist = Cesium.Cartesian3.distance(Map.camera.positionWC, entity.center);
                     return dist * Math.tan(semiAngle) * 3;
                 }, false);
                 properties.semiMajorAxis = new Cesium.CallbackProperty(function () {
-                    let dist = Cesium.Cartesian3.distance(map.camera.positionWC, entity.center);
+                    let dist = Cesium.Cartesian3.distance(Map.camera.positionWC, entity.center);
                     return dist * Math.tan(semiAngle) * 3;
                 }, false);
                 properties.semiMinorAxis = 100;
@@ -40,11 +40,11 @@ function getPropertiesFromCategory(category, radius) {
 
             case "POSITION":
                 properties.semiMinorAxis = new Cesium.CallbackProperty(function () {
-                    let dist = Cesium.Cartesian3.distance(map.camera.positionWC, entity.center);
+                    let dist = Cesium.Cartesian3.distance(Map.camera.positionWC, entity.center);
                     return dist * Math.tan(semiAngle) * 3;
                 }, false);
                 properties.semiMajorAxis = new Cesium.CallbackProperty(function () {
-                    let dist = Cesium.Cartesian3.distance(map.camera.positionWC, entity.center);
+                    let dist = Cesium.Cartesian3.distance(Map.camera.positionWC, entity.center);
                     return dist * Math.tan(semiAngle) * 3;
                 }, false);
                 properties.semiMinorAxis = 100;
@@ -99,7 +99,7 @@ export default class Ellipse {
         if (category === "RADAR" || category === "POSITION") {
             // let properties = getPropertiesFromCategory(category, radius);
 
-            entity = map.viewer.entities.add({
+            entity = Map.viewer.entities.add({
                 center: pos,
                 size: 2,
                 position: new Cesium.CallbackProperty(function () {
@@ -110,11 +110,11 @@ export default class Ellipse {
                 category: category,
                 ellipse: {
                     semiMinorAxis: new Cesium.CallbackProperty(function () {
-                        let dist = Cesium.Cartesian3.distance(map.camera.positionWC, entity.center);
+                        let dist = Cesium.Cartesian3.distance(Map.camera.positionWC, entity.center);
                         return dist * Math.tan(semiAngle) * entity.size;
                     }, false),
                     semiMajorAxis: new Cesium.CallbackProperty(function () {
-                        let dist = Cesium.Cartesian3.distance(map.camera.positionWC, entity.center);
+                        let dist = Cesium.Cartesian3.distance(Map.camera.positionWC, entity.center);
                         return dist * Math.tan(semiAngle) * entity.size;
                     }, false),
                     height: properties.height,
@@ -135,7 +135,7 @@ export default class Ellipse {
             // console.log(properties.color)
             // console.log(properties.semiMinorAxis)
             // console.log(properties.semiMajorAxis)
-            entity = map.viewer.entities.add({
+            entity = Map.viewer.entities.add({
                 position: pos,
                 color: properties.color,
                 opacity: properties.opacity,
@@ -163,6 +163,6 @@ export default class Ellipse {
 
 
     static remove(entity) {
-        map.viewer.entities.remove(entity);
+        Map.viewer.entities.remove(entity);
     };
 };

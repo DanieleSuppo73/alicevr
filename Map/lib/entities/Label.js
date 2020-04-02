@@ -1,7 +1,7 @@
 import {
     stringDivider
 } from "../../../lib/stringDivider.js";
-import map from "../map.js";
+import Map from "../Map.js";
 import {
     Maf
 } from "../../../lib/Maf.js"
@@ -9,7 +9,7 @@ import {
 
 const entityCollection = [];
 
-map.onReady.push(() => {
+Map.onReady.push(() => {
     for (let i = 0; i < entityCollection.length; i++) {
         updateOpacity(entityCollection[i]);
     }
@@ -17,11 +17,11 @@ map.onReady.push(() => {
 
 
 function updateOpacity(entity) {
-    if (map.ready) {
-        let minRange = map.range;
+    if (Map.ready) {
+        let minRange = Map.range;
         let maxRange = minRange * 4;
         let pos = entity.position._value;
-        let dist = Cesium.Cartesian3.distance(map.viewer.camera.positionWC,
+        let dist = Cesium.Cartesian3.distance(Map.viewer.camera.positionWC,
             pos);
 
         /// get multiplier by min-max range
@@ -74,23 +74,23 @@ function getPropertiesFromCategory(category) {
         case "A3":
             properties.font = "500 16px Roboto";
             properties.outlineWidth = 2;
-            properties.fillColor = new Cesium.Cartesian3(.9, .5, .2);
+            // properties.fillColor = new Cesium.Cartesian3(.9, .5, .2);
             properties.minDistance = 130000;
             properties.maxDistance = 500000;
             break;
         case "A4":
             properties.font = "500 14px Roboto";
             properties.outlineWidth = 2;
-            properties.fillColor = new Cesium.Cartesian3(0, 1, 1);
-            properties.minDistance = 60000;
-            properties.maxDistance = 100000;
+            // properties.fillColor = new Cesium.Cartesian3(0, 1, 1);
+            properties.minDistance = 50000;
+            properties.maxDistance = 70000;
             break;
         case "A5":
-            properties.font = "500 14px Roboto";
+            properties.font = "500 13px Roboto";
             properties.outlineWidth = 2;
             // properties.fillColor = new Cesium.Cartesian3(1, 1, 1);
             properties.minDistance = 35000;
-            properties.maxDistance = 75000;
+            properties.maxDistance = 45000;
             break;
         case "BIG_PARK":
             properties.font = "500 15px Roboto";
@@ -117,7 +117,7 @@ export default class Label {
 
         if (text.length > 15) text = stringDivider(text, 15);
 
-        const entity = map.viewer.entities.add({
+        const entity = Map.viewer.entities.add({
             opacity: 0, /// default value at start
             minDistance: properties.minDistance,
             maxDistance: properties.maxDistance,
@@ -148,7 +148,7 @@ export default class Label {
 
         /// register the listener to camerachanged, 
         /// to update this label opacity
-        map.camera.changed.addEventListener(() => {
+        Map.camera.changed.addEventListener(() => {
             updateOpacity(entity);
         });
 
@@ -162,6 +162,6 @@ export default class Label {
     /// REMOVE
     static remove(entity) {
 
-        map.viewer.entities.remove(entity);
+        Map.viewer.entities.remove(entity);
     };
 };

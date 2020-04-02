@@ -1,4 +1,4 @@
-import map from "../map.js";
+import Map from "../Map.js";
 
 
 export default class coveredMap {
@@ -19,18 +19,18 @@ export default class coveredMap {
             };
 
 
-            /// if the request is too early wait for map ready,
+            /// if the request is too early wait for Map ready,
             /// then create bounding sphere
-            if (!map.ready) {
+            if (!Map.ready) {
                 let self = this;
 
                 function t() {
-                    if (!map.ready) {
+                    if (!Map.ready) {
                         setTimeout(t, 200);
                     } else {
                         // response.isInside = false;
-                        const pos = map.getPointFromCamera();
-                        const rad = Cesium.Cartesian3.distance(map.camera.positionWC, pos) / 1.8
+                        const pos = Map.getPointFromCamera();
+                        const rad = Cesium.Cartesian3.distance(Map.camera.positionWC, pos) / 1.8
                         self.createBoundingSphere(pos, rad, self.debugColor);
                         // resolve(response);
                     }
@@ -49,11 +49,11 @@ export default class coveredMap {
 
                 /// get 5 points from the camera
                 let points = [];
-                points.push(map.getPointFromCamera()); /// center
-                points.push(map.getPointFromCamera(map.canvas.clientWidth * 0.25, map.canvas.clientHeight * 0.25))
-                points.push(map.getPointFromCamera(map.canvas.clientWidth * 0.25, map.canvas.clientHeight * 0.75))
-                points.push(map.getPointFromCamera(map.canvas.clientWidth * 0.75, map.canvas.clientHeight * 0.25))
-                points.push(map.getPointFromCamera(map.canvas.clientWidth * 0.75, map.canvas.clientHeight * 0.25))
+                points.push(Map.getPointFromCamera()); /// center
+                points.push(Map.getPointFromCamera(Map.canvas.clientWidth * 0.25, Map.canvas.clientHeight * 0.25))
+                points.push(Map.getPointFromCamera(Map.canvas.clientWidth * 0.25, Map.canvas.clientHeight * 0.75))
+                points.push(Map.getPointFromCamera(Map.canvas.clientWidth * 0.75, Map.canvas.clientHeight * 0.25))
+                points.push(Map.getPointFromCamera(Map.canvas.clientWidth * 0.75, Map.canvas.clientHeight * 0.25))
 
 
                 // if (this.spheres.length === 0) isInside = false;
@@ -91,7 +91,7 @@ export default class coveredMap {
 
                 if (!response.isInside) {
                     /// create a new bounding sphere from the outside point
-                    response.radius = Cesium.Cartesian3.distance(map.camera.positionWC, response.position) / 1.8
+                    response.radius = Cesium.Cartesian3.distance(Map.camera.positionWC, response.position) / 1.8
                     this.createBoundingSphere(response.position, response.radius, this.debugColor);
                 }
 
@@ -109,7 +109,7 @@ export default class coveredMap {
         if (debugColor) {
 
             /// draw debug ellipse
-            map.viewer.entities.add({
+            Map.viewer.entities.add({
                 position: position,
                 ellipse: {
                     semiMinorAxis: radius,
@@ -120,7 +120,7 @@ export default class coveredMap {
 
 
             /// draw debug point
-            var debugPoint = map.viewer.entities.add({
+            var debugPoint = Map.viewer.entities.add({
                 position: position,
                 point: {
                     pixelSize: 20,
@@ -130,7 +130,7 @@ export default class coveredMap {
 
             /// clear point
             setTimeout(function () {
-                map.viewer.entities.remove(debugPoint);
+                Map.viewer.entities.remove(debugPoint);
             }, 4000)
         }
     };

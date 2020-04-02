@@ -1,4 +1,4 @@
-import map from "../map.js";
+import Map from "../Map.js";
 
 
 function getPropertiesFromCategory(category) {
@@ -74,7 +74,7 @@ export default class Billboard {
         switch (category) {
 
             case "RADAR":
-                entity = map.viewer.entities.add({
+                entity = Map.viewer.entities.add({
                     opacity: 0, /// default value at start
                     position: position,
                     category: category,
@@ -96,7 +96,7 @@ export default class Billboard {
                 break;
 
             default:
-                entity = map.viewer.entities.add({
+                entity = Map.viewer.entities.add({
                     opacity: 1, /// default value at start
                     position: position,
                     category: category,
@@ -128,6 +128,6 @@ export default class Billboard {
 
     /// REMOVE
     static remove(entity) {
-        map.viewer.entities.remove(entity);
+        Map.viewer.entities.remove(entity);
     };
 };

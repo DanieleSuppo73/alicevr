@@ -1,7 +1,7 @@
 import Asset from "../Asset.js";
 import gpxParser from "../../utils/gpxParser.js";
 import Polyline from "../../entities/Polyline.js";
-import map from "../../map.js";
+import Map from "../../Map.js";
 
 
 export default class Gpx {
@@ -90,7 +90,7 @@ export default class Gpx {
             };
 
 
-            map.addHeightToCoordinatesAndReturnCartesians(lonLatArray, 5, (cartesians) => {
+            Map.addHeightToCoordinatesAndReturnCartesians(lonLatArray, 5, (cartesians) => {
                 this.positions = cartesians;
 
                 /* draw the polyline */
