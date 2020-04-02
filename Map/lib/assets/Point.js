@@ -1,6 +1,6 @@
 import Asset from "./Asset.js";
-import Label from "../entity/Label.js";
-import Billboard from "../entity/Billboard.js";
+import Label from "../entities/label.js";
+import Billboard from "../entities/Billboard.js";
 
 
 export default class Point extends Asset {

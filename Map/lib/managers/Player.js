@@ -3,8 +3,8 @@ import {
 } from "../../../lib/dispatcher.js";
 import Loader from "./Loader.js";
 import map from "../map.js";
-import Ellipse from "../entity/Ellipse.js";
-import Point from "../entity/Point.js";
+import Ellipse from "../entities/Ellipse.js";
+import Point from "../entities/Point.js";
 import * as jsUtils from "../../../lib/jsUtils.js";
 import * as entityUtils from "../utils/entity_utils.js";
 

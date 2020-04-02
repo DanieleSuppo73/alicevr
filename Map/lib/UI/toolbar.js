@@ -365,15 +365,15 @@ $(document).ready(function () {
 
 
 
-//////////////////////////////////////////////////////////
-/// receiver from Dispatcher.js
-//////////////////////////////////////////////////////////
-dispatcher.receiveMessage(function (msg) {
-    if (msg.command === "onDeviceDetected") {
-        toolbar.isVisible = msg.isMobile ? false : true;
-    }
-    if (msg.command === "onVideoPlayerStatus" && msg.status === "started") {
-        cameraLinkButton.isLinked = true;
-        cameraLinkButton.isActive = true;
-    }
-})
+// //////////////////////////////////////////////////////////
+// /// receiver from Dispatcher.js
+// //////////////////////////////////////////////////////////
+// dispatcher.receiveMessage(function (msg) {
+//     if (msg.command === "onDeviceDetected") {
+//         toolbar.isVisible = msg.isMobile ? false : true;
+//     }
+//     if (msg.command === "onVideoPlayerStatus" && msg.status === "started") {
+//         cameraLinkButton.isLinked = true;
+//         cameraLinkButton.isActive = true;
+//     }
+// })

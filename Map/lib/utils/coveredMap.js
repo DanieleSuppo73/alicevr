@@ -1,8 +1,4 @@
 import map from "../map.js";
-import {
-    Maf
-} from "../../../lib/Maf.js";
-
 
 
 export default class coveredMap {

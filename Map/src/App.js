@@ -5,7 +5,7 @@ import map from "../lib/map.js";
 import * as cities from "../lib/add-on/cities.js";
 import Loader from "../lib/managers/Loader.js"
 import Player from "../lib/managers/Player.js"
-import Ellipse from '../lib/entity/Ellipse.js';
+import Ellipse from '../lib/entities/Ellipse.js';
 import Preloader from "../lib/UI/Preloader.js";
 
 

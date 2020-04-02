@@ -1,6 +1,6 @@
 import Asset from "../Asset.js";
 import gpxParser from "../../utils/gpxParser.js";
-import Polyline from "../../entity/Polyline.js";
+import Polyline from "../../entities/Polyline.js";
 import map from "../../map.js";
 
 

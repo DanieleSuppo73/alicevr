@@ -1,5 +1,5 @@
 import Asset from "./Asset.js";
-import Billboard from "../entity/Billboard.js";
+import Billboard from "../entities/Billboard.js";
 import * as jsUtils from "../../../lib/jsUtils.js";
 
 
