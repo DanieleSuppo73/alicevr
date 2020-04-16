@@ -20,11 +20,22 @@ function getPropertiesFromCategory(category) {
     };
 
     switch (category) {
-        case "PLACEHOLDER":
-            properties.image = "images/billboards/icon_placeholder-video.svg";
-            properties.width = 50;
-            properties.height = 50;
+        case "PLACEHOLDER-VIDEO":
+            properties.image = "images/billboards/icon_placeholder-video_off.svg";
+            properties.width = 35;
+            properties.height = 35;
+            properties.color = new Cesium.Cartesian3(1, 1, 1);
             properties.translucencyByDistance = new Cesium.NearFarScalar(60000, 0, 200000, 1)
+            properties.opacity = 1;
+            break;
+
+        case "PLACEHOLDER-VIDEO-OVER":
+            properties.image = "images/billboards/icon_placeholder-video_on.svg";
+            properties.width = 35;
+            properties.height = 35;
+            properties.color = new Cesium.Cartesian3(1, 1, 1);
+            properties.translucencyByDistance = new Cesium.NearFarScalar(60000, 0, 200000, 1);
+            properties.opacity = 0.1;
             break;
 
         case "MUSEUM":
@@ -65,7 +76,7 @@ function getPropertiesFromCategory(category) {
 export default class Billboard {
 
     /// DRAW
-    static draw(position, category, collection = null) {
+    static draw(position, category, callback = null) {
 
         const properties = getPropertiesFromCategory(category)
 
@@ -97,9 +108,11 @@ export default class Billboard {
 
             default:
                 entity = Map.viewer.entities.add({
-                    opacity: 1, /// default value at start
+                    opacity: properties.opacity, /// default value at start
                     position: position,
                     category: category,
+                    scale: properties.scale,
+                    color: properties.color,
                     billboard: {
                         image: properties.image,
                         show: properties.show,
@@ -107,8 +120,14 @@ export default class Billboard {
                         eyeOffset: properties.eyeOffset,
                         horizontalOrigin: properties.horizontalOrigin,
                         verticalOrigin: properties.verticalOrigin,
-                        scale: properties.scale,
-                        color: properties.color,
+                        // scale: properties.scale,
+                        scale: new Cesium.CallbackProperty(function () {
+                            return entity.scale
+                        }, false),
+                        // color: properties.color,
+                        color: new Cesium.CallbackProperty(function () {
+                            return new Cesium.Color(entity.color.x, entity.color.y, entity.color.z, entity.opacity)
+                        }, false),
                         rotation: properties.rotation,
                         alignedAxis: properties.alignedAxis,
                         width: properties.width,
@@ -118,10 +137,12 @@ export default class Billboard {
                         translucencyByDistance: properties.translucencyByDistance,
                     }
                 });
+
+
         }
 
 
-        if (collection) collection.push(entity);
+        
         return entity;
     };
 

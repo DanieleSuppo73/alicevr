@@ -16,19 +16,22 @@ export default class Player {
 
     static init(video) {
 
-        /* create proxy */
+        /* create the proxy 
+        for the 1st time!*/
         if (!Player.radarProxy) Player.radarProxy = Point.draw(video.boundingSphere.center, "PROXY");
 
         let track = Loader.root.getAssetByClass("Track", video);
+
+        Player.radar = null;
 
         if (typeof track !== "undefined") {
             gpx = track.tracks;
 
             /* create radar */
-            if (!Player.radar) Player.radar = Ellipse.draw(video.boundingSphere.center, "RADAR");
+            Player.radar = Ellipse.draw(video.boundingSphere.center, "RADAR");
         } else {
             /* create radar */
-            if (!Player.radar) Player.radar = Ellipse.draw(video.boundingSphere.center, "POSITION");
+            Player.radar = Ellipse.draw(video.boundingSphere.center, "POSITION");
         }
 
         /* create markers */
@@ -36,7 +39,23 @@ export default class Player {
         markers[markers.length - 1].timecode += 1000; /// add 100 sec to last marker
 
         /* create start points */
+        Player.startPoints = [];
+        spIndex = 0;
         createStartPoints();
+    };
+
+
+    static stop(){
+        console.log("STOP")
+        playerPlaying = false;
+        markerIndex = null;
+        idle = true;
+        entityUtils.fadeOut(Player.radar);
+        if (moveRadarLerp){
+            clearInterval(moveRadarLerp);
+            moveRadarLerp = null;
+        }
+        Map.viewer.trackedEntity = null;
     };
 
 
@@ -45,18 +64,18 @@ export default class Player {
         for (let i = 0; i < Player.startPoints.length; i++) {
             interval += 250;
             setTimeout(function(){
-                Player.startPoints[i].fader.fadeIn();
+                Player.startPoints[i].entity.utils.fade(1);
             }, interval);
         }
     };
 
     static hideStartPoints(){
         for (let i = 0; i < Player.startPoints.length; i++) {
-            Player.startPoints[i].fader.fadeOut();
+            Player.startPoints[i].entity.utils.fade(0);
         }
     };
-
 };
+
 Player.radarProxy = null;
 Player.radar = null;
 Player.startPoints = [];
@@ -78,9 +97,7 @@ dispatcher.receiveMessage("playerSeeking", () => {
     playerPlaying = false;
 });
 dispatcher.receiveMessage("playerEnded", () => {
-    markerIndex = null;
-    idle = true;
-    entityUtils.fadeOut(Player.radar);
+    Player.stop();
 });
 
 

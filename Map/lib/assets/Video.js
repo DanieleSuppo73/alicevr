@@ -1,6 +1,7 @@
 import Asset from "./Asset.js";
 import Billboard from "../entities/Billboard.js";
 import * as jsUtils from "../../../lib/jsUtils.js";
+import * as entityUtils from "../utils/entity_utils.js";
 
 
 export default class Video extends Asset {
@@ -79,11 +80,28 @@ export default class Video extends Asset {
     addBoundingSphere(bdReceived) {
         super.addBoundingSphere(bdReceived);
 
-        /* set placeholder */
+        /* set default placeholder */
         if (!this.entity) {
-            this.entity = Billboard.draw(this.boundingSphere.center, "PLACEHOLDER");
+            this.entity = Billboard.draw(this.boundingSphere.center, "PLACEHOLDER-VIDEO");
+            this.entity.asset = {};
+            this.entity.asset.title = this.title;
+            this.entity.asset.id = this.id;
+            this.entity.utils = new entityUtils.Utils(this.entity);
+            this.entity.over = null;
+
         } else {
-            this.entity.position = this.boundingSphere.center;
+            this.entity.default.position = this.boundingSphere.center;
         }
+
+
+        /* set over placeholder */
+        if (!this.entity.over) {
+            this.entity.over = Billboard.draw(this.boundingSphere.center, "PLACEHOLDER-VIDEO-OVER");
+            this.entity.over.utils = new entityUtils.Utils(this.entity.over);
+
+        } else {
+            this.entity.over.position = this.boundingSphere.center;
+        }
+        console.log(this.entity)
     };
 }

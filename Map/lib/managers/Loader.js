@@ -16,11 +16,11 @@ export default class Loader {
 
 
     loadAsset(node, parent) {
-        
+
         /* load xml file */
         jsUtils.loadXml(this.url)
             .then((xml) => {
-               
+
                 /* get type from xml */
                 let type = null;
                 if (xml.getElementsByTagName("type").length > 0) {
@@ -71,21 +71,22 @@ export default class Loader {
     };
 
 
-    /* return an asset by property key-value,
-    starting to search from a parent asset */
-    static getAssetRecursive(parentAsset, key, value) {
-        if (parentAsset[key] === value)
-            return (parentAsset);
-        else {
-            for (let i = 0; i < parentAsset.children.length; i++) {
-                if (parentAsset.children[i].asset[key] === value) {
-                    return (parentAsset.children[i].asset);
-                } else {
-                    getAssetRecursive(parentAsset.childrens[i], key, value);
-                }
-            }
-        }
-    };
+    // /* return an asset by property key-value,
+    // starting to search from a parent asset */
+    // static getAssetRecursive(parentAsset, key, value) {
+    //     if (parentAsset[key] === value)
+    //         return (parentAsset);
+    //     else {
+    //         for (let i = 0; i < parentAsset.children.length; i++) {
+    //             if (parentAsset.children[i].asset[key] === value) {
+    //                 return (parentAsset.children[i].asset);
+    //             } else {
+    //                 getAssetRecursive(parentAsset.childrens[i], key, value);
+    //             }
+    //         }
+    //     }
+    // };
+
 
 
     /*******************
@@ -93,7 +94,7 @@ export default class Loader {
      *******************/
     static load(id, callback = null) {
         Asset.onEndLoadingCallback = callback;
-        let loader = new Loader(id, Loader.root);
+        const loader = new Loader(id, Loader.root);
     };
 };
 
@@ -112,7 +113,7 @@ Loader.root = {
     /* utility */
     getAssetById: function (id, parentAsset = null) {
         let parent = parentAsset ? parentAsset : this.asset;
-        return Loader.getAssetRecursive(parent, "id", id);
+        return getAssetRecursive(parent, "id", id);
     },
 
     /* utility */
@@ -125,4 +126,47 @@ Loader.root = {
             }
         }
     },
- };
+};
+
+
+
+
+// class getAssetRecursive{
+//     constructor(parentAsset, key, value){
+//         this.parentAsset = parentAsset;
+//         this.key = key;
+//         this.value = value;
+//     }
+
+//     find(){
+
+//     }
+// }
+
+
+
+
+
+/* return an asset by property key-value,
+starting to search from a parent asset */
+function getAssetRecursive(parentAsset, key, value) {
+    console.log("CERCO " + key + " === " + value)
+    console.log(parentAsset)
+    if (parentAsset[key] === value){
+        console.log("TROVATO " + parentAsset)
+        return (parentAsset);
+    }
+    else {
+        console.log(parentAsset)
+        for (let i = 0; i < parentAsset.children.length; i++) {
+            if (parentAsset.children[i].asset[key] === value) {
+                console.log("TROVATO " + parentAsset.children[i].asset)
+                return (parentAsset.children[i].asset);
+            } else {
+                console.log("CONTINUO NEL CHILDREN " + i)
+                console.log(parentAsset.children[i])
+                getAssetRecursive(parentAsset.children[i].asset, key, value);
+            }
+        }
+    }
+};

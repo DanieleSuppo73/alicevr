@@ -1,5 +1,5 @@
 import Map from "../../Map.js";
-import Point from "../../entities/Point.js";
+// import Point from "../../entities/Point.js";
 import * as entityUtils from "../../utils/entity_utils.js";
 
 export default class StartPoint {
@@ -11,20 +11,61 @@ export default class StartPoint {
         this.setup();
     }
     setup() {
-        this.entity = Point.draw(this.position, "STARTING-POINT");
+        this.entity = Map.viewer.entities.add({
+            category: "STARTING-POINT",
+            position: this.position,
+            color: StartPoint.color,
+            outlineColor: StartPoint.outlineColor,
+            opacity: 0,
+            point: {
+                pixelSize: 10,
+                color: new Cesium.CallbackProperty(() => {
+                    return new Cesium.Color(this.entity.color.x, this.entity.color.y, this.entity.color.z, this.entity.opacity)
+                }, false),
+                outlineColor: new Cesium.CallbackProperty(() => {
+                    return new Cesium.Color(this.entity.outlineColor.x, this.entity.outlineColor.y, this.entity.outlineColor.z, this.entity.opacity)
+                }, false),
+                outlineWidth: 1,
+                translucencyByDistance : new Cesium.NearFarScalar(75000, 0, 25000, 1),
+            }
+        });
+
         this.entity.timecode = this.timecode;
-        this.fader = new entityUtils.Fader(this.entity);
+        this.entity.utils = new entityUtils.Utils(this.entity);
     }
 };
 
+StartPoint.color = new Cesium.Cartesian3(0.26, 0.52, 0.96);
+StartPoint.overColor = new Cesium.Cartesian3(1, 0.85, 0);
+StartPoint.outlineColor = new Cesium.Cartesian3(0, 0, 0);
+StartPoint.clicked = null;
+
 
 Map.onOverEntity.push((entity) => {
-    console.log(entity.id.category);
-
-    if (entity.id.category = "STARTING-POINT") {
+    if (entity.id.category === "STARTING-POINT") {
         console.log("CI SEI SOPRA!")
+        entity.id.color = StartPoint.overColor;
     }
 });
+
+
+Map.onExitEntity.push((entity) => {
+    if (entity.id.category === "STARTING-POINT") {
+        if (entity !== StartPoint.clicked){
+            entity.id.color = StartPoint.color;
+        }
+    }
+});
+
+
+Map.onClickEntity.push((entity) => {
+    if (entity.id.category === "STARTING-POINT") {
+        console.log(entity.id.timecode)
+        StartPoint.clicked = entity;
+    }
+});
+
+
 
 
 // function onThisHover(entity) {

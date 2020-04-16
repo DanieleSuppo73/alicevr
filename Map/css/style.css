@@ -4,7 +4,7 @@ body,
     height: 100%;
     width: 100%;
     margin: 0;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto';
     /* for Microsoft Edge */
     -ms-overflow-style: none;
     overflow: -moz-scrollbars-none;
@@ -49,7 +49,7 @@ body,
 #logo {
     position: absolute;
     left: 1em;
-    top: 1em;
+    bottom: 1em;
     z-index: 999;
     width: 4em;
 }
@@ -123,4 +123,41 @@ body,
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 10px;
+}
+
+
+
+/*******************
+navigator
+*******************/
+#navigator {
+    position: absolute;
+    left: 1em;
+    top: 1em;
+    z-index: 99;
+}
+
+#navigator-message {
+    padding: 0.5em;
+    border-radius: 0.5em;
+    background-color: rgb(26, 27, 33);
+    color: rgba(255, 255, 255, 0.849);
+    display: none;
+}
+
+#navigator-message p {
+    margin: 0;
+}
+
+#navigator-message div {
+    padding: 0.4em;
+}
+
+#navigator-buttons-container {
+    display: none;
+}
+
+#navigator-buttons img{
+    pointer-events: auto;
+    cursor: pointer;
 }

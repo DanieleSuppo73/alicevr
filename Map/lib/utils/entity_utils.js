@@ -27,6 +27,35 @@ export function fadeOut(entity, callback = null, time = null) {
 //     entity.billboard.color = new Cesium.Color(1.0, 1.0, 1.0, 0.0);
 // };
 
+
+
+
+
+
+export function zoom(entity, to, callback = null, time = null){
+    let lerpTime = time ? time : 200; /// default zoom time
+    let sampleInterval = 50;
+    let initTime = 0;
+    let from = entity.id.scale;
+    if (lerp) {
+        clearInterval(lerp);
+        lerp = null;
+    }
+    lerp = setInterval(function () {
+        initTime += sampleInterval;
+        if (initTime <= lerpTime) {
+            let t = initTime / lerpTime;
+            entity.id.scale = Maf.lerp(from, to, t);
+        } else {
+            clearInterval(lerp);
+            entity.id.scale = to;
+            if (callback) callback();
+        }
+    }, sampleInterval)
+}
+
+
+
 var lerp = null;
 
 function fadeFunc(entity, from, to, callback, time) {
@@ -53,46 +82,60 @@ function fadeFunc(entity, from, to, callback, time) {
 
 
 
-export class Fader {
+
+export class Utils {
     constructor(entity) {
         this.entity = entity;
-        this.lerp = null;
-    }
-
-    fadeIn(callback = null, time = null) {
-        if (this.entity.opacity !== 1)
-            this.fadeFunc(0, 1, callback, time);
-        else {
-            if (callback) callback();
-        }
+        this.zoomLerp = null;
+        this.fadeLerp = null;
+        this.lerpTime = 200;
+        this.sampleInterval = 50;
     };
 
-    fadeOut(callback = null, time = null) {
-        if (this.entity.opacity !== 0)
-            this.fadeFunc(1, 0, callback, time);
-        else {
-            if (callback) callback();
-        }
-    };
-
-    fadeFunc(from, to, callback, time) {
-        let lerpTime = time ? time : 1000; /// default fade time
-        let sampleInterval = 50;
+    zoom(to, callback = null, time = null) {
+        let lerpTime = time ? time : this.lerpTime;
         let initTime = 0;
-        if (this.lerp) {
-            clearInterval(lerp);
-            this.lerp = null;
+        let from = this.entity.scale;
+        if (this.zoomLerp) {
+            clearInterval(this.zoomLerp);
+            this.zoomLerp = null;
         }
-        this.lerp = setInterval(() => {
-            initTime += sampleInterval;
+        this.zoomLerp = setInterval(() => {
+            initTime += this.sampleInterval;
             if (initTime <= lerpTime) {
                 let t = initTime / lerpTime;
-                this.entity.opacity = Maf.lerp(from, to, t);
+                this.entity.scale = Maf.lerp(from, to, t);
             } else {
-                clearInterval(this.lerp);
-                this.entity.opacity = to;
+                clearInterval(this.zoomLerp);
+                this.entity.scale = to;
                 if (callback) callback();
             }
-        }, sampleInterval)
+        }, this.sampleInterval)
+    };
+
+    fade(to, callback = null, time = null) {
+        let lerpTime = time ? time : this.lerpTime;
+        let initTime = 0;
+        let from = this.entity.opacity;
+        if (to !== from){
+            if (this.fadeLerp) {
+                clearInterval(this.fadeLerp);
+                this.fadeLerp = null;
+            }
+            this.fadeLerp = setInterval(() => {
+                initTime += this.sampleInterval;
+                if (initTime <= lerpTime) {
+                    let t = initTime / lerpTime;
+                    this.entity.opacity = Maf.lerp(from, to, t);
+                } else {
+                    clearInterval(this.fadeLerp);
+                    this.entity.opacity = to;
+                    if (callback) callback();
+                }
+            }, this.sampleInterval)
+        }
     };
 }
+
+
+

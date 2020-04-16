@@ -4,12 +4,15 @@ import {
 import Map from "../lib/Map.js";
 import * as cities from "../lib/add-on/cities.js";
 import Loader from "../lib/managers/Loader.js"
+import AssetManager from "../lib/managers/AssetManager.js"
 import Player from "../lib/managers/Player.js"
 import Ellipse from '../lib/entities/Ellipse.js';
 import Preloader from "../lib/UI/Preloader.js";
 
 
-let selectedAsset = null;
+
+
+
 
 
 
@@ -26,27 +29,24 @@ Map.onStarted.push(() => {
     // const idToLoad = "1573827877573";
     // const idToLoad = "1579530506349";
     // const idToLoad = "1573827851085";
-    const idToLoad = "1570451964288";
+    // const idToLoad = "1570451964288";
+    const idToLoad = "main";
     Loader.load(idToLoad, () => {
         console.log(Loader.root.asset)
 
 
+        AssetManager.init();
 
         // /// DEBUG : show circle
         // Ellipse.draw(Loader.root.asset.boundingSphere.center, "ORANGE", Loader.root.asset.boundingSphere.radius);
         // Ellipse.draw(Loader.root.asset.boundingSphere.center, "BLUE", 100);
 
 
-        /* go there */
-        let range = 140000;
-        Map.camera.flyToBoundingSphere(Loader.root.asset.boundingSphere, {
-            offset: new Cesium.HeadingPitchRange(0, -1.47, range),
-            duration: 0,
-        });
-
-
         /* load cities from boundingsphere position - radius */
         // cities.init(Loader.root.asset.boundingSphere.center, range);
+
+
+
     });
 })
 
@@ -66,23 +66,10 @@ Map.onReady.push(function () {
     Map.camera.percentageChanged = 0.3; /// default 0.5
 
 
-
     if (Loader.root.asset.constructor.name === "Video") {
         Player.init(Loader.root.asset);
 
-       
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
         const timeBeforeFly = 2000;
         setTimeout(() => {
             Map.camera.flyToBoundingSphere(Loader.root.asset.boundingSphere, {
@@ -102,15 +89,6 @@ Map.onReady.push(function () {
         }, timeBeforeFly)
 
     }
-
-
-
-
-
-
-
-
-
 })
 
 
@@ -120,32 +98,32 @@ Map.onReady.push(function () {
 
 
 
-const onPlay = () => {
+// const onPlay = () => {
 
-    console.log("PLAY")
-    Map.unfixCamera();
-    clearInterval(rotate);
+//     console.log("PLAY")
+//     Map.unfixCamera();
+//     clearInterval(rotate);
+//     Player.hideStartPoints;
 
-    /// fake player
-    var time = 0;
-    var samplerate = 250;
-    setInterval(() => {
-        time += samplerate / 1000;
-        dispatcher.sendMessage("playerPlaying", {
-            time: time,
-            angle: 0,
-        });
-    }, samplerate);
-}
-
-
-
+//     /// fake player
+//     var time = 0;
+//     var samplerate = 250;
+//     setInterval(() => {
+//         time += samplerate / 1000;
+//         dispatcher.sendMessage("playerPlaying", {
+//             time: time,
+//             angle: 0,
+//         });
+//     }, samplerate);
+// }
 
 
-window.play = onPlay;
 
-window.hide = Player.hideStartPoints;
-window.show = Player.showStartPoints;
+
+
+// window.play = onPlay;
+
+
 
 
 
@@ -158,6 +136,8 @@ dispatcher.receiveMessage("playerPlaying", (data) => {
     /// rotate placeholder texture with player angle
     // placeholder.ellipse.stRotation = Cesium.Math.toRadians(data.angle);
 });
+
+
 
 
 
@@ -176,12 +156,10 @@ Map.init();
 
 
 
-
-
 ////////////////////////////////////////// DEBUG
 
 
-let rotate = null;
+// let rotate = null;
 
 
 // Map.onDown.push(function () {
@@ -196,17 +174,16 @@ let rotate = null;
 
 
 
-function rotateCamera() {
-    // Map.fixCamera(Loader.root.boundingSphere.center);
-    rotate = setInterval(function () {
-        Map.camera.rotateLeft(0.0015);
-    }, 50);
-};
+// function rotateCamera() {
+//     rotate = setInterval(function () {
+//         Map.camera.rotateLeft(0.0015);
+//     }, 50);
+// };
 
-window.rotateCamera = function () {
-    rotateCamera();
-}
+// window.rotateCamera = function () {
+//     rotateCamera();
+// }
 
-window.unlink = function () {
-    Map.unlinkCamera();
-}
+// window.unlink = function () {
+//     Map.unlinkCamera();
+// }

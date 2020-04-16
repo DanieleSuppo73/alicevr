@@ -159,7 +159,7 @@ export default class Map {
     };
 
 
-    
+
     /*******************************************************
     *********************** INIT ***************************
     *******************************************************/
@@ -212,29 +212,46 @@ export default class Map {
 
         /// over / exit entity
         Map.viewer.screenSpaceEventHandler.setInputAction(function (movement) {
+
             let _entity = Map.viewer.scene.pick(movement.endPosition);
             if (Cesium.defined(_entity)) {
                 if (Map.entity !== _entity) {
-                    
+
+                    document.body.style.cursor = "pointer";
+
+
                     if (Map.entity) {
+                        console.log("EXIT - 1")
                         for (let i = 0; i < Map.onExitEntity.length; i++) {
                             Map.onExitEntity[i](Map.entity);
                         };
                     }
 
                     Map.entity = _entity;
+                    Map.oldEntity = Map.entity;
+
+                    console.log("ENTER - 1")
                     for (let i = 0; i < Map.onOverEntity.length; i++) {
                         Map.onOverEntity[i](Map.entity);
                     };
 
                 }
             } else {
-                if (Map.entity) {
+
+                document.body.style.cursor = "default";
+
+                if (Map.entity && Map.entity !== _entity) {
+                    console.log(Map.entity)
+                    console.log(_entity)
+                    console.log("EXIT - 2")
                     for (let i = 0; i < Map.onExitEntity.length; i++) {
                         Map.onExitEntity[i](Map.entity);
                     };
                     Map.entity = null;
                 }
+
+
+
             }
         }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
@@ -301,11 +318,11 @@ Map.params = {
     imageryProvider: function () {
         return (
             this.useMapbox ?
-            new Cesium.MapboxImageryProvider({
-                mapId: 'mapbox.satellite',
-                accessToken: 'pk.eyJ1IjoiZGFuaWVsZXN1cHBvIiwiYSI6ImNqb2owbHp2YjAwODYzcW8xaWdhcGp1ancifQ.JvNWYw_cL6rV7ymuEbeTCw'
-            }) :
-            null
+                new Cesium.MapboxImageryProvider({
+                    mapId: 'mapbox.satellite',
+                    accessToken: 'pk.eyJ1IjoiZGFuaWVsZXN1cHBvIiwiYSI6ImNqb2owbHp2YjAwODYzcW8xaWdhcGp1ancifQ.JvNWYw_cL6rV7ymuEbeTCw'
+                }) :
+                null
         );
     },
 };
@@ -317,6 +334,7 @@ Map.viewer = null;
 Map.camera = null;
 Map.canvas = null;
 Map.entity = null;
+Map.oldEntity = null;
 Map.onStarted = [];
 Map.onReady = [];
 Map.onDown = [];

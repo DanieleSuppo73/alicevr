@@ -96,8 +96,8 @@ function getPropertiesFromCategory(category) {
             properties.font = "500 15px Roboto";
             properties.outlineWidth = 2;
             properties.fillColor = new Cesium.Cartesian3(0.5, 1, 0.5);
-            properties.minDistance = 170000;
-            properties.maxDistance = 800000;
+            properties.minDistance = 50000;
+            properties.maxDistance = 70000;
             break;
     }
 
