@@ -16,36 +16,55 @@ export default class AssetManager {
 
 
 
-        // $('#navigator-button-home').hover(
-        //     function () {
-        //         $(this).attr('src', 'images/icon_home_on.svg');
-        //     }
-        // );
+        $('#navigator-button-home').mouseenter(
+            function () {
+                $(this).attr('src', 'images/icon_home_on.svg');
+            }
+        );
+        $('#navigator-button-home').mouseleave(
+            function () {
+                $(this).attr('src', 'images/icon_home_off.svg');
+            }
+        );
         $('#navigator-button-home').click(
             function () {
                 AssetManager.selectedAsset = null;
                 Player.hideStartPoints();
 
+                stopCameraRotation();
 
-               
-                // Map.viewer.trackedEntity = null;
+                
 
-                if (playInterval){
+                if (playInterval) {
                     clearInterval(playInterval);
                     playInterval = null;
                 }
-                Player.stop();
+                if (Player.playing) {
+                    Player.stop();
+                }
 
-                setTimeout(()=>{
-                    zoomToAll(true);
-                }, 200)
 
-                
+
+                zoomToAll(true);
+
+
+
                 hideNavigatorMessage();
                 hideNavigatorButtons();
             }
         );
 
+
+        $('#navigator-button-play').mouseenter(
+            function () {
+                $(this).attr('src', 'images/icon_play_on.svg');
+            }
+        );
+        $('#navigator-button-play').mouseleave(
+            function () {
+                $(this).attr('src', 'images/icon_play_off.svg');
+            }
+        );
         $('#navigator-button-play').click(
             function () {
                 startPlay();
@@ -208,7 +227,7 @@ function startPlay() {
 
     stopCameraRotation();
 
-    
+
 
     /// fake player
     var time = 0;
@@ -223,8 +242,8 @@ function startPlay() {
 }
 
 
-function stopPlay(){
-    if (playInterval){
+function stopPlay() {
+    if (playInterval) {
         clearInterval(playInterval);
         playInterval = null;
     }

@@ -39,19 +39,22 @@ export default class Player {
         markers[markers.length - 1].timecode += 1000; /// add 100 sec to last marker
 
         /* create start points */
+        for (let i = 0; i < Player.startPoints.length; i++) {
+            Map.viewer.entities.remove(Player.startPoints[i].entity);
+        }
         Player.startPoints = [];
         spIndex = 0;
         createStartPoints();
     };
 
 
-    static stop(){
+    static stop() {
         console.log("STOP")
-        playerPlaying = false;
+        Player.playing = false;
         markerIndex = null;
         idle = true;
         entityUtils.fadeOut(Player.radar);
-        if (moveRadarLerp){
+        if (moveRadarLerp) {
             clearInterval(moveRadarLerp);
             moveRadarLerp = null;
         }
@@ -63,13 +66,13 @@ export default class Player {
         let interval = 0;
         for (let i = 0; i < Player.startPoints.length; i++) {
             interval += 250;
-            setTimeout(function(){
+            setTimeout(function () {
                 Player.startPoints[i].entity.utils.fade(1);
             }, interval);
         }
     };
 
-    static hideStartPoints(){
+    static hideStartPoints() {
         for (let i = 0; i < Player.startPoints.length; i++) {
             Player.startPoints[i].entity.utils.fade(0);
         }
@@ -79,6 +82,7 @@ export default class Player {
 Player.radarProxy = null;
 Player.radar = null;
 Player.startPoints = [];
+Player.playing = false;
 
 
 
@@ -87,14 +91,14 @@ messages receivers
 ******************/
 dispatcher.receiveMessage("playerPlaying", (data) => {
     check(data.time);
-    playerPlaying = true;
+    Player.playing = true;
 });
 dispatcher.receiveMessage("playerPaused", () => {
-    playerPlaying = false;
+    Player.playing = false;
 });
 dispatcher.receiveMessage("playerSeeking", () => {
     markerIndex = null;
-    playerPlaying = false;
+    Player.playing = false;
 });
 dispatcher.receiveMessage("playerEnded", () => {
     Player.stop();
@@ -110,7 +114,7 @@ var markers = null;
 var markerIndex = null;
 var gpx = [];
 var moveRadarLerp = null;
-var playerPlaying = false;
+// var Player.playing = false;
 var radarAngle = 0;
 var radarLinked = true;
 var idle = true;
@@ -121,7 +125,7 @@ var idle = true;
 check for new marker
 ********************/
 const check = time => {
-    if (markers && playerPlaying) {
+    if (markers && Player.playing) {
         const y = markerIndex ? markerIndex : 0;
         for (let i = y; i < markers.length; i++) {
             if (time >= markers[i].timecode && time < markers[i + 1].timecode &&
@@ -415,7 +419,7 @@ const lerp = (gpxFound, wpIndex) => {
     const sampleInterval = 50;
     let t = 0;
     moveRadarLerp = setInterval(() => {
-        if (playerPlaying) {
+        if (Player.playing) {
             t += sampleInterval;
             if (t < lerpTime) {
                 let lerpValue = t / lerpTime;
