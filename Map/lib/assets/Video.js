@@ -8,6 +8,7 @@ export default class Video extends Asset {
     constructor(id, xml, parent = null) {
         super(id, parent);
         this.entity = null;
+        this.entityOver = null;
         this.markers = [];
         this.setup(xml);
     };
@@ -81,27 +82,30 @@ export default class Video extends Asset {
         super.addBoundingSphere(bdReceived);
 
         /* set default placeholder */
+
+        const asset = { id: this.id };
+
         if (!this.entity) {
             this.entity = Billboard.draw(this.boundingSphere.center, "PLACEHOLDER-VIDEO");
-            this.entity.asset = {};
-            this.entity.asset.title = this.title;
-            this.entity.asset.id = this.id;
+            this.entity.asset = asset;
+            // this.entity.asset.title = this.title;
+            // this.entity.asset.id = this.id;
             this.entity.utils = new entityUtils.Utils(this.entity);
-            this.entity.over = null;
+            // this.entity.over = null;
 
         } else {
-            this.entity.default.position = this.boundingSphere.center;
+            this.entity.position = this.boundingSphere.center;
         }
 
 
         /* set over placeholder */
-        if (!this.entity.over) {
-            this.entity.over = Billboard.draw(this.boundingSphere.center, "PLACEHOLDER-VIDEO-OVER");
-            this.entity.over.utils = new entityUtils.Utils(this.entity.over);
+        if (!this.entityOver) {
+            this.entityOver = Billboard.draw(this.boundingSphere.center, "PLACEHOLDER-VIDEO-OVER");
+            this.entityOver.asset = asset;
+            this.entityOver.utils = new entityUtils.Utils(this.entityOver);
 
         } else {
-            this.entity.over.position = this.boundingSphere.center;
+            this.entityOver.position = this.boundingSphere.center;
         }
-        console.log(this.entity)
     };
 }

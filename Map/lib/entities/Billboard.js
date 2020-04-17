@@ -25,7 +25,7 @@ function getPropertiesFromCategory(category) {
             properties.width = 35;
             properties.height = 35;
             properties.color = new Cesium.Cartesian3(1, 1, 1);
-            properties.translucencyByDistance = new Cesium.NearFarScalar(60000, 0, 200000, 1)
+            properties.translucencyByDistance = new Cesium.NearFarScalar(10000, 0, 50000, 1)
             properties.opacity = 1;
             break;
 
@@ -34,7 +34,7 @@ function getPropertiesFromCategory(category) {
             properties.width = 35;
             properties.height = 35;
             properties.color = new Cesium.Cartesian3(1, 1, 1);
-            properties.translucencyByDistance = new Cesium.NearFarScalar(60000, 0, 200000, 1);
+            properties.translucencyByDistance = new Cesium.NearFarScalar(10000, 0, 50000, 1);
             properties.opacity = 0.1;
             break;
 

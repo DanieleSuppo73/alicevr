@@ -29,14 +29,21 @@ export default class AssetManager {
         $('#navigator-button-home').click(
             function () {
                 AssetManager.selectedAsset = null;
-                AssetManager.OnExit_Placeholder_Video(selectedEntity);
+                // AssetManager.OnExit_Placeholder_Video(selectedEntity);
+
+                selectedEntity.id.utils.fade(1.0);
+                selectedEntity.id.utils.zoom(1.0);
+                selectedEntity.id.over.utils.fade(0.1);
+                selectedEntity.id.over.utils.zoom(1.0);
+
+
                 selectedEntity = null;
 
                 Player.hideStartPoints();
 
                 stopCameraRotation();
 
-                
+
 
                 if (playInterval) {
                     clearInterval(playInterval);
@@ -80,7 +87,7 @@ export default class AssetManager {
             switch (entity.id.category) {
 
                 case "PLACEHOLDER-VIDEO":
-                    AssetManager.OnOver_Placeholder_Video(entity);
+                    AssetManager.OnOver(entity);
                     break;
             }
         });
@@ -90,8 +97,8 @@ export default class AssetManager {
         Map.onExitEntity.push((entity) => {
             switch (entity.id.category) {
 
-                case "PLACEHOLDER-VIDEO":
-                    AssetManager.OnExit_Placeholder_Video(entity);
+                case "PLACEHOLDER-VIDEO-OVER":
+                    AssetManager.OnExit(entity);
                     break;
             }
         });
@@ -102,41 +109,47 @@ export default class AssetManager {
         Map.onClickEntity.push((entity) => {
             switch (entity.id.category) {
 
-                case "PLACEHOLDER-VIDEO":
-                    AssetManager.OnClick_Placeholder_Video(entity);
+                case "PLACEHOLDER-VIDEO-OVER":
+                    console.log("EXIT")
+                    AssetManager.OnClick_Video(entity);
                     break;
+
+               
             }
         });
     }
 
 
-    static OnOver_Placeholder_Video(entity) {
-        entity.id.utils.fade(0.1);
-        entity.id.utils.zoom(1.2);
-        entity.id.over.utils.fade(1.0);
-        entity.id.over.utils.zoom(1.2);
+    static OnOver(entity) {
+        const asset = Loader.root.getAssetById(entity.id.asset.id);
+        if (asset !== hoverAsset) {
+            asset.entity.utils.fade(0.1);
+            asset.entity.utils.zoom(1.2);
+            asset.entityOver.utils.fade(1.0);
+            asset.entityOver.utils.zoom(1.2);
+            hoverAsset = asset;
 
-        /* show message */
-        const selectedAsset = Loader.root.getAssetById(entity.id.asset.id);
-        showNavigatorMessage(selectedAsset);
+            showNavigatorMessage(hoverAsset);
+        }
     };
 
 
-    static OnExit_Placeholder_Video(entity) {
-        entity.id.utils.fade(1.0);
-        entity.id.utils.zoom(1.0);
-        entity.id.over.utils.fade(0.1);
-        entity.id.over.utils.zoom(1.0);
+    static OnExit(entity) {
+        const asset = Loader.root.getAssetById(entity.id.asset.id);
+        asset.entity.utils.fade(1);
+        asset.entity.utils.zoom(1);
+        asset.entityOver.utils.fade(0.1);
+        asset.entityOver.utils.zoom(1, () => {
+            hoverAsset = null;
+        });
 
-        /* hide message */
         hideNavigatorMessage();
     };
 
 
-    static OnClick_Placeholder_Video(entity) {
-        selectedEntity = entity;
-        AssetManager.selectedAsset = Loader.root.getAssetById(entity.id.asset.id);
-        const selectedAsset = AssetManager.selectedAsset;
+    static OnClick_Video(entity) {
+        selectedAsset = hoverAsset ? hoverAsset : Loader.root.getAssetById(entity.id.asset.id);
+        // const selectedAsset = AssetManager.selectedAsset;
         // console.log(selectedAsset);
 
         /* show buttons */
@@ -162,9 +175,10 @@ export default class AssetManager {
     };
 };
 
-AssetManager.selectedAsset = null;
+let selectedAsset = null;
+let hoverAsset = null;
 
-let selectedEntity = null;
+// let selectedEntity = null;
 
 
 function zoomToAll(slow) {
@@ -180,15 +194,18 @@ function zoomToAll(slow) {
 };
 
 
-function showNavigatorMessage(selectedAsset) {
-    $('#navigator-title').text(selectedAsset.title);
-    $('#navigator-location').text(selectedAsset.location);
+function showNavigatorMessage(asset) {
+    $('#navigator-title').text(asset.title);
+    $('#navigator-location').text(asset.location);
     $('#navigator-message').fadeIn();
 };
 
 function hideNavigatorMessage() {
-    if (!AssetManager.selectedAsset) {
+    if (!selectedAsset) {
         $('#navigator-message').fadeOut();
+    }
+    else {
+        showNavigatorMessage(selectedAsset);
     }
 };
 

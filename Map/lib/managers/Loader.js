@@ -150,21 +150,14 @@ Loader.root = {
 /* return an asset by property key-value,
 starting to search from a parent asset */
 function getAssetRecursive(parentAsset, key, value) {
-    console.log("CERCO " + key + " === " + value)
-    console.log(parentAsset)
     if (parentAsset[key] === value){
-        console.log("TROVATO " + parentAsset)
         return (parentAsset);
     }
     else {
-        console.log(parentAsset)
         for (let i = 0; i < parentAsset.children.length; i++) {
             if (parentAsset.children[i].asset[key] === value) {
-                console.log("TROVATO " + parentAsset.children[i].asset)
                 return (parentAsset.children[i].asset);
             } else {
-                console.log("CONTINUO NEL CHILDREN " + i)
-                console.log(parentAsset.children[i])
                 getAssetRecursive(parentAsset.children[i].asset, key, value);
             }
         }
