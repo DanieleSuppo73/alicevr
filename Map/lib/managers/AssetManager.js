@@ -29,6 +29,9 @@ export default class AssetManager {
         $('#navigator-button-home').click(
             function () {
                 AssetManager.selectedAsset = null;
+                AssetManager.OnExit_Placeholder_Video(selectedEntity);
+                selectedEntity = null;
+
                 Player.hideStartPoints();
 
                 stopCameraRotation();
@@ -125,15 +128,18 @@ export default class AssetManager {
         entity.id.over.utils.fade(0.1);
         entity.id.over.utils.zoom(1.0);
 
+        /* hide message */
         hideNavigatorMessage();
     };
 
 
     static OnClick_Placeholder_Video(entity) {
+        selectedEntity = entity;
         AssetManager.selectedAsset = Loader.root.getAssetById(entity.id.asset.id);
         const selectedAsset = AssetManager.selectedAsset;
         // console.log(selectedAsset);
 
+        /* show buttons */
         showNavigatorButtons();
 
         /* initialize Player */
@@ -158,7 +164,7 @@ export default class AssetManager {
 
 AssetManager.selectedAsset = null;
 
-
+let selectedEntity = null;
 
 
 function zoomToAll(slow) {
@@ -242,12 +248,12 @@ function startPlay() {
 }
 
 
-function stopPlay() {
-    if (playInterval) {
-        clearInterval(playInterval);
-        playInterval = null;
-    }
-}
+// function stopPlay() {
+//     if (playInterval) {
+//         clearInterval(playInterval);
+//         playInterval = null;
+//     }
+// }
 
 
 
