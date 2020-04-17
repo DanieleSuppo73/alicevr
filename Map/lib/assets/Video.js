@@ -82,21 +82,15 @@ export default class Video extends Asset {
         super.addBoundingSphere(bdReceived);
 
         /* set default placeholder */
-
         const asset = { id: this.id };
-
         if (!this.entity) {
             this.entity = Billboard.draw(this.boundingSphere.center, "PLACEHOLDER-VIDEO");
             this.entity.asset = asset;
-            // this.entity.asset.title = this.title;
-            // this.entity.asset.id = this.id;
             this.entity.utils = new entityUtils.Utils(this.entity);
-            // this.entity.over = null;
 
         } else {
             this.entity.position = this.boundingSphere.center;
         }
-
 
         /* set over placeholder */
         if (!this.entityOver) {

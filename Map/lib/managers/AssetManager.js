@@ -28,39 +28,13 @@ export default class AssetManager {
         );
         $('#navigator-button-home').click(
             function () {
-                AssetManager.selectedAsset = null;
-                // AssetManager.OnExit_Placeholder_Video(selectedEntity);
-
-                selectedEntity.id.utils.fade(1.0);
-                selectedEntity.id.utils.zoom(1.0);
-                selectedEntity.id.over.utils.fade(0.1);
-                selectedEntity.id.over.utils.zoom(1.0);
-
-
-                selectedEntity = null;
-
-                Player.hideStartPoints();
-
-                stopCameraRotation();
-
-
-
-                if (playInterval) {
-                    clearInterval(playInterval);
-                    playInterval = null;
-                }
-                if (Player.playing) {
-                    Player.stop();
-                }
-
-
-
-                zoomToAll(true);
-
-
-
-                hideNavigatorMessage();
-                hideNavigatorButtons();
+                reset(() => {
+                    selectedAsset = null;
+                    hoverAsset = null;
+                    zoomToAll(true);
+                    hideNavigatorButtons();
+                    hideNavigatorMessage();
+                })
             }
         );
 
@@ -110,11 +84,8 @@ export default class AssetManager {
             switch (entity.id.category) {
 
                 case "PLACEHOLDER-VIDEO-OVER":
-                    console.log("EXIT")
                     AssetManager.OnClick_Video(entity);
                     break;
-
-               
             }
         });
     }
@@ -122,8 +93,8 @@ export default class AssetManager {
 
     static OnOver(entity) {
         const asset = Loader.root.getAssetById(entity.id.asset.id);
-        if (asset !== hoverAsset) {
-            asset.entity.utils.fade(0.1);
+        if (asset !== hoverAsset && asset !== selectedAsset) {
+            asset.entity.utils.fade(0.01);
             asset.entity.utils.zoom(1.2);
             asset.entityOver.utils.fade(1.0);
             asset.entityOver.utils.zoom(1.2);
@@ -134,25 +105,34 @@ export default class AssetManager {
     };
 
 
-    static OnExit(entity) {
-        const asset = Loader.root.getAssetById(entity.id.asset.id);
-        asset.entity.utils.fade(1);
-        asset.entity.utils.zoom(1);
-        asset.entityOver.utils.fade(0.1);
-        asset.entityOver.utils.zoom(1, () => {
-            hoverAsset = null;
-        });
+    static OnExit(entity, forced = false) {
+        const asset = typeof entity.asset === "undefined" ?
+            Loader.root.getAssetById(entity.id.asset.id) :
+            Loader.root.getAssetById(entity.asset.id);
+        if (asset !== selectedAsset || forced) {
+            asset.entity.utils.fade(1);
+            asset.entity.utils.zoom(1);
+            asset.entityOver.utils.fade(0.1);
+            asset.entityOver.utils.zoom(1, () => {
+                hoverAsset = null;
+            });
 
-        hideNavigatorMessage();
+            if (!forced) hideNavigatorMessage();
+        }
+        else {
+            console.warn("NON POSSO USCIRE! ===> asset = selectedAsset")
+        }
     };
 
 
     static OnClick_Video(entity) {
-        selectedAsset = hoverAsset ? hoverAsset : Loader.root.getAssetById(entity.id.asset.id);
-        // const selectedAsset = AssetManager.selectedAsset;
-        // console.log(selectedAsset);
+        if (selectedAsset) {
+            reset();
+        }
+        selectedAsset = Loader.root.getAssetById(entity.id.asset.id);
+        selectedAsset.entityOver.utils.fade(0.01, null, 1000);
+        selectedAsset.entityOver.utils.zoom(2, null, 1000);
 
-        /* show buttons */
         showNavigatorButtons();
 
         /* initialize Player */
@@ -178,15 +158,32 @@ export default class AssetManager {
 let selectedAsset = null;
 let hoverAsset = null;
 
-// let selectedEntity = null;
+
+
+function reset(callback = null) {
+    const entity = selectedAsset.entity;
+    AssetManager.OnExit(entity, true);
+    Player.hideStartPoints();
+    stopCameraRotation();
+
+    if (playInterval) {
+        clearInterval(playInterval);
+        playInterval = null;
+    }
+    if (Player.playing) {
+        Player.stop();
+    }
+
+    if (callback) callback();
+}
 
 
 function zoomToAll(slow) {
 
     stopCameraRotation();
 
-    let duration = slow ? null : 0;
-    let range = 140000;
+    const duration = slow ? null : 0;
+    const range = 140000;
     Map.camera.flyToBoundingSphere(Loader.root.asset.boundingSphere, {
         offset: new Cesium.HeadingPitchRange(0, -1.47, range),
         duration: duration,
@@ -263,14 +260,6 @@ function startPlay() {
         });
     }, samplerate);
 }
-
-
-// function stopPlay() {
-//     if (playInterval) {
-//         clearInterval(playInterval);
-//         playInterval = null;
-//     }
-// }
 
 
 

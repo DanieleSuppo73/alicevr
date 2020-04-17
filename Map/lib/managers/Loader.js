@@ -71,22 +71,6 @@ export default class Loader {
     };
 
 
-    // /* return an asset by property key-value,
-    // starting to search from a parent asset */
-    // static getAssetRecursive(parentAsset, key, value) {
-    //     if (parentAsset[key] === value)
-    //         return (parentAsset);
-    //     else {
-    //         for (let i = 0; i < parentAsset.children.length; i++) {
-    //             if (parentAsset.children[i].asset[key] === value) {
-    //                 return (parentAsset.children[i].asset);
-    //             } else {
-    //                 getAssetRecursive(parentAsset.childrens[i], key, value);
-    //             }
-    //         }
-    //     }
-    // };
-
 
 
     /*******************
@@ -127,23 +111,6 @@ Loader.root = {
         }
     },
 };
-
-
-
-
-// class getAssetRecursive{
-//     constructor(parentAsset, key, value){
-//         this.parentAsset = parentAsset;
-//         this.key = key;
-//         this.value = value;
-//     }
-
-//     find(){
-
-//     }
-// }
-
-
 
 
 

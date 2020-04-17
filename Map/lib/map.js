@@ -221,7 +221,6 @@ export default class Map {
 
 
                     if (Map.entity) {
-                        // console.log("EXIT - 1")
                         for (let i = 0; i < Map.onExitEntity.length; i++) {
                             Map.onExitEntity[i](Map.entity);
                         };
@@ -230,7 +229,6 @@ export default class Map {
                     Map.entity = _entity;
                     Map.oldEntity = Map.entity;
 
-                    // console.log("ENTER - 1")
                     for (let i = 0; i < Map.onOverEntity.length; i++) {
                         Map.onOverEntity[i](Map.entity);
                     };
@@ -241,9 +239,6 @@ export default class Map {
                 document.body.style.cursor = "default";
 
                 if (Map.entity && Map.entity !== _entity) {
-                    // console.log(Map.entity)
-                    // console.log(_entity)
-                    // console.log("EXIT - 2")
                     for (let i = 0; i < Map.onExitEntity.length; i++) {
                         Map.onExitEntity[i](Map.entity);
                     };

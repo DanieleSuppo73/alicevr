@@ -92,36 +92,7 @@ Map.onReady.push(function () {
 })
 
 
-// function onSelectedAsset() {
-//     Player.init();
-// }
 
-
-
-// const onPlay = () => {
-
-//     console.log("PLAY")
-//     Map.unfixCamera();
-//     clearInterval(rotate);
-//     Player.hideStartPoints;
-
-//     /// fake player
-//     var time = 0;
-//     var samplerate = 250;
-//     setInterval(() => {
-//         time += samplerate / 1000;
-//         dispatcher.sendMessage("playerPlaying", {
-//             time: time,
-//             angle: 0,
-//         });
-//     }, samplerate);
-// }
-
-
-
-
-
-// window.play = onPlay;
 
 
 
@@ -147,43 +118,3 @@ dispatcher.receiveMessage("playerPlaying", (data) => {
 /// INIT
 //////////////////////////////////////////////
 Map.init();
-
-
-
-
-
-
-
-
-
-////////////////////////////////////////// DEBUG
-
-
-// let rotate = null;
-
-
-// Map.onDown.push(function () {
-//     if (rotate) {
-//         Map.unlinkCamera();
-//         clearInterval(rotate);
-//         rotate = null;
-//     }
-
-// })
-
-
-
-
-// function rotateCamera() {
-//     rotate = setInterval(function () {
-//         Map.camera.rotateLeft(0.0015);
-//     }, 50);
-// };
-
-// window.rotateCamera = function () {
-//     rotateCamera();
-// }
-
-// window.unlink = function () {
-//     Map.unlinkCamera();
-// }
