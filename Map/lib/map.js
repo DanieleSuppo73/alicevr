@@ -206,6 +206,7 @@ export default class Map {
 
         /* call handlers on viewer defined */
         for (let i = 0; i < Map.onStarted.length; i++) {
+            console.log(Map.onStarted.length)
             Map.onStarted[i]();
         };
 

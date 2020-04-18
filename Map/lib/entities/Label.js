@@ -59,41 +59,41 @@ function getPropertiesFromCategory(category) {
 
     switch (category) {
         case "A1":
-            properties.font = "700 20px Roboto";
+            properties.font = "20px roboto-medium";
             properties.outlineWidth = 2;
             properties.minDistance = 800000;
             properties.maxDistance = 2000000;
             break;
         case "A2":
-            properties.font = "700 18px Roboto";
+            properties.font = "18px roboto-medium";
             properties.outlineWidth = 2;
             // properties.fillColor = new Cesium.Cartesian3(.2, .5, .9);
             properties.minDistance = 170000;
             properties.maxDistance = 800000;
             break;
         case "A3":
-            properties.font = "500 16px Roboto";
+            properties.font = "16px roboto-medium";
             properties.outlineWidth = 2;
             // properties.fillColor = new Cesium.Cartesian3(.9, .5, .2);
             properties.minDistance = 130000;
             properties.maxDistance = 500000;
             break;
         case "A4":
-            properties.font = "500 14px Roboto";
+            properties.font = "14px roboto-medium";
             properties.outlineWidth = 2;
             // properties.fillColor = new Cesium.Cartesian3(0, 1, 1);
             properties.minDistance = 50000;
             properties.maxDistance = 70000;
             break;
         case "A5":
-            properties.font = "13px Acumin-bold";
+            properties.font = "13px roboto-medium";
             properties.outlineWidth = 2;
             // properties.fillColor = new Cesium.Cartesian3(1, 1, 1);
             properties.minDistance = 35000;
             properties.maxDistance = 45000;
             break;
         case "BIG_PARK":
-            properties.font = "15px Acumin-bold";
+            properties.font = "15px roboto-medium";
             properties.outlineWidth = 2;
             properties.fillColor = new Cesium.Cartesian3(0.5, 1, 0.5);
             properties.minDistance = 50000;

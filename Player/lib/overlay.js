@@ -239,8 +239,6 @@ export function load(videoPlayer, asset) {
 }
 
 
-
-
 export function showOnReady() {
     poster.show();
     icon360.show();
@@ -249,10 +247,6 @@ export function showOnReady() {
     viewAngle.over.hide();
     viewArrows.isActive = false;
     viewArrows.hide(0);
-
-
-
-
 }
 
 
@@ -263,6 +257,113 @@ export function showOnPlay() {
     viewAngle.show();
     viewArrows.isActive = true;
 }
+
+
+
+export function slideShow(rootAsset) {
+    console.log("SLIDESHOW")
+    const posterFolder = "../data/poster/";
+    let images = [];
+    console.log("rootAsset")
+
+    /* populate */
+    for (let i = 0; i < rootAsset.children.length; i++) {
+        if (rootAsset.children[i].asset.constructor.name === "Video") {
+            images[i] = posterFolder + rootAsset.children[i].asset.poster_url;
+            console.log(images[i]);
+            var $url = images[i];
+
+            if (i === 0) {
+                $('.active').attr('src', $url);
+            }
+            else {
+                $("#videoPlayer-slideshow").append("<img src='" + $url + "'></img>");
+            }
+        }
+    }
+
+
+    $("#videoPlayer-preloader").fadeOut();
+
+
+
+    function cycleImages() {
+        console.log("CYCLE")
+        var $active = $('#videoPlayer-slideshow .active');
+        var $next = ($active.next().length > 0) ? $active.next() : $('#videoPlayer-slideshow img:first');
+        $next.css('z-index', 999);//move the next image up the pile
+        $active.fadeOut(1500, function () {//fade out the top image
+            $active.css('z-index', 998).show().removeClass('active');//reset the z-index and unhide the image
+            $next.css('z-index', 1000).addClass('active');//make the next image the top one
+        });
+    }
+
+    $(document).ready(function () {
+        $("#videoPlayer-preloader").fadeOut();
+        // run every 7s
+        setInterval(function(){
+            console.log("....................")
+            cycleImages();
+        }, 4000);
+    })
+
+
+
+
+
+
+
+    // var preloads = images;
+
+    // $(preloads).each(function () {
+    //     $('<img/>')[0].src = this;
+    // });
+
+
+
+    // let n1 = 0;
+    // let n2 = 1;
+    // const slide = function () {
+    //     setTimeout(() => {
+
+    //         if (n1 < images.length - 1) {
+    //             n1++;
+    //             if (n2 < images.length - 1) n2++;
+    //             else {
+    //                 n2 = 0;
+    //             }
+    //         }
+    //         else {
+    //             n1 = 0;
+    //             n2 = 1;
+    //         }
+
+    //         $('#videoPlayer-slideshow img:nth-child(1)').fadeOut();
+
+
+    //         // $('#videoPlayer-slideshow img:nth-child(1)').fadeOut(400, function () {
+    //         //     $('#videoPlayer-slideshow img:nth-child(1)').attr('src', images[n1]);
+    //         //     $('#videoPlayer-slideshow img:nth-child(1)').fadeIn();
+    //         // })
+
+    //         // slide();
+
+
+
+    //     }, 4000)
+    // }
+
+
+    // $('#videoPlayer-slideshow img:nth-child(1)').attr('src', images[n1]);
+    // $('#videoPlayer-slideshow img:nth-child(2)').attr('src', images[n2]);
+
+    
+
+
+    // slide();
+}
+
+
 
 
 /// expose for DOM

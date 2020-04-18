@@ -5,8 +5,7 @@ import Map from "../lib/Map.js";
 import * as cities from "../lib/add-on/cities.js";
 import Loader from "../lib/managers/Loader.js"
 import AssetManager from "../lib/managers/AssetManager.js"
-import Player from "../lib/managers/Player.js"
-import Ellipse from '../lib/entities/Ellipse.js';
+// import Ellipse from '../lib/entities/Ellipse.js';
 import Preloader from "../lib/UI/Preloader.js";
 
 
@@ -29,8 +28,8 @@ Map.onStarted.push(() => {
     // const idToLoad = "1573827877573";
     // const idToLoad = "1579530506349";
     // const idToLoad = "1573827851085";
-    const idToLoad = "1570451964288";
-    // const idToLoad = "main";
+    // const idToLoad = "1570451964288";
+    const idToLoad = "main";
 
     Loader.load(idToLoad, () => {
 
@@ -47,8 +46,6 @@ Map.onStarted.push(() => {
         // cities.init(Loader.root.asset.boundingSphere.center, range);
     });
 })
-
-
 
 
 
@@ -86,7 +83,8 @@ dispatcher.receiveMessage("playerPlaying", (data) => {
 
 
 
-//////////////////////////////////////////////
-/// INIT
-//////////////////////////////////////////////
+/*******************************************
+*********** INIT
+*******************************************/
+console.log("inittttttttttttttttttttttttttt")
 Map.init();

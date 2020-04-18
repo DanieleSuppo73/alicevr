@@ -64,15 +64,23 @@ player.onEndedHandlers.push(function () {
 //////////////////////////////////////////////
 /// receive messages
 //////////////////////////////////////////////
-dispatcher.receiveMessage("onVideoAssetClicked", function (asset) {
-    console.log("onVideoAssetClicked received message");
+dispatcher.receiveMessage("rootAssetClicked", function (asset) {
+    console.log("rootAssetClicked")
+    overlay.slideShow(asset);
+});
+
+dispatcher.receiveMessage("videoAssetClicked", function (asset) {
+    console.log("videoAssetClicked received message");
     player.load(asset);
     overlay.load(player, asset);
     subtitles.load(asset);
+    console.log(asset)
 });
+
 dispatcher.receiveMessage("videoPlayerPlay", function () {
     player.play();
 });
+
 dispatcher.receiveMessage("videoPlayerSeek", function (time) {
     player.seek(time);
 });
@@ -130,6 +138,6 @@ let asset = {
 
 
 
-player.load(asset)
-overlay.load(player, asset);
-subtitles.load(asset);
+// player.load(asset)
+// overlay.load(player, asset);
+// subtitles.load(asset);

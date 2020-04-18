@@ -79,9 +79,9 @@ export function load(asset) {
     restart();
 
 
-    if (typeof asset.subtitles !== "undefined" && asset.subtitles) {
+    if (typeof asset.subtitles_url !== "undefined" && asset.subtitles_url) {
 
-        let url = asset.subtitles;
+        let url = asset.subtitles_url;
 
         loadXml(subtitlesFolder + url, function (xml) {
             let xmlDoc = xml.responseXML;

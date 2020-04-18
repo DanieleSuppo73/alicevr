@@ -42,7 +42,7 @@ const OmniVirt_player = {
     },
     load: function (asset) {
 
-        let url = asset.videoUrl_1;
+        let url = asset.video_url2;
         this.isStarted = false;
         this.isPlaying = false;
         this.isPaused = false;

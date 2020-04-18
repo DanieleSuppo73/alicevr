@@ -16,7 +16,7 @@ export default class Video extends Asset {
     setup(xml) {
 
         const keys = ["owner", "title", "description", "date", "video_url1", "video_url2",
-            "location", "poster_url", "markers_url", "subtitles_url"
+            "location", "poster_url", "markers_url", "subtitles_url", "journal_url"
         ];
 
         for (let i = 0; i < keys.length; i++) {
@@ -32,7 +32,7 @@ export default class Video extends Asset {
         /* load markers */
         if (this.markers_url) {
             Asset.boundingSphereLoading++;
-            console.log(Asset.boundingSphereLoading)
+            // console.log(Asset.boundingSphereLoading)
 
             const coordForBoundigSphere = [];
             const keys = ["longitude", "latitude", "title", "gpxTime", "timecode", "trackToFollow"];

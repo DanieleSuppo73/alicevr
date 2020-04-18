@@ -6,20 +6,17 @@ import {
     journal
 } from "../lib/journal.js";
 
-
+import {
+    dispatcher
+} from "../../lib/dispatcher.js";
 
 
 
 //////////////////////////////////////////////////////////
 /// receiver from Dispatcher.js
 //////////////////////////////////////////////////////////
-dispatcher.receiveMessage(function (msg) {
-    // let message = msg.message;
-    if (msg.command === "onVideoAssetClicked") {
-        statistics(msg.asset);
-        journal(msg.asset);
-    }
+dispatcher.receiveMessage("videoAssetClicked", function (asset) {
+    journal(asset);
 });
-
 
 

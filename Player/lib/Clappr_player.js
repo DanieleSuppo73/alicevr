@@ -72,17 +72,17 @@ const Clappr_player = {
         } else {
             this.oldAsset = asset;
 
-            let url = asset.videoUrl;
+            let url = asset.video_url1;
 
             /// get the poster image,
-            if (asset.poster) {
-                let poster = this.posterFolder + asset.poster;
+            if (asset.poster_url) {
+                let poster = this.posterFolder + asset.poster_url;
 
                 console.log("loading poster......................")
 
                 let posterImg = new Image();
                 posterImg.src = poster;
-                posterImg.onload = function () {
+                posterImg.onload = () => {
                     this.setup(url, poster);
                 }
             } else {

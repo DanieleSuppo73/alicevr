@@ -14,11 +14,12 @@ Sono visitabili alcuni centri vallivi per l'allevamento estensivo ed intensivo d
     <poster_url>delta.jpg</poster_url>
     <subtitles_url></subtitles_url>
     <markers_url>delta_markers.xml</markers_url>
+    <journal_url>DeltaDelPo.html</journal_url>
 
     <id>delta_tracks</id>
     <id>delta_routes</id>
     <id>delta_points</id>
     
     
-    <!--  <id>delta_journal</id> -->
+    
 </root>

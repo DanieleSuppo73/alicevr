@@ -16,6 +16,7 @@ export default class AssetManager {
         /* if there's only one video asset
         click it */
         if (Loader.root.asset.constructor.name === "Video") {
+            navigatorButtonEnabled = false;
             Map.onReady.push(() => {
                 const timeout = 2000;
                 setTimeout(() => {
@@ -23,13 +24,19 @@ export default class AssetManager {
                     AssetManager.OnClick_Video(entity);
                 }, timeout)
             })
-        };
+        }
+        /* or, send message for root asset */
+        else{
+            console.log("ROOOOOOOOOOOOOOOOOOOT")
+            dispatcher.sendMessage("rootAssetClicked", Loader.root.asset);
+        }
 
 
 
 
 
-
+        /* HOME button
+        ***************/
         $('#navigator-button-home').mouseenter(
             function () {
                 $(this).attr('src', 'images/icon_home_on.svg');
@@ -49,6 +56,9 @@ export default class AssetManager {
                     hideNavigatorButtons();
                     hideNavigatorMessage();
                 })
+
+                /* send message for root asset */
+                dispatcher.sendMessage("rootAssetClicked", Loader.root.asset);
             }
         );
 
@@ -149,14 +159,16 @@ export default class AssetManager {
             reset();
         }
         selectedAsset = typeof entity.asset === "undefined" ?
-        Loader.root.getAssetById(entity.id.asset.id) :
-        Loader.root.getAssetById(entity.asset.id);
+            Loader.root.getAssetById(entity.id.asset.id) :
+            Loader.root.getAssetById(entity.asset.id);
         selectedAsset.entity.utils.setOpacity(0.01);
         selectedAsset.entityOver.utils.setOpacity(1);
         selectedAsset.entityOver.utils.setScale(1.2);
         selectedAsset.entityOver.utils.fade(0.01, null, 1000);
         selectedAsset.entityOver.utils.zoom(2, null, 1000);
 
+        /* show navigator */
+        if (!navigatorMessageVisible) showNavigatorMessage(selectedAsset);
         showNavigatorButtons();
 
         /* initialize Player */
@@ -176,12 +188,16 @@ export default class AssetManager {
             duration: 8,
             easingFunction: Cesium.EasingFunction.QUADRACTIC_IN_OUT,
         });
+
+        /* send message */
+        dispatcher.sendMessage("videoAssetClicked", selectedAsset);
     };
 };
 
 let selectedAsset = null;
 let hoverAsset = null;
-
+let navigatorMessageVisible = false;
+let navigatorButtonEnabled = true;
 
 
 function reset(callback = null) {
@@ -219,11 +235,13 @@ function showNavigatorMessage(asset) {
     $('#navigator-title').text(asset.title);
     $('#navigator-location').text(asset.location);
     $('#navigator-message').fadeIn();
+    navigatorMessageVisible = true;
 };
 
 function hideNavigatorMessage() {
     if (!selectedAsset) {
         $('#navigator-message').fadeOut();
+        navigatorMessageVisible = false;
     }
     else {
         showNavigatorMessage(selectedAsset);
@@ -231,11 +249,13 @@ function hideNavigatorMessage() {
 };
 
 function showNavigatorButtons() {
-    $('#navigator-buttons-container').fadeIn();
+    if (navigatorButtonEnabled)
+        $('#navigator-buttons-container').fadeIn();
 };
 
 function hideNavigatorButtons() {
-    $('#navigator-buttons-container').fadeOut();
+    if (navigatorButtonEnabled)
+        $('#navigator-buttons-container').fadeOut();
 };
 
 

@@ -12,21 +12,11 @@
     <poster_url>coppi.jpg</poster_url>
     <markers_url>coppi_markers.xml</markers_url>
     <subtitles_url>coppi_subtitles.xml</subtitles_url>
+    <journal_url>Coppi.html</journal_url>
 
 
     <id>coppi_tracks</id>
     <id>coppi_routes</id>
     <id>coppi_points</id>
-
-
-
-
-
-    <!-- <guide>Coppi_guide.html</guide> -->
-
-
-
-
-
 
 </root>
