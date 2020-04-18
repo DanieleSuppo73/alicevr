@@ -135,6 +135,14 @@ export class Utils {
             }, this.sampleInterval)
         }
     };
+
+    setScale(value){
+        this.entity.scale = value;
+    };
+
+    setOpacity(value){
+        this.entity.opacity = value;
+    };
 }
 
 

@@ -13,6 +13,20 @@ export default class AssetManager {
 
         zoomToAll();
 
+        /* if there's only one video asset
+        click it */
+        if (Loader.root.asset.constructor.name === "Video") {
+            Map.onReady.push(() => {
+                const timeout = 2000;
+                setTimeout(() => {
+                    const entity = Loader.root.asset.entity;
+                    AssetManager.OnClick_Video(entity);
+                }, timeout)
+            })
+        };
+
+
+
 
 
 
@@ -69,9 +83,12 @@ export default class AssetManager {
 
 
         Map.onExitEntity.push((entity) => {
+            console.log("esco da entity")
+            console.log(entity)
             switch (entity.id.category) {
 
                 case "PLACEHOLDER-VIDEO-OVER":
+                    console.log("EXIT")
                     AssetManager.OnExit(entity);
                     break;
             }
@@ -94,6 +111,7 @@ export default class AssetManager {
     static OnOver(entity) {
         const asset = Loader.root.getAssetById(entity.id.asset.id);
         if (asset !== hoverAsset && asset !== selectedAsset) {
+            console.log("OVERRRRRRRRRRRRR")
             asset.entity.utils.fade(0.01);
             asset.entity.utils.zoom(1.2);
             asset.entityOver.utils.fade(1.0);
@@ -110,6 +128,7 @@ export default class AssetManager {
             Loader.root.getAssetById(entity.id.asset.id) :
             Loader.root.getAssetById(entity.asset.id);
         if (asset !== selectedAsset || forced) {
+            console.log("EXITTTTTTTTT")
             asset.entity.utils.fade(1);
             asset.entity.utils.zoom(1);
             asset.entityOver.utils.fade(0.1);
@@ -129,7 +148,12 @@ export default class AssetManager {
         if (selectedAsset) {
             reset();
         }
-        selectedAsset = Loader.root.getAssetById(entity.id.asset.id);
+        selectedAsset = typeof entity.asset === "undefined" ?
+        Loader.root.getAssetById(entity.id.asset.id) :
+        Loader.root.getAssetById(entity.asset.id);
+        selectedAsset.entity.utils.setOpacity(0.01);
+        selectedAsset.entityOver.utils.setOpacity(1);
+        selectedAsset.entityOver.utils.setScale(1.2);
         selectedAsset.entityOver.utils.fade(0.01, null, 1000);
         selectedAsset.entityOver.utils.zoom(2, null, 1000);
 

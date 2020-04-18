@@ -86,14 +86,14 @@ function getPropertiesFromCategory(category) {
             properties.maxDistance = 70000;
             break;
         case "A5":
-            properties.font = "500 13px Roboto";
+            properties.font = "13px Acumin-bold";
             properties.outlineWidth = 2;
             // properties.fillColor = new Cesium.Cartesian3(1, 1, 1);
             properties.minDistance = 35000;
             properties.maxDistance = 45000;
             break;
         case "BIG_PARK":
-            properties.font = "500 15px Roboto";
+            properties.font = "15px Acumin-bold";
             properties.outlineWidth = 2;
             properties.fillColor = new Cesium.Cartesian3(0.5, 1, 0.5);
             properties.minDistance = 50000;
