@@ -147,7 +147,7 @@ p {
 }
 
 #videoPlayer-slideshow {
-    z-index: 999;
+    z-index: 1000;
 }
 
 #videoPlayer-slideshow img {
@@ -155,18 +155,18 @@ p {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    z-index: 999;
+    z-index: 1001;
 }
 
 #videoPlayer-slideshow img.active {
-    z-index: 1000;
+    z-index: 1003;
 }
 
 #logo {
     position: absolute;
     left: 1em;
     top: 1em;
-    z-index: 999;
+    z-index: 9999;
     width: 4em;
 }
 

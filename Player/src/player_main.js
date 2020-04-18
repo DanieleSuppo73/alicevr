@@ -65,7 +65,6 @@ player.onEndedHandlers.push(function () {
 /// receive messages
 //////////////////////////////////////////////
 dispatcher.receiveMessage("rootAssetClicked", function (asset) {
-    console.log("rootAssetClicked")
     overlay.slideShow(asset);
 });
 

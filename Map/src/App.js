@@ -10,10 +10,6 @@ import Preloader from "../lib/UI/Preloader.js";
 
 
 
-console.log("APP")
-
-
-
 
 /*******************************************
 *********** ON MAP STARTED
@@ -85,5 +81,4 @@ dispatcher.receiveMessage("playerPlaying", (data) => {
 /*******************************************
 *********** INIT
 *******************************************/
-console.log("inittttttttttttttttttttttttttt")
 Map.init();

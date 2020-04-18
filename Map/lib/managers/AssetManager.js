@@ -27,7 +27,6 @@ export default class AssetManager {
         }
         /* or, send message for root asset */
         else{
-            console.log("ROOOOOOOOOOOOOOOOOOOT")
             dispatcher.sendMessage("rootAssetClicked", Loader.root.asset);
         }
 
