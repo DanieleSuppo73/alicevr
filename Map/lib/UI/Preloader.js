@@ -2,7 +2,7 @@ import Map from "../Map.js";
 
 export default class Preloader {
 
-    static init = () => {
+    static init () {
 
         Map.viewer.scene.globe.tileLoadProgressEvent.addEventListener((valProgress) => {
             if (!Map.ready) {
@@ -24,12 +24,7 @@ export default class Preloader {
                         $("#progressBar").css("right", (100 - mapLoadingPercent) + '%');
                     }
                 }
-
             } 
-            // else {
-            //     console.log("//////////// FADE OUTTTTTTTTTTT")
-            //     hide();
-            // }
         });
     };
 }
@@ -39,9 +34,7 @@ const minProgress = 20; /// change only this for min requested tiles
 let maxProgress = 0;
 let isProgressing = false;
 
-const show = () => {
-    $("#preloader").css('display', 'block');
-};
+
 
 const hide = () => {
     $("#preloader").fadeOut();

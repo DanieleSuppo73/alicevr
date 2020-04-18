@@ -5,13 +5,12 @@ import Map from "../lib/Map.js";
 import * as cities from "../lib/add-on/cities.js";
 import Loader from "../lib/managers/Loader.js"
 import AssetManager from "../lib/managers/AssetManager.js"
-// import Ellipse from '../lib/entities/Ellipse.js';
 import Preloader from "../lib/UI/Preloader.js";
 
 
 
 
-
+console.log("APP")
 
 
 
