@@ -6,13 +6,14 @@ import OmniVirt_player from "../lib/OmniVirt_player.js";
 import * as overlay from "../lib/overlay.js";
 import * as subtitles from "../lib/subtitles.js";
 
+import SplashScreen from "../lib/UI/SplashScreen.js"
 
 
 
 
-//////////////////////////////////////////////
-/// Swap player on platform
-//////////////////////////////////////////////
+/********************************************
+Swap player on platform
+********************************************/
 let player;
 if (WURFL.complete_device_name === "Microsoft Edge" || WURFL.complete_device_name === "Apple iPhone") {
     player = OmniVirt_player;
@@ -29,9 +30,9 @@ if (WURFL.complete_device_name === "Microsoft Edge" || WURFL.complete_device_nam
 
 
 
-//////////////////////////////////////////////
-/// register handlers
-//////////////////////////////////////////////
+/********************************************
+Register handlers
+********************************************/
 player.onReadyHandlers.push(function () {
     $("#videoPlayer-preloader").fadeOut();
     overlay.showOnReady();
@@ -61,15 +62,20 @@ player.onEndedHandlers.push(function () {
 
 
 
-//////////////////////////////////////////////
-/// receive messages
-//////////////////////////////////////////////
+/********************************************
+Receive messages
+********************************************/
 dispatcher.receiveMessage("rootAssetClicked", function (asset) {
-    overlay.slideShow(asset);
+    // overlay.slideShow(asset);
+    SplashScreen.show(asset);
 });
 
 dispatcher.receiveMessage("videoAssetClicked", function (asset) {
     console.log("videoAssetClicked received message");
+
+
+    SplashScreen.hide();
+
     player.load(asset);
     overlay.load(player, asset);
     subtitles.load(asset);
