@@ -6,8 +6,8 @@
     <location>Castellania Coppi (AL) Italy</location>
     <title>Le strade di Fausto Coppi</title>
     <description>Le strade intorno alle colline di Alessandria, un giro sui percorsi dove si allenava il grande mito del ciclismo.</description>
-    <video_url1>https://player.vimeo.com/external/347803220.m3u8?s=61a66fd483813c89da138ac578628ca68bb65fe3</video_url1>
-    <!-- <videoUrl>..\data\video\Alessandria_edit_071219_2k.mp4</videoUrl> -->
+    <!-- <video_url1>https://player.vimeo.com/external/347803220.m3u8?s=61a66fd483813c89da138ac578628ca68bb65fe3</video_url1> -->
+    <video_url1>..\data\video\Alessandria_edit_071219_2k.mp4</video_url1>
     <video_url2>43236</video_url2>
     <poster_url>coppi.jpg</poster_url>
     <markers_url>coppi_markers.xml</markers_url>

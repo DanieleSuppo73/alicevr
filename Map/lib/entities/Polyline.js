@@ -49,13 +49,13 @@ function getPropertiesFromCategory(category) {
             case "TRACK":
                 properties.width = 5;
                 properties.outlineWidth = 2;
-                properties.color = new Cesium.Cartesian3(0.08, 1.0, 0.94);
+                properties.color = new Cesium.Cartesian3(0.26, 0.52, 0.96);
                 break;
 
             case "ROUTE":
                 properties.width = 5;
                 properties.outlineWidth = 2;
-                properties.color = new Cesium.Cartesian3(0.08, 1.0, 0.94);
+                properties.color = new Cesium.Cartesian3(0.26, 0.52, 0.96);
                 properties.opacity = 0.5;
                 break;
 

@@ -17,18 +17,23 @@ function slideShowCycle() {
 
 
 
+let created = false;
+let cycle = null;
+
+
 export default class SplashScreen {
 
     static show(rootAsset) {
 
+        SplashScreen.enabled = true;
+
         $("#videoPlayer-slideshow").fadeIn();
 
+        /* populate */
         if (!created) {
             created = true;
             const posterFolder = "../data/poster/";
             let images = [];
-
-            /* populate */
             for (let i = 0; i < rootAsset.children.length; i++) {
                 if (rootAsset.children[i].asset.constructor.name === "Video") {
                     images[i] = posterFolder + rootAsset.children[i].asset.poster_url;
@@ -46,11 +51,15 @@ export default class SplashScreen {
             $("#videoPlayer-preloader").fadeOut();
         }
 
+
         /* start cycle */
         cycle = setInterval(function () {
             slideShowCycle();
         }, 4000);
+
     };
+
+
 
     static hide() {
         if (cycle) {
@@ -61,11 +70,9 @@ export default class SplashScreen {
     }
 }
 
+SplashScreen.enabled = false;
 
 
-const asset = null;
-let created = false;
-let cycle = null;
 
 
 

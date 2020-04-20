@@ -1,5 +1,5 @@
 import Map from "../Map.js";
-import Label from "../entities/label.js";
+import Label from "../entities/Label.js";
 import coveredMap from "../utils/coveredMap.js"
 
 

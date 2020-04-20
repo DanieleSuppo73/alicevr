@@ -302,9 +302,9 @@ export default class Map {
 
 
 Map.params = {
-    useMapbox: true,
+    useMapbox: false,
     fxaa: false,
-    maxScreenSpaceError: 6,
+    maxScreenSpaceError: 2,
     occlusion: false,
     brightness: 0.3,
     hue: 0.04,

@@ -5,7 +5,6 @@ import Clappr_player from "../lib/Clappr_player.js";
 import OmniVirt_player from "../lib/OmniVirt_player.js";
 import * as overlay from "../lib/overlay.js";
 import * as subtitles from "../lib/subtitles.js";
-
 import SplashScreen from "../lib/UI/SplashScreen.js"
 
 
@@ -34,7 +33,9 @@ if (WURFL.complete_device_name === "Microsoft Edge" || WURFL.complete_device_nam
 Register handlers
 ********************************************/
 player.onReadyHandlers.push(function () {
-    $("#videoPlayer-preloader").fadeOut();
+    // $("#videoPlayer-preloader").fadeOut();
+
+    if (SplashScreen.enabled) SplashScreen.hide();
     overlay.showOnReady();
 });
 
@@ -66,16 +67,11 @@ player.onEndedHandlers.push(function () {
 Receive messages
 ********************************************/
 dispatcher.receiveMessage("rootAssetClicked", function (asset) {
-    // overlay.slideShow(asset);
+    player.stop();
     SplashScreen.show(asset);
 });
 
 dispatcher.receiveMessage("videoAssetClicked", function (asset) {
-    console.log("videoAssetClicked received message");
-
-
-    SplashScreen.hide();
-
     player.load(asset);
     overlay.load(player, asset);
     subtitles.load(asset);
@@ -98,7 +94,7 @@ dispatcher.receiveMessage("videoPlayerSeek", function (time) {
 
 setInterval(() => {
 
-    if (player.isStarted) {
+    if (player.isPlaying) {
 
         //////////////////////////////////////////////
         /// send message during playback
@@ -109,7 +105,6 @@ setInterval(() => {
             time: time,
             angle: angle,
         });
-
 
         //////////////////////////////////////////////
         /// rotate overlay viewAngle
@@ -122,8 +117,17 @@ setInterval(() => {
         /// check for subtitles
         //////////////////////////////////////////////
         subtitles.check(time);
-
     }
+
+    else if (player.isPaused) {
+        let angle = player.angle;
+        dispatcher.sendMessage("playerPaused", {
+            angle: angle,
+        });
+    }
+
+
+
 }, 200);
 
 
@@ -132,14 +136,14 @@ setInterval(() => {
 
 
 
-////////////////////////////////////////// DEBUG
-let asset = {
-    videoUrl: "https://player.vimeo.com/external/347803220.m3u8?s=61a66fd483813c89da138ac578628ca68bb65fe3",
-    videoUrl_1: "43236",
-    subtitles: "coppi_subtitles.xml",
-    title: "Titolo di prova",
-    description: "Per debug"
-}
+// ////////////////////////////////////////// DEBUG
+// let asset = {
+//     videoUrl: "https://player.vimeo.com/external/347803220.m3u8?s=61a66fd483813c89da138ac578628ca68bb65fe3",
+//     videoUrl_1: "43236",
+//     subtitles: "coppi_subtitles.xml",
+//     title: "Titolo di prova",
+//     description: "Per debug"
+// }
 
 
 

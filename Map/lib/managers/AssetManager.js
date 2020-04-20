@@ -205,10 +205,10 @@ function reset(callback = null) {
     Player.hideStartPoints();
     stopCameraRotation();
 
-    if (playInterval) {
-        clearInterval(playInterval);
-        playInterval = null;
-    }
+    // if (playInterval) {
+    //     clearInterval(playInterval);
+    //     playInterval = null;
+    // }
     if (Player.playing) {
         Player.stop();
     }
@@ -282,28 +282,52 @@ Map.onDown.push(function () {
 
 
 
-let playInterval = null;
-function startPlay() {
+// let playInterval = null;
+// function startPlay() {
 
-    console.log("PLAY")
-    Player.hideStartPoints();
+//     console.log("PLAY")
+//     Player.hideStartPoints();
 
+//     stopCameraRotation();
+
+
+
+//     /// fake player
+//     var time = 0;
+//     var samplerate = 250;
+//     playInterval = setInterval(() => {
+//         time += samplerate / 1000;
+//         dispatcher.sendMessage("playerPlaying", {
+//             time: time,
+//             angle: 0,
+//         });
+//     }, samplerate);
+// }
+
+
+
+
+/*****************
+messages receivers
+******************/
+dispatcher.receiveMessage("playerStarted", () => {
     stopCameraRotation();
+});
+dispatcher.receiveMessage("playerEnded", () => {
+    /* fly there */
+    Map.camera.flyToBoundingSphere(selectedAsset.boundingSphere, {
+        offset: new Cesium.HeadingPitchRange(0, -0.5, selectedAsset.boundingSphere.radius * 2),
+        complete: function () {
+            console.log("FLYING COMPLETE");
 
+            Player.showStartPoints();
 
-
-    /// fake player
-    var time = 0;
-    var samplerate = 250;
-    playInterval = setInterval(() => {
-        time += samplerate / 1000;
-        dispatcher.sendMessage("playerPlaying", {
-            time: time,
-            angle: 0,
-        });
-    }, samplerate);
-}
-
-
+            Map.fixCamera(selectedAsset.boundingSphere.center);
+            startCameraRotation();
+        },
+        duration: 8,
+        easingFunction: Cesium.EasingFunction.QUADRACTIC_IN_OUT,
+    });
+});
 
 

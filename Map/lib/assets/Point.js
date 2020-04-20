@@ -1,5 +1,5 @@
 import Asset from "./Asset.js";
-import Label from "../entities/label.js";
+import Label from "../entities/Label.js";
 import Billboard from "../entities/Billboard.js";
 
 

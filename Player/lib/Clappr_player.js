@@ -155,6 +155,13 @@ const Clappr_player = {
             console.log("video is paused");
         });
 
+        this.player.listenTo(this.player, Clappr.Events.PLAYER_STOP, () => {
+            this.isPlaying = false;
+            this.isPaused = false;
+
+            console.log("video is stopped");
+        });
+
 
         this.player.listenTo(this.player, Clappr.Events.PLAYER_SEEK, () => {
             this.isSeeking = true;

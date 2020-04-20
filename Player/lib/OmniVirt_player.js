@@ -40,6 +40,10 @@ const OmniVirt_player = {
         let percent = time / this.duration;
         OmniVirt.api.sendMessage('seek', percent, this.omniVirtIframe);
     },
+    stop: function(){
+        OmniVirt.api.sendMessage('stop', null, this.omniVirtIframe);
+    },
+
     load: function (asset) {
 
         let url = asset.video_url2;

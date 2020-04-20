@@ -86,15 +86,23 @@ Player.playing = false;
 
 
 
+
+
+
 /*****************
 messages receivers
 ******************/
+dispatcher.receiveMessage("playerStarted", () => {
+    Player.hideStartPoints();
+});
 dispatcher.receiveMessage("playerPlaying", (data) => {
     check(data.time);
     Player.playing = true;
+    Player.radar.ellipse.stRotation = Cesium.Math.toRadians(data.angle) + radarHeading;
 });
-dispatcher.receiveMessage("playerPaused", () => {
+dispatcher.receiveMessage("playerPaused", (data) => {
     Player.playing = false;
+    Player.radar.ellipse.stRotation = Cesium.Math.toRadians(data.angle) + radarHeading;
 });
 dispatcher.receiveMessage("playerSeeking", () => {
     markerIndex = null;
@@ -102,6 +110,9 @@ dispatcher.receiveMessage("playerSeeking", () => {
 });
 dispatcher.receiveMessage("playerEnded", () => {
     Player.stop();
+    Player.playing = false;
+    markerIndex = null;
+    entityUtils.fadeOut(Player.radar);
 });
 
 
@@ -114,11 +125,9 @@ var markers = null;
 var markerIndex = null;
 var gpx = [];
 var moveRadarLerp = null;
-// var Player.playing = false;
-var radarAngle = 0;
 var radarLinked = true;
 var idle = true;
-
+var radarHeading = 0;
 
 
 /*******************
@@ -391,13 +400,17 @@ const lerp = (gpxFound, wpIndex) => {
     };
     const initPos = gpxFound.positions[wpIndex];
     const endPos = gpxFound.positions[wpIndex + 1];
+
+
+
     const travelHeading = Map.getHeadingPitchFromPoints(initPos, endPos);
 
     let position = new Cesium.Cartesian3();
 
-    /* rotate the texture of the RADAR */
-    if (Map.viewer.trackedEntity || idle)
-        Player.radar.ellipse.stRotation = travelHeading;
+    // /* rotate the texture of the RADAR */
+    if (Map.viewer.trackedEntity || idle) radarHeading = travelHeading;
+
+
 
 
     const getLerpTime = () => {
@@ -435,7 +448,7 @@ const lerp = (gpxFound, wpIndex) => {
                     radarLinked = false;
                     entityUtils.fadeOut(Player.radar, () => {
                         Player.radar.center = Player.radarProxy.position._value;
-                        Player.radar.ellipse.stRotation = travelHeading;
+                        radarHeading = travelHeading;
                         entityUtils.fadeIn(Player.radar);
                         radarLinked = true;
                     });
