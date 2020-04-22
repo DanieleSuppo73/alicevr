@@ -32,7 +32,7 @@ export function fadeOut(entity, callback = null, time = null) {
 
 
 
-export function zoom(entity, to, callback = null, time = null){
+export function zoom(entity, to, callback = null, time = null) {
     let lerpTime = time ? time : 200; /// default zoom time
     let sampleInterval = 50;
     let initTime = 0;
@@ -59,6 +59,7 @@ export function zoom(entity, to, callback = null, time = null){
 var lerp = null;
 
 function fadeFunc(entity, from, to, callback, time) {
+    // console.log("FADE: " + entity.category + " - to:" + to)
     let lerpTime = time ? time : 1000; /// default fade time
     let sampleInterval = 50;
     let initTime = 0;
@@ -71,6 +72,7 @@ function fadeFunc(entity, from, to, callback, time) {
         if (initTime <= lerpTime) {
             let t = initTime / lerpTime;
             entity.opacity = Maf.lerp(from, to, t);
+            // console.log(entity.category + " - " + entity.opacity)
         } else {
             clearInterval(lerp);
             entity.opacity = to;
@@ -107,6 +109,7 @@ export class Utils {
                 this.entity.scale = Maf.lerp(from, to, t);
             } else {
                 clearInterval(this.zoomLerp);
+                this.zoomLerp = null;
                 this.entity.scale = to;
                 if (callback) callback();
             }
@@ -114,33 +117,34 @@ export class Utils {
     };
 
     fade(to, callback = null, time = null) {
+        // console.log("FADE: " + this.entity.category + " - to:" + to)
         let lerpTime = time ? time : this.lerpTime;
         let initTime = 0;
         let from = this.entity.opacity;
-        if (to !== from){
-            if (this.fadeLerp) {
+        if (this.fadeLerp) {
+            clearInterval(this.fadeLerp);
+            this.fadeLerp = null;
+        }
+        this.fadeLerp = setInterval(() => {
+            initTime += this.sampleInterval;
+            if (initTime <= lerpTime) {
+                let t = initTime / lerpTime;
+                this.entity.opacity = Maf.lerp(from, to, t);
+                // console.log(this.entity.category + " - " + this.entity.opacity)
+            } else {
                 clearInterval(this.fadeLerp);
                 this.fadeLerp = null;
+                this.entity.opacity = to;
+                if (callback) callback();
             }
-            this.fadeLerp = setInterval(() => {
-                initTime += this.sampleInterval;
-                if (initTime <= lerpTime) {
-                    let t = initTime / lerpTime;
-                    this.entity.opacity = Maf.lerp(from, to, t);
-                } else {
-                    clearInterval(this.fadeLerp);
-                    this.entity.opacity = to;
-                    if (callback) callback();
-                }
-            }, this.sampleInterval)
-        }
+        }, this.sampleInterval)
     };
 
-    setScale(value){
+    setScale(value) {
         this.entity.scale = value;
     };
 
-    setOpacity(value){
+    setOpacity(value) {
         this.entity.opacity = value;
     };
 }

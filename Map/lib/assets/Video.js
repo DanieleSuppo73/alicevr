@@ -9,6 +9,7 @@ export default class Video extends Asset {
         super(id, parent);
         this.entity = null;
         this.entityOver = null;
+        this.entityClicked = null;
         this.markers = [];
         this.setup(xml);
     };
@@ -100,6 +101,16 @@ export default class Video extends Asset {
 
         } else {
             this.entityOver.position = this.boundingSphere.center;
+        }
+
+        /* set clicked placeholder */
+        if (!this.entityClicked) {
+            this.entityClicked = Billboard.draw(this.boundingSphere.center, "PLACEHOLDER-VIDEO-CLICKED");
+            this.entityClicked.asset = asset;
+            this.entityClicked.utils = new entityUtils.Utils(this.entityClicked);
+
+        } else {
+            this.entityClicked.position = this.boundingSphere.center;
         }
     };
 }

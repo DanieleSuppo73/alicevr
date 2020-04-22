@@ -48,17 +48,23 @@ export default class Player {
     };
 
 
-    static stop() {
-        console.log("STOP")
+    static reset(callback = null) {
+        console.log("PLAYER RESET")
         Player.playing = false;
         markerIndex = null;
         idle = true;
-        entityUtils.fadeOut(Player.radar);
+
+        if (Player.radar.opacity > 0){
+            entityUtils.fadeOut(Player.radar);
+        }
         if (moveRadarLerp) {
             clearInterval(moveRadarLerp);
             moveRadarLerp = null;
         }
-        Map.viewer.trackedEntity = null;
+        if (Map.viewer.trackedEntity){
+            Map.viewer.trackedEntity = null;
+        }
+        if (callback) callback();
     };
 
 
@@ -109,10 +115,7 @@ dispatcher.receiveMessage("playerSeeking", () => {
     Player.playing = false;
 });
 dispatcher.receiveMessage("playerEnded", () => {
-    Player.stop();
-    Player.playing = false;
-    markerIndex = null;
-    entityUtils.fadeOut(Player.radar);
+    Player.reset();
 });
 
 

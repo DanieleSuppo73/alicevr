@@ -38,6 +38,15 @@ function getPropertiesFromCategory(category) {
             properties.opacity = 0.1;
             break;
 
+        case "PLACEHOLDER-VIDEO-CLICKED":
+            properties.image = "images/billboards/icon_placeholder-video_play.svg";
+            properties.width = 35;
+            properties.height = 35;
+            properties.color = new Cesium.Cartesian3(1, 1, 1);
+            // properties.translucencyByDistance = new Cesium.NearFarScalar(10000, 0, 50000, 1);
+            properties.opacity = 0.01;
+            break;
+
         case "MUSEUM":
             properties.image = "images/billboards/mausoleum.png";
             properties.width = 25;
@@ -142,7 +151,7 @@ export default class Billboard {
         }
 
 
-        
+
         return entity;
     };
 

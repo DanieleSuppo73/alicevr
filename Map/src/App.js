@@ -38,7 +38,7 @@ Map.onStarted.push(() => {
 
         /* load cities from boundingsphere position - radius */
         let range = 140000;
-        cities.init(Loader.root.asset.boundingSphere.center, range);
+        // cities.init(Loader.root.asset.boundingSphere.center, range);
     });
 })
 

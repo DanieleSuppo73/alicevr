@@ -1,6 +1,4 @@
-html,
-body,
-#cesiumContainer {
+html, body, #cesiumContainer {
     height: 100%;
     width: 100%;
     margin: 0;
@@ -19,6 +17,7 @@ body,
 }
 
 /* hide all credits for Cesium */
+
 .cesium-widget-credits {
     display: none !important;
 }
@@ -31,25 +30,53 @@ body,
 }
 
 #overlayLabel {
-    background-color: black;
-    border-radius: 5px;
-    /* display: inline-block; */
-    display: none;
     position: absolute;
+    border-radius: 5px;
+    display: none;
     z-index: 100;
+    padding: 0.5em;
+    border-radius: 0.5em;
+    background-color: rgb(26, 27, 33);
+    color: rgba(255, 255, 255, 0.849);
+    display: none;
 }
 
 #overlayLabel p {
-    color: white;
+    margin: 0;
+    padding: 0.4em;
+}
+
+
+.overlayLabel-bold {
+    font-weight: 500;
+    font-size: 13px;
+}
+.overlayLabel-regular {
+    font-weight: 500;
+    font-size: 11px;
+}
+.overlayLabel-light {
+    font-weight: 300;
+    font-size: 11px;
+}
+
+/* #overlayLabel p {
+    color: rgba(255, 255, 255, 0.815);
     margin: 10px;
     font-size: smaller;
     font-family: 'Open Sans', sans-serif;
-}
+    padding: 0.5em;
+    border-radius: 0.5em;
+    background-color: rgb(26, 27, 33);
+    color: rgba(255, 255, 255, 0.849);
+    display: none;
+} */
 
 #logo {
     position: absolute;
-    left: 1em;
-    bottom: 1em;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
     z-index: 999;
     width: 4em;
 }
@@ -68,14 +95,22 @@ body,
     opacity: 0.8;
 }
 
+#UI {
+    position: absolute;
+    right: 1em;
+    top: 1em;
+    left: 1em;
+    bottom: 1em;
+    z-index: 99;
+    pointer-events: none;
+}
+
 #toolbar {
     display: flex;
     flex-direction: column;
     position: absolute;
-    right: 1em;
-    top: 1em;
     align-items: center;
-    z-index: 99;
+    right: 0em;
 }
 
 #toolbar>img {
@@ -86,7 +121,6 @@ body,
     pointer-events: auto;
     cursor: pointer;
 }
-
 
 #navigation {
     display: flex;
@@ -125,12 +159,11 @@ body,
     margin-bottom: 10px;
 }
 
-
-
 /*******************
 navigator
 *******************/
-#navigator {
+
+/* #navigator {
     position: absolute;
     left: 1em;
     top: 1em;
@@ -157,7 +190,12 @@ navigator
     display: none;
 }
 
-#navigator-buttons img{
+#navigator-buttons img {
     pointer-events: auto;
     cursor: pointer;
-}
+} */
+
+/* #homeButton {
+    pointer-events: auto;
+    cursor: pointer;
+} */

@@ -36,6 +36,7 @@
             font-family: roboto-medium;
             src: url("fonts/roboto-medium.ttf") format("truetype");
         }
+
         /* @font-face {
             font-family: roboto-bold;
             src: url("fonts/roboto-bold.ttf") format("truetype");
@@ -67,37 +68,55 @@
         <!-- <button style="position: absolute; top: 30%; left: 0; width: 4em; z-index: 9999;"
             onclick="loadCities()">LOADCITIES</button> -->
 
-        <p style="position: absolute; top: 0; left: 0;z-index: 0; font-family: roboto-medium; font-size: 50px; color: white">
+        <p
+            style="position: absolute; top: 0; left: 0;z-index: 0; font-family: roboto-medium; font-size: 50px; color: white">
             FONT</p>
 
 
-        <img id="logo" src="../images/logo.svg">
+
 
         <p id="credits"></p>
 
 
         <div id="overlayLabel">
-            <p id="name"></p>
-            <p style="font-size: x-small;" id="address"></p>
-            <p style="font-size: x-small;" id="contact"></p>
+            <p class="overlayLabel-bold"></p>
+            <p class="overlayLabel-regular"></p>
+            <p class="overlayLabel-light"></p>
         </div>
 
 
-        <div id="toolbar">
-            <img id="cameraLinkButton" src="images/icon_linked.svg" width="35rem">
-            <img id="mapLayersToggle" src="images/icon_layers_on.svg" width="35rem">
-            <div id="navigation">
-                <img id="zoomIn" src="images/plus.svg">
-                <img id="zoomOut" src="images/minus.svg">
-                <img id="turnLeft" src="images/rotate.svg">
-                <img id="turnRight" src="images/rotate.svg" style="transform: rotate(180deg);">
-                <img id="turnUp" src="images/rotate.svg" style="transform: rotate(90deg);">
-                <img id="turnDown" src="images/rotate.svg" style="transform: rotate(-90deg);">
+        <div id="UI">
+
+            <img id="logo" src="../images/logo.svg">
+
+            <div id="toolbar">
+                <img id="cameraLinkButton" src="images/icon_linked.svg" width="35rem">
+                <img id="mapLayersToggle" src="images/icon_layers_on.svg" width="35rem">
+                <div id="navigation">
+                    <img id="zoomIn" src="images/plus.svg">
+                    <img id="zoomOut" src="images/minus.svg">
+                    <img id="turnLeft" src="images/rotate.svg">
+                    <img id="turnRight" src="images/rotate.svg" style="transform: rotate(180deg);">
+                    <img id="turnUp" src="images/rotate.svg" style="transform: rotate(90deg);">
+                    <img id="turnDown" src="images/rotate.svg" style="transform: rotate(-90deg);">
+                </div>
             </div>
+
+
+
+            <img id="homeButton" src="images/icon_home_on.svg" height="35" width="70rem" style="position: absolute; pointer-events: auto;
+                cursor: pointer; display: none;">
+
+
+
+
+
         </div>
 
 
-        <div id="navigator">
+
+
+        <!-- <div id="navigator">
             <div id="navigator-message">
                 <div>
                     <p id="navigator-title" style="font-size: 13px;">Title</p>
@@ -110,11 +129,9 @@
                 <div id="navigator-buttons" style="display: flex; margin-top: 0.5em;">
                     <img id="navigator-button-home" src="images/icon_home_off.svg"
                         style="width: 2.1em; margin-right: 0.5em">
-                    <!-- <img id="navigator-button-play" src="images/icon_play_off.svg"
-                        style="width: 2.1em; margin-right: 0.5em"> -->
                 </div>
             </div>
-        </div>
+        </div> -->
 
 
 

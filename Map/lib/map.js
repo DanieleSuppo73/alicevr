@@ -191,9 +191,12 @@ export default class Map {
         Map.viewer.scene.globe.depthTestAgainstTerrain = Map.params.occlusion;
         Map.viewer.scene.postProcessStages.fxaa.enabled = Map.params.fxaa;
         Map.viewer.scene.globe.maximumScreenSpaceError = Map.params.maxScreenSpaceError;
-        Map.viewer.scene.skyAtmosphere.brightnessShift = Map.params.brightness;
-        Map.viewer.scene.skyAtmosphere.hueShift = Map.params.hue;
-        Map.viewer.scene.skyAtmosphere.saturationShift = Map.params.saturation;
+        Map.viewer.scene.skyAtmosphere.brightnessShift = Map.params.useMapbox ? 0.3 : 0;
+        Map.viewer.scene.skyAtmosphere.hueShift = Map.params.useMapbox ? 0.04 : 0;
+        Map.viewer.scene.skyAtmosphere.saturationShift = Map.params.useMapbox ? -0.01 : 0;
+
+    
+
 
 
         /* credits */
@@ -215,30 +218,33 @@ export default class Map {
 
             let _entity = Map.viewer.scene.pick(movement.endPosition);
             if (Cesium.defined(_entity)) {
+                document.body.style.cursor = "pointer";
+                
                 if (Map.entity !== _entity) {
-
-                    document.body.style.cursor = "pointer";
-
-
-                    if (Map.entity) {
-                        for (let i = 0; i < Map.onExitEntity.length; i++) {
-                            Map.onExitEntity[i](Map.entity);
-                        };
-                    }
-
                     Map.entity = _entity;
-                    Map.oldEntity = Map.entity;
 
-                    for (let i = 0; i < Map.onOverEntity.length; i++) {
-                        Map.onOverEntity[i](Map.entity);
-                    };
+                    // if (Map.entity) {
+                    //     for (let i = 0; i < Map.onExitEntity.length; i++) {
+                    //         Map.onExitEntity[i](Map.entity);
+                    //     };
+                    // }
+
+                    /* wait a little to avoid rapid movement */
+                    setTimeout(function(){
+                        if (Map.entity){
+                            for (let i = 0; i < Map.onOverEntity.length; i++) {
+                                Map.onOverEntity[i](Map.entity);
+                            };
+                        }
+                    }, 200);
 
                 }
             } else {
-
                 document.body.style.cursor = "default";
 
-                if (Map.entity && Map.entity !== _entity) {
+                if (Map.entity) {
+                    console.log("---- Map - exit ----")
+                    console.log(Map.entity)
                     for (let i = 0; i < Map.onExitEntity.length; i++) {
                         Map.onExitEntity[i](Map.entity);
                     };
@@ -302,13 +308,10 @@ export default class Map {
 
 
 Map.params = {
-    useMapbox: false,
+    useMapbox: true,
     fxaa: false,
-    maxScreenSpaceError: 2,
+    maxScreenSpaceError: 6,
     occlusion: false,
-    brightness: 0.3,
-    hue: 0.04,
-    saturation: -0.01,
     useBrowserRecommendedResolution: false,
     imageryProvider: function () {
         return (
@@ -329,7 +332,7 @@ Map.viewer = null;
 Map.camera = null;
 Map.canvas = null;
 Map.entity = null;
-Map.oldEntity = null;
+// Map.oldEntity = null;
 Map.onStarted = [];
 Map.onReady = [];
 Map.onDown = [];

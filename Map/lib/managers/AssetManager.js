@@ -26,7 +26,7 @@ export default class AssetManager {
             })
         }
         /* or, send message for root asset */
-        else{
+        else {
             dispatcher.sendMessage("rootAssetClicked", Loader.root.asset);
         }
 
@@ -36,24 +36,26 @@ export default class AssetManager {
 
         /* HOME button
         ***************/
-        $('#navigator-button-home').mouseenter(
+        // $('#navigator-button-home').mouseenter(
+        //     function () {
+        //         $(this).attr('src', 'images/icon_home_on.svg');
+        //     }
+        // );
+        // $('#navigator-button-home').mouseleave(
+        //     function () {
+        //         $(this).attr('src', 'images/icon_home_off.svg');
+        //     }
+        // );
+        $('#homeButton').click(
             function () {
-                $(this).attr('src', 'images/icon_home_on.svg');
-            }
-        );
-        $('#navigator-button-home').mouseleave(
-            function () {
-                $(this).attr('src', 'images/icon_home_off.svg');
-            }
-        );
-        $('#navigator-button-home').click(
-            function () {
+                $(this).fadeOut();
+                selectedAsset.entityClicked.utils.setOpacity(0.01);
                 reset(() => {
                     selectedAsset = null;
                     hoverAsset = null;
                     zoomToAll(true);
-                    hideNavigatorButtons();
-                    hideNavigatorMessage();
+                    // hideNavigatorButtons();
+                    // hideNavigatorMessage();
                 })
 
                 /* send message for root asset */
@@ -62,21 +64,21 @@ export default class AssetManager {
         );
 
 
-        $('#navigator-button-play').mouseenter(
-            function () {
-                $(this).attr('src', 'images/icon_play_on.svg');
-            }
-        );
-        $('#navigator-button-play').mouseleave(
-            function () {
-                $(this).attr('src', 'images/icon_play_off.svg');
-            }
-        );
-        $('#navigator-button-play').click(
-            function () {
-                startPlay();
-            }
-        );
+        // $('#navigator-button-play').mouseenter(
+        //     function () {
+        //         $(this).attr('src', 'images/icon_play_on.svg');
+        //     }
+        // );
+        // $('#navigator-button-play').mouseleave(
+        //     function () {
+        //         $(this).attr('src', 'images/icon_play_off.svg');
+        //     }
+        // );
+        // $('#navigator-button-play').click(
+        //     function () {
+        //         startPlay();
+        //     }
+        // );
 
 
 
@@ -84,7 +86,13 @@ export default class AssetManager {
             switch (entity.id.category) {
 
                 case "PLACEHOLDER-VIDEO":
+                    console.log("ENTER VIDEO")
                     AssetManager.OnOver(entity);
+                    break;
+
+                case "PLACEHOLDER-VIDEO-CLICKED":
+                    console.log("ENTER VIDEO PLAY")
+
                     break;
             }
         });
@@ -92,12 +100,15 @@ export default class AssetManager {
 
 
         Map.onExitEntity.push((entity) => {
-            console.log("esco da entity")
-            console.log(entity)
             switch (entity.id.category) {
 
+                case "PLACEHOLDER-VIDEO":
+                    console.log("EXIT VIDEO")
+                    AssetManager.OnExit(entity);
+                    break;
+
                 case "PLACEHOLDER-VIDEO-OVER":
-                    console.log("EXIT")
+                    console.log("EXIT VIDEO OVER")
                     AssetManager.OnExit(entity);
                     break;
             }
@@ -107,10 +118,15 @@ export default class AssetManager {
 
 
         Map.onClickEntity.push((entity) => {
+            console.log(entity)
             switch (entity.id.category) {
 
                 case "PLACEHOLDER-VIDEO-OVER":
                     AssetManager.OnClick_Video(entity);
+                    break;
+
+                case "PLACEHOLDER-VIDEO-CLICKED":
+                    AssetManager.OnClick_Video_Play(entity);
                     break;
             }
         });
@@ -127,7 +143,31 @@ export default class AssetManager {
             asset.entityOver.utils.zoom(1.2);
             hoverAsset = asset;
 
-            showNavigatorMessage(hoverAsset);
+            // showNavigatorMessage(hoverAsset);
+
+
+            var htmlOverlay = document.getElementById('overlayLabel');
+            var scratch = new Cesium.Cartesian2();
+            Map.viewer.scene.preRender.addEventListener(function () {
+                var position = asset.entity.position._value;
+                var canvasPosition = Map.viewer.scene.cartesianToCanvasCoordinates(position, scratch);
+                if (Cesium.defined(canvasPosition)) {
+                    htmlOverlay.style.top = (canvasPosition.y + 20) + 'px';
+                    htmlOverlay.style.left = (canvasPosition.x + 20) + 'px';
+
+
+                    // htmlOverlay.innerHTML = asset.title + '<br/>' + asset.location;
+
+
+                    $('#overlayLabel').find(".overlayLabel-bold").text(asset.title)
+                    $('#overlayLabel').find(".overlayLabel-light").text(asset.location)
+                }
+            });
+
+
+
+
+            $('#overlayLabel').fadeIn();
         }
     };
 
@@ -138,6 +178,7 @@ export default class AssetManager {
             Loader.root.getAssetById(entity.asset.id);
         if (asset !== selectedAsset || forced) {
             console.log("EXITTTTTTTTT")
+            console.log(asset)
             asset.entity.utils.fade(1);
             asset.entity.utils.zoom(1);
             asset.entityOver.utils.fade(0.1);
@@ -145,17 +186,22 @@ export default class AssetManager {
                 hoverAsset = null;
             });
 
-            if (!forced) hideNavigatorMessage();
-        }
-        else {
-            console.warn("NON POSSO USCIRE! ===> asset = selectedAsset")
+            // if (!forced) hideNavigatorMessage();
+
+            $('#overlayLabel').fadeOut();
         }
     };
 
 
     static OnClick_Video(entity) {
+        $("#homeButton").fadeIn();
+
         if (selectedAsset) {
+            selectedAsset.entityClicked.utils.fade(0.01);
             reset();
+        }
+        if (hoverAsset) {
+            $('#overlayLabel').fadeOut();
         }
         selectedAsset = typeof entity.asset === "undefined" ?
             Loader.root.getAssetById(entity.id.asset.id) :
@@ -165,10 +211,11 @@ export default class AssetManager {
         selectedAsset.entityOver.utils.setScale(1.2);
         selectedAsset.entityOver.utils.fade(0.01, null, 1000);
         selectedAsset.entityOver.utils.zoom(2, null, 1000);
+       
 
-        /* show navigator */
-        if (!navigatorMessageVisible) showNavigatorMessage(selectedAsset);
-        showNavigatorButtons();
+        // /* show navigator */
+        // if (!navigatorMessageVisible) showNavigatorMessage(selectedAsset);
+        // showNavigatorButtons();
 
         /* initialize Player */
         Player.init(selectedAsset);
@@ -183,6 +230,8 @@ export default class AssetManager {
 
                 Map.fixCamera(selectedAsset.boundingSphere.center);
                 startCameraRotation();
+
+                selectedAsset.entityClicked.utils.fade(1);
             },
             duration: 8,
             easingFunction: Cesium.EasingFunction.QUADRACTIC_IN_OUT,
@@ -191,11 +240,26 @@ export default class AssetManager {
         /* send message */
         dispatcher.sendMessage("videoAssetClicked", selectedAsset);
     };
+
+
+
+
+    static OnClick_Video_Play(entity) {
+
+        selectedAsset.entityClicked.utils.fade(0.01, null, 1000);
+
+        /* send message */
+        dispatcher.sendMessage("videoPlayerPlay");
+
+    };
+
+
+
 };
 
 let selectedAsset = null;
 let hoverAsset = null;
-let navigatorMessageVisible = false;
+// let navigatorMessageVisible = false;
 let navigatorButtonEnabled = true;
 
 
@@ -205,15 +269,9 @@ function reset(callback = null) {
     Player.hideStartPoints();
     stopCameraRotation();
 
-    // if (playInterval) {
-    //     clearInterval(playInterval);
-    //     playInterval = null;
-    // }
-    if (Player.playing) {
-        Player.stop();
-    }
-
-    if (callback) callback();
+    Player.reset(() => {
+        if (callback) callback();
+    });
 }
 
 
@@ -230,32 +288,32 @@ function zoomToAll(slow) {
 };
 
 
-function showNavigatorMessage(asset) {
-    $('#navigator-title').text(asset.title);
-    $('#navigator-location').text(asset.location);
-    $('#navigator-message').fadeIn();
-    navigatorMessageVisible = true;
-};
+// function showNavigatorMessage(asset) {
+//     $('#navigator-title').text(asset.title);
+//     $('#navigator-location').text(asset.location);
+//     $('#navigator-message').fadeIn();
+//     navigatorMessageVisible = true;
+// };
 
-function hideNavigatorMessage() {
-    if (!selectedAsset) {
-        $('#navigator-message').fadeOut();
-        navigatorMessageVisible = false;
-    }
-    else {
-        showNavigatorMessage(selectedAsset);
-    }
-};
+// function hideNavigatorMessage() {
+//     if (!selectedAsset) {
+//         $('#navigator-message').fadeOut();
+//         navigatorMessageVisible = false;
+//     }
+//     else {
+//         showNavigatorMessage(selectedAsset);
+//     }
+// };
 
-function showNavigatorButtons() {
-    if (navigatorButtonEnabled)
-        $('#navigator-buttons-container').fadeIn();
-};
+// function showNavigatorButtons() {
+//     if (navigatorButtonEnabled)
+//         $('#navigator-buttons-container').fadeIn();
+// };
 
-function hideNavigatorButtons() {
-    if (navigatorButtonEnabled)
-        $('#navigator-buttons-container').fadeOut();
-};
+// function hideNavigatorButtons() {
+//     if (navigatorButtonEnabled)
+//         $('#navigator-buttons-container').fadeOut();
+// };
 
 
 
@@ -282,31 +340,6 @@ Map.onDown.push(function () {
 
 
 
-// let playInterval = null;
-// function startPlay() {
-
-//     console.log("PLAY")
-//     Player.hideStartPoints();
-
-//     stopCameraRotation();
-
-
-
-//     /// fake player
-//     var time = 0;
-//     var samplerate = 250;
-//     playInterval = setInterval(() => {
-//         time += samplerate / 1000;
-//         dispatcher.sendMessage("playerPlaying", {
-//             time: time,
-//             angle: 0,
-//         });
-//     }, samplerate);
-// }
-
-
-
-
 /*****************
 messages receivers
 ******************/
@@ -324,6 +357,8 @@ dispatcher.receiveMessage("playerEnded", () => {
 
             Map.fixCamera(selectedAsset.boundingSphere.center);
             startCameraRotation();
+
+            selectedAsset.entityClicked.utils.fade(1);
         },
         duration: 8,
         easingFunction: Cesium.EasingFunction.QUADRACTIC_IN_OUT,
