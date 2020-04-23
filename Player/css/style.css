@@ -146,8 +146,19 @@ p {
     z-index: 99
 }
 
-#videoPlayer-slideshow {
+#videoPlayer-SplashScreen {
     z-index: 1000;
+}
+
+#videoPlayer-SplashScreen {
+    font-family: Roboto;
+}
+
+#videoPlayer-SplashScreen .splashScreen-description {
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 130%;
+    color: rgba(255, 255, 255, 0.87);
 }
 
 #videoPlayer-slideshow img {
@@ -156,16 +167,20 @@ p {
     height: 100%;
     object-fit: cover;
     z-index: 1001;
+    filter: brightness(50%);
 }
 
 #videoPlayer-slideshow img.active {
     z-index: 1003;
+    filter: brightness(50%);
 }
 
 #logo {
     position: absolute;
-    left: 1em;
     top: 1em;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
     z-index: 9999;
     width: 4em;
 }

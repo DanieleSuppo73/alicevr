@@ -218,6 +218,9 @@ export default class Map {
 
             let _entity = Map.viewer.scene.pick(movement.endPosition);
             if (Cesium.defined(_entity)) {
+
+                if (!_entity.id.selectable) return;
+
                 document.body.style.cursor = "pointer";
                 
                 if (Map.entity !== _entity) {

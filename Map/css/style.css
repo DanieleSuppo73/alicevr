@@ -6,6 +6,7 @@ html, body, #cesiumContainer {
     /* for Microsoft Edge */
     -ms-overflow-style: none;
     overflow: -moz-scrollbars-none;
+    overflow: hidden;
 }
 
 .absolute {

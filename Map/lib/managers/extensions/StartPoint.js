@@ -17,8 +17,9 @@ export default class StartPoint {
             color: StartPoint.color,
             outlineColor: StartPoint.outlineColor,
             opacity: 0,
+            selectable: false,
             point: {
-                pixelSize: 10,
+                pixelSize: 9,
                 color: new Cesium.CallbackProperty(() => {
                     return new Cesium.Color(this.entity.color.x, this.entity.color.y, this.entity.color.z, this.entity.opacity)
                 }, false),
@@ -37,33 +38,33 @@ export default class StartPoint {
 
 StartPoint.color = new Cesium.Cartesian3(0.26, 0.52, 0.96);
 StartPoint.overColor = new Cesium.Cartesian3(1, 0.85, 0);
-StartPoint.outlineColor = new Cesium.Cartesian3(0, 0, 0);
+StartPoint.outlineColor = new Cesium.Cartesian3(1, 1, 1);
 StartPoint.clicked = null;
 
 
-Map.onOverEntity.push((entity) => {
-    if (entity.id.category === "STARTING-POINT") {
-        console.log("CI SEI SOPRA!")
-        entity.id.color = StartPoint.overColor;
-    }
-});
+// Map.onOverEntity.push((entity) => {
+//     if (entity.id.category === "STARTING-POINT") {
+//         console.log("CI SEI SOPRA!")
+//         entity.id.color = StartPoint.overColor;
+//     }
+// });
 
 
-Map.onExitEntity.push((entity) => {
-    if (entity.id.category === "STARTING-POINT") {
-        if (entity !== StartPoint.clicked){
-            entity.id.color = StartPoint.color;
-        }
-    }
-});
+// Map.onExitEntity.push((entity) => {
+//     if (entity.id.category === "STARTING-POINT") {
+//         if (entity !== StartPoint.clicked){
+//             entity.id.color = StartPoint.color;
+//         }
+//     }
+// });
 
 
-Map.onClickEntity.push((entity) => {
-    if (entity.id.category === "STARTING-POINT") {
-        console.log(entity.id.timecode)
-        StartPoint.clicked = entity;
-    }
-});
+// Map.onClickEntity.push((entity) => {
+//     if (entity.id.category === "STARTING-POINT") {
+//         console.log(entity.id.timecode)
+//         StartPoint.clicked = entity;
+//     }
+// });
 
 
 

@@ -18,6 +18,7 @@ function getPropertiesFromCategory(category, radius) {
         color: new Cesium.Cartesian3(1, 1, 1),
         category: category,
         image: null,
+        selectable: true,
     };
 
     if (category) {
@@ -108,6 +109,7 @@ export default class Ellipse {
                 color: properties.color,
                 opacity: properties.opacity,
                 category: category,
+                selectable: false,
                 ellipse: {
                     semiMinorAxis: new Cesium.CallbackProperty(function () {
                         let dist = Cesium.Cartesian3.distance(Map.camera.positionWC, entity.center);
@@ -140,6 +142,7 @@ export default class Ellipse {
                 color: properties.color,
                 opacity: properties.opacity,
                 category: category,
+                selectable: properties.selectable,
                 ellipse: {
                     semiMinorAxis: properties.semiMinorAxis,
                     semiMajorAxis: properties.semiMajorAxis,

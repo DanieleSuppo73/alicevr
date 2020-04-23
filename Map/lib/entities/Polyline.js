@@ -87,6 +87,7 @@ export default class Polyline {
             outlineColor: properties.outlineColor,
             width: properties.width,
             category: category,
+            selectable: false,
             polyline: {
                 positions: positions,
                 clampToGround: properties.clampToGround,

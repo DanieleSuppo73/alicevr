@@ -15,8 +15,7 @@ function getPropertiesFromCategory(category) {
         scale: 1,
         color: Cesium.Color.WHITE,
         translucencyByDistance: null,
-
-
+        selectable: true,
     };
 
     switch (category) {
@@ -98,6 +97,7 @@ export default class Billboard {
                     opacity: 0, /// default value at start
                     position: position,
                     category: category,
+                    selectable: false,
                     billboard: {
                         image: properties.image,
                         show: properties.show,
@@ -122,6 +122,7 @@ export default class Billboard {
                     category: category,
                     scale: properties.scale,
                     color: properties.color,
+                    selectable: properties.selectable,
                     billboard: {
                         image: properties.image,
                         show: properties.show,

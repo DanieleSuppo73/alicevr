@@ -83,34 +83,42 @@ export default class AssetManager {
 
 
         Map.onOverEntity.push((entity) => {
-            switch (entity.id.category) {
 
-                case "PLACEHOLDER-VIDEO":
-                    console.log("ENTER VIDEO")
-                    AssetManager.OnOver(entity);
-                    break;
-
-                case "PLACEHOLDER-VIDEO-CLICKED":
-                    console.log("ENTER VIDEO PLAY")
-
-                    break;
+            if (entity.id.category === "PLACEHOLDER-VIDEO") {
+                console.log("ENTER VIDEO")
+                const asset = Loader.root.getAssetById(entity.id.asset.id);
+                console.log(asset)
+                AssetManager.OnOver(asset);
             }
+            // switch (entity.id.category) {
+
+            //     case "PLACEHOLDER-VIDEO":
+            //         console.log("ENTER VIDEO")
+            //         const asset = Loader.root.getAssetById(entity.id.asset.id);
+
+            //         AssetManager.OnOver(asset);
+            //         break;
+
+            // case "PLACEHOLDER-VIDEO-CLICKED":
+            //     console.log("ENTER VIDEO PLAY")
+
+            //     break;
+            // }
         });
 
 
 
         Map.onExitEntity.push((entity) => {
-            switch (entity.id.category) {
 
-                case "PLACEHOLDER-VIDEO":
-                    console.log("EXIT VIDEO")
-                    AssetManager.OnExit(entity);
-                    break;
+            if (entity.id.category === "PLACEHOLDER-VIDEO" ||
+                entity.id.category === "PLACEHOLDER-VIDEO-OVER") {
 
-                case "PLACEHOLDER-VIDEO-OVER":
-                    console.log("EXIT VIDEO OVER")
-                    AssetManager.OnExit(entity);
-                    break;
+                console.log("EXIT VIDEO")
+                const asset = typeof entity.asset === "undefined" ?
+                    Loader.root.getAssetById(entity.id.asset.id) :
+                    Loader.root.getAssetById(entity.asset.id);
+
+                AssetManager.OnExit(asset);
             }
         });
 
@@ -118,23 +126,66 @@ export default class AssetManager {
 
 
         Map.onClickEntity.push((entity) => {
-            console.log(entity)
-            switch (entity.id.category) {
+            // console.log(entity)
+            // switch (entity.id.category) {
 
-                case "PLACEHOLDER-VIDEO-OVER":
-                    AssetManager.OnClick_Video(entity);
-                    break;
+            //     case "PLACEHOLDER-VIDEO-OVER":
+            //         AssetManager.OnClick_Video(entity);
+            //         break;
 
-                case "PLACEHOLDER-VIDEO-CLICKED":
-                    AssetManager.OnClick_Video_Play(entity);
-                    break;
+            //     case "PLACEHOLDER-VIDEO-CLICKED":
+            //         AssetManager.OnClick_Video_Play(entity);
+            //         break;
+            // }
+            if (entity.id.category === "PLACEHOLDER-VIDEO-OVER") {
+                console.log("CLICK VIDEO")
+                $("#homeButton").fadeIn();
+
+
+                if (overlayLabelVisible) {
+                    $('#overlayLabel').fadeOut(1000);
+                    overlayLabelVisible = false;
+                }
+
+                if (selectedAsset) {
+                    selectedAsset.entityClicked.utils.fade(0.01);
+
+                    reset(() => {
+                        selectedAsset = typeof entity.asset === "undefined" ?
+                            Loader.root.getAssetById(entity.id.asset.id) :
+                            Loader.root.getAssetById(entity.asset.id);
+
+                        AssetManager.OnClick_Video();
+                    });
+                }
+                else {
+                    selectedAsset = typeof entity.asset === "undefined" ?
+                        Loader.root.getAssetById(entity.id.asset.id) :
+                        Loader.root.getAssetById(entity.asset.id);
+
+                    AssetManager.OnClick_Video();
+                }
             }
+
+
+
+
+
+            if (entity.id.category === "PLACEHOLDER-VIDEO-CLICKED") {
+
+                AssetManager.OnClick_Video_Play()
+            }
+
+
+
+
+
         });
     }
 
 
-    static OnOver(entity) {
-        const asset = Loader.root.getAssetById(entity.id.asset.id);
+    static OnOver(asset) {
+        // const asset = Loader.root.getAssetById(entity.id.asset.id);
         if (asset !== hoverAsset && asset !== selectedAsset) {
             console.log("OVERRRRRRRRRRRRR")
             asset.entity.utils.fade(0.01);
@@ -158,24 +209,30 @@ export default class AssetManager {
 
                     // htmlOverlay.innerHTML = asset.title + '<br/>' + asset.location;
 
-
+                    // console.log("******************************")
+                    // console.log("MOSTRO OVERLAYLABEL")
                     $('#overlayLabel').find(".overlayLabel-bold").text(asset.title)
                     $('#overlayLabel').find(".overlayLabel-light").text(asset.location)
+                   
                 }
             });
 
+            $('#overlayLabel').show();
+            overlayLabelVisible = true;
 
 
+            // $('#overlayLabel').fadeIn();
 
-            $('#overlayLabel').fadeIn();
+            /* send message */
+            dispatcher.sendMessage("videoAssetOver", asset);
         }
     };
 
 
-    static OnExit(entity, forced = false) {
-        const asset = typeof entity.asset === "undefined" ?
-            Loader.root.getAssetById(entity.id.asset.id) :
-            Loader.root.getAssetById(entity.asset.id);
+    static OnExit(asset, forced = false) {
+        // const asset = typeof entity.asset === "undefined" ?
+        //     Loader.root.getAssetById(entity.id.asset.id) :
+        //     Loader.root.getAssetById(entity.asset.id);
         if (asset !== selectedAsset || forced) {
             console.log("EXITTTTTTTTT")
             console.log(asset)
@@ -188,30 +245,35 @@ export default class AssetManager {
 
             // if (!forced) hideNavigatorMessage();
 
-            $('#overlayLabel').fadeOut();
+            
+            $('#overlayLabel').hide();
+            overlayLabelVisible = false;
+
+            /* send message */
+            dispatcher.sendMessage("videoAssetExit");
         }
     };
 
 
-    static OnClick_Video(entity) {
-        $("#homeButton").fadeIn();
+    static OnClick_Video() {
+        // $("#homeButton").fadeIn();
 
-        if (selectedAsset) {
-            selectedAsset.entityClicked.utils.fade(0.01);
-            reset();
-        }
-        if (hoverAsset) {
-            $('#overlayLabel').fadeOut();
-        }
-        selectedAsset = typeof entity.asset === "undefined" ?
-            Loader.root.getAssetById(entity.id.asset.id) :
-            Loader.root.getAssetById(entity.asset.id);
+        // if (selectedAsset) {
+        //     selectedAsset.entityClicked.utils.fade(0.01);
+        //     reset();
+        // }
+        // if (hoverAsset) {
+        //     $('#overlayLabel').fadeOut();
+        // }
+        // selectedAsset = typeof entity.asset === "undefined" ?
+        //     Loader.root.getAssetById(entity.id.asset.id) :
+        //     Loader.root.getAssetById(entity.asset.id);
         selectedAsset.entity.utils.setOpacity(0.01);
         selectedAsset.entityOver.utils.setOpacity(1);
         selectedAsset.entityOver.utils.setScale(1.2);
         selectedAsset.entityOver.utils.fade(0.01, null, 1000);
         selectedAsset.entityOver.utils.zoom(2, null, 1000);
-       
+
 
         // /* show navigator */
         // if (!navigatorMessageVisible) showNavigatorMessage(selectedAsset);
@@ -244,7 +306,7 @@ export default class AssetManager {
 
 
 
-    static OnClick_Video_Play(entity) {
+    static OnClick_Video_Play() {
 
         selectedAsset.entityClicked.utils.fade(0.01, null, 1000);
 
@@ -261,11 +323,12 @@ let selectedAsset = null;
 let hoverAsset = null;
 // let navigatorMessageVisible = false;
 let navigatorButtonEnabled = true;
+let overlayLabelVisible = false;
 
 
 function reset(callback = null) {
-    const entity = selectedAsset.entity;
-    AssetManager.OnExit(entity, true);
+    // const entity = selectedAsset.entity;
+    AssetManager.OnExit(selectedAsset, true);
     Player.hideStartPoints();
     stopCameraRotation();
 
@@ -286,34 +349,6 @@ function zoomToAll(slow) {
         duration: duration,
     });
 };
-
-
-// function showNavigatorMessage(asset) {
-//     $('#navigator-title').text(asset.title);
-//     $('#navigator-location').text(asset.location);
-//     $('#navigator-message').fadeIn();
-//     navigatorMessageVisible = true;
-// };
-
-// function hideNavigatorMessage() {
-//     if (!selectedAsset) {
-//         $('#navigator-message').fadeOut();
-//         navigatorMessageVisible = false;
-//     }
-//     else {
-//         showNavigatorMessage(selectedAsset);
-//     }
-// };
-
-// function showNavigatorButtons() {
-//     if (navigatorButtonEnabled)
-//         $('#navigator-buttons-container').fadeIn();
-// };
-
-// function hideNavigatorButtons() {
-//     if (navigatorButtonEnabled)
-//         $('#navigator-buttons-container').fadeOut();
-// };
 
 
 
@@ -346,6 +381,7 @@ messages receivers
 dispatcher.receiveMessage("playerStarted", () => {
     stopCameraRotation();
 });
+
 dispatcher.receiveMessage("playerEnded", () => {
     /* fly there */
     Map.camera.flyToBoundingSphere(selectedAsset.boundingSphere, {
@@ -364,5 +400,41 @@ dispatcher.receiveMessage("playerEnded", () => {
         easingFunction: Cesium.EasingFunction.QUADRACTIC_IN_OUT,
     });
 });
+
+dispatcher.receiveMessage("splashScreenOver", (id) => {
+    console.log(id)
+    const asset = Loader.root.getAssetById(id);
+    AssetManager.OnOver(asset);
+
+});
+
+dispatcher.receiveMessage("splashScreenExit", (id) => {
+    console.log(id)
+    const asset = Loader.root.getAssetById(id);
+    AssetManager.OnExit(asset);
+});
+
+dispatcher.receiveMessage("splashScreenClicked", (id) => {
+    console.log(id)
+    $("#homeButton").fadeIn();
+
+    if (overlayLabelVisible) {
+        $('#overlayLabel').fadeOut(1000);
+        overlayLabelVisible = false;
+    }
+
+    if (selectedAsset) {
+        selectedAsset.entityClicked.utils.fade(0.01);
+        reset(() => {
+            selectedAsset = Loader.root.getAssetById(id);
+            AssetManager.OnClick_Video();
+        });
+    }
+    else {
+        selectedAsset = Loader.root.getAssetById(id);
+        AssetManager.OnClick_Video();
+    }
+});
+
 
 

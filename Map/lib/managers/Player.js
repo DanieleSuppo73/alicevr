@@ -16,13 +16,24 @@ export default class Player {
 
     static init(video) {
 
+        /* create markers */
+        markers = jsUtils.arrayOfObjectsCloneAndIncrease(video.markers);
+        markers[markers.length - 1].timecode += 1000; /// add 100 sec to last marker
+        
         /* create the proxy 
         for the 1st time!*/
         if (!Player.radarProxy) Player.radarProxy = Point.draw(video.boundingSphere.center, "PROXY");
 
-        let track = Loader.root.getAssetByClass("Track", video);
-
+        /* remove start points */
+        for (let i = 0; i < Player.startPoints.length; i++) {
+            Map.viewer.entities.remove(Player.startPoints[i].entity);
+        }
+        
         Player.radar = null;
+        Player.startPoints = [];
+        spIndex = 0;
+        
+        let track = Loader.root.getAssetByClass("Track", video);
 
         if (typeof track !== "undefined") {
             gpx = track.tracks;
@@ -32,19 +43,18 @@ export default class Player {
         } else {
             /* create radar */
             Player.radar = Ellipse.draw(video.boundingSphere.center, "POSITION");
+            createStartPoints();
         }
 
-        /* create markers */
-        markers = jsUtils.arrayOfObjectsCloneAndIncrease(video.markers);
-        markers[markers.length - 1].timecode += 1000; /// add 100 sec to last marker
+        
 
         /* create start points */
-        for (let i = 0; i < Player.startPoints.length; i++) {
-            Map.viewer.entities.remove(Player.startPoints[i].entity);
-        }
-        Player.startPoints = [];
-        spIndex = 0;
-        createStartPoints();
+        // for (let i = 0; i < Player.startPoints.length; i++) {
+        //     Map.viewer.entities.remove(Player.startPoints[i].entity);
+        // }
+        // Player.startPoints = [];
+        // spIndex = 0;
+        // createStartPoints();
     };
 
 
@@ -242,11 +252,7 @@ const getMarkerPosition = (index, time) => {
                             gpxFound.times[ii + 1] - gpxTime ?
                             ii : ii + 1;
 
-                        // Map.viewer.trackedEntity = null;
-                        // lerp(gpxFound, wpIndex);
                         resolve([gpxFound, wpIndex, position]);
-                        // break;
-
                     };
                 };
             };
@@ -285,83 +291,6 @@ const getMarkerPosition = (index, time) => {
 
     });
 };
-
-
-
-
-
-/*********************
-on new marker detected
-**********************/
-// const onFoundMarkerIndex = i => {
-
-//     /* get the Cartesian position from
-//     the gpx time, if provided */
-//     if (markers[i].gpxTime) {
-//         const gpxTime = markers[i].gpxTime;
-
-//         for (let i = 0; i < gpx.length; i++) {
-//             for (let ii = 0; ii < gpx[i].times.length - 1; ii++) {
-//                 if (gpxTime >= gpx[i].times[ii] && gpxTime < gpx[i].times[ii + 1]) {
-
-//                     const gpxFound = gpx[i];
-//                     let wpIndex = gpxTime - gpxFound.times[ii] <
-//                         gpxFound.times[ii + 1] - gpxTime ?
-//                         ii : ii + 1;
-
-//                     Map.viewer.trackedEntity = null;
-//                     lerp(gpxFound, wpIndex);
-//                     break;
-//                 };
-//             };
-//         };
-//     }
-
-
-
-//     /* or get the Cartesian position from
-//     the gpx longitude and latitude */
-//     else {
-
-//         /* create position */
-//         const lonLatArray = [markers[i].longitude, markers[i].latitude];
-//         Map.addHeightToCoordinatesAndReturnCartesians(lonLatArray, 5, (cartesians) => {
-//             const position = cartesians[0];
-
-
-//             /* if in markers has been
-//             specified a track to follow */
-//             if (markers[i].trackToFollow) {
-
-//                 const gpxFound = gpx[markers[i].trackToFollow];
-//                 /// find the nearest waypoint
-//                 let minDist = 9999999;
-//                 let wpIndex = 0;
-//                 for (let i = 0; i < gpxFound.positions.length; i++) {
-//                     const dist = Cesium.Cartesian3.distance(position, gpxFound.positions[i]);
-//                     if (dist < minDist) {
-//                         minDist = dist;
-//                         wpIndex = i;
-//                     }
-//                 }
-//                 Map.viewer.trackedEntity = null;
-//                 lerp(gpxFound, wpIndex);
-//             }
-
-
-//             /* or simply jump the radar
-//             without lerp */
-//             else {
-//                 Player.radarProxy.position = position;
-//                 entityUtils.fadeOut(Player.radar, () => {
-//                     Player.radar.position = Player.radarProxy.position._value;
-//                     entityUtils.fadeIn(Player.radar);
-//                 });
-//                 jump();
-//             }
-//         });
-//     };
-// };
 
 
 

@@ -125,6 +125,7 @@ export default class Label {
             outlineColor: properties.outlineColor,
             position: position,
             category: category,
+            selectable: false,
             label: {
                 text: text,
                 font: properties.font,
