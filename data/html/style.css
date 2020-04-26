@@ -1,0 +1,52 @@
+#guidePanel {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    padding: 1em;
+    background-color: white;
+}
+
+p {
+    line-height: 160%;
+}
+
+b {
+    font-weight: 700;
+}
+
+a {
+    color: dodgerblue;
+}
+
+a:link {
+    text-decoration: none;
+}
+
+a:visited {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a:active {
+    text-decoration: underline;
+}
+
+.i {
+    font-style: italic;
+}
+
+.small {
+    font-size: small;
+    margin: 0;
+}
+
+.large {
+    font-size: large;
+}
+
+.border-bottom {
+    border-bottom: 1px solid rgb(136, 136, 136);
+}

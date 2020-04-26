@@ -5,9 +5,10 @@
     <date>Fry Nov 15 2019</date>
     <location>Venezia (VE) - Italy</location>
     <title>Il Lido e la Pellestrina di Venezia</title>
-    <description>Il famoso Lido di Venezia, e l'isola sotto</description>
-    <!-- <video_url1>https://player.vimeo.com/external/356158599.m3u8?s=4cc2e833252c2f761dad31c7a825828d68146a78</video_url1> -->
-    <video_url1>..\data\video\Lido - Pellestrina_026.mp4</video_url1>
+    <description>Un giro in bici molto bello. Una gita di una giornata per chi abita poco distante dalla provincia di Venezia, chi viene da più distante invece, può organizzarsi magari prevedendo un pernottamento in terraferma o anche in una delle due isole lungo cui si snoda il percorso.
+Sì, perchè in bicicletta si possono scoprire due isole molto belle, semplici, ancora autentiche, le due isole che di fatto proteggono la Laguna di Venezia dal mare aperto, le lunghe e sottili isole del Lido di Venezia e di Pellestrina.</description>
+    <video_url1>https://player.vimeo.com/external/356158599.m3u8?s=4cc2e833252c2f761dad31c7a825828d68146a78</video_url1>
+    <!-- <video_url1>..\data\video\Lido - Pellestrina_026.mp4</video_url1> -->
     <video_url2>41747</video_url2>
     <poster_url>lidoPellestrina.jpg</poster_url>
     <markers_url>lidopellestrina_markers.xml</markers_url>

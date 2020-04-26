@@ -92,43 +92,49 @@ dispatcher.receiveMessage("videoPlayerSeek", function (time) {
 
 
 
-setInterval(() => {
+const t = () => {
+    setInterval(() => {
 
-    if (player.isPlaying) {
+        if (player.isPlaying) {
 
-        //////////////////////////////////////////////
-        /// send message during playback
-        //////////////////////////////////////////////
-        let time = player.time;
-        let angle = player.angle;
-        dispatcher.sendMessage("playerPlaying", {
-            time: time,
-            angle: angle,
-        });
-
-        //////////////////////////////////////////////
-        /// rotate overlay viewAngle
-        //////////////////////////////////////////////
-        overlay.viewAngle.rotate(angle);
+            //////////////////////////////////////////////
+            /// send message during playback
+            //////////////////////////////////////////////
+            let time = player.time;
+            let angle = player.angle;
+            dispatcher.sendMessage("playerPlaying", {
+                time: time,
+                angle: angle,
+            });
 
 
-
-        //////////////////////////////////////////////
-        /// check for subtitles
-        //////////////////////////////////////////////
-        subtitles.check(time);
-    }
-
-    else if (player.isPaused) {
-        let angle = player.angle;
-        dispatcher.sendMessage("playerPaused", {
-            angle: angle,
-        });
-    }
+            //////////////////////////////////////////////
+            /// rotate overlay viewAngle
+            //////////////////////////////////////////////
+            overlay.viewAngle.rotate(angle);
 
 
 
-}, 200);
+            //////////////////////////////////////////////
+            /// check for subtitles
+            //////////////////////////////////////////////
+            subtitles.check(time);
+        }
+
+
+        if (player.isPaused) {
+            let angle = player.angle;
+            dispatcher.sendMessage("playerPaused", {
+                angle: angle,
+            });
+        }
+
+
+
+    }, 200);
+}
+
+t();
 
 
 

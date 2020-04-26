@@ -32,6 +32,9 @@ const OmniVirt_player = {
     },
     play: function () {
         OmniVirt.api.sendMessage('play', null, this.omniVirtIframe);
+        this.isPlaying = true;
+        console.log("************************PLAY!!!!!!!!!!!!!!!!!!!")
+        console.log(OmniVirt_player.isPlaying)
     },
     pause: function () {
         OmniVirt.api.sendMessage('pause', null, this.omniVirtIframe);
@@ -41,10 +44,18 @@ const OmniVirt_player = {
         OmniVirt.api.sendMessage('seek', percent, this.omniVirtIframe);
     },
     stop: function(){
-        OmniVirt.api.sendMessage('stop', null, this.omniVirtIframe);
+        OmniVirt.api.sendMessage('pause', null, this.omniVirtIframe);/// non c'è lo STOP nelle API !!!!
+        this.isPlaying = false;
+        this.isPaused = false;
+        this._oldTime = -1;
+        console.log("video is stopped");
+        OmniVirt.api.unbind(window);
     },
 
     load: function (asset) {
+        console.log("////////////////////// LOAD ////////////////////////")
+
+        // OmniVirt.api.unbind(window);
 
         let url = asset.video_url2;
         this.isStarted = false;
@@ -68,7 +79,6 @@ const OmniVirt_player = {
         this.omniVirtIframe.id = id;
 
         this.oldId = id;
-        this.isPlaying = false;
 
         document.getElementById(id).setAttribute("src",
             "//cdn.omnivirt.com/content/" + url + "?player=true&autoplay=false&referer=" + encodeURIComponent(
@@ -77,7 +87,7 @@ const OmniVirt_player = {
 
         /// register listeners
 
-        let vp = this;
+       
 
         OmniVirt.api.receiveMessage('loaded', (eventName, data, instance) => {
             for (let i in this.onReadyHandlers) this.onReadyHandlers[i]();
@@ -92,6 +102,7 @@ const OmniVirt_player = {
 
         OmniVirt.api.receiveMessage('started', (eventName, data, instance) => {
             this.isStarted = true;
+            this.isPlaying = true;
             console.log('------ video is started ------')
             for (let i in this.onStartedHandlers) this.onStartedHandlers[i]();
         });
@@ -133,15 +144,19 @@ const OmniVirt_player = {
 
 
         OmniVirt.api.receiveMessage('progress', (eventName, data, instance) => {
+            console.log(data)
             this._time = this.duration * data;
-
+            // console.log("PROGRESS....." + this._time + " -- " + this._oldTime)
             /// if the progress is updated...
-            if (this._time !== this._oldTime && !this.isSeeking) {
-                this.isPlaying = true;
-                this._oldTime = this._time;
-            } else {
-                this.isPlaying = false;
-            }
+            // if (this._time !== this._oldTime && !this.isSeeking) {
+            //     this.isPlaying = true;
+            //     this._oldTime = this._time;
+            // } else {
+            //     this.isPlaying = false;
+            // }
+            // // console.log("**********************************")
+            // console.log(instance)
+            // console.log("************ isPlaying: " + this.isPlaying)
         });
 
 

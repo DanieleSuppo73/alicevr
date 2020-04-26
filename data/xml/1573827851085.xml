@@ -5,9 +5,9 @@
     <date>Fry Nov 15 2019</date>
     <location>Venezia (VE) - Italy</location>
     <title>Il Lio Piccolo di Venezia</title>
-    <description>Una delle isole più inesplorate ma anche più suggestive della laguna veneziana</description>
-    <!-- <video_url1>https://player.vimeo.com/external/355816026.m3u8?s=95add46cf3c7efa7ee281230ef12daf0b5562d26</video_url1> -->
-    <video_url1>..\data\video\Lio Piccolo_015a.mp4</video_url1>
+    <description>Lio Piccolo è un grazioso borgo a nord di Cavallino Treporti. Molti di questi piccoli centri punteggiano il territorio che sta a nord dell’ultima bocca di porto della Laguna di Venezia e sono immersi in un ambiente unico al mondo per paesaggio, ricchezza dell’ecosistema e antiche tradizioni locali.</description>
+    <video_url1>https://player.vimeo.com/external/355816026.m3u8?s=95add46cf3c7efa7ee281230ef12daf0b5562d26</video_url1>
+    <!-- <video_url1>..\data\video\Lio Piccolo_015a.mp4</video_url1> -->
     <video_url2>43237</video_url2>
     <poster_url>lioPiccolo.jpg</poster_url>
     <markers_url>liopiccolo_markers.xml</markers_url>

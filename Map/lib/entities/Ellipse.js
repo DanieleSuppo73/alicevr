@@ -33,8 +33,8 @@ function getPropertiesFromCategory(category, radius) {
                     let dist = Cesium.Cartesian3.distance(Map.camera.positionWC, entity.center);
                     return dist * Math.tan(semiAngle) * 3;
                 }, false);
-                properties.semiMinorAxis = 100;
-                properties.semiMajorAxis = 100;
+                // properties.semiMinorAxis = 100;
+                // properties.semiMajorAxis = 100;
                 properties.image = "images/billboards/radar.svg";
                 properties.opacity = 0;
                 break;
@@ -48,11 +48,12 @@ function getPropertiesFromCategory(category, radius) {
                     let dist = Cesium.Cartesian3.distance(Map.camera.positionWC, entity.center);
                     return dist * Math.tan(semiAngle) * 3;
                 }, false);
-                properties.semiMinorAxis = 100;
-                properties.semiMajorAxis = 100;
+                // properties.semiMinorAxis = 100;
+                // properties.semiMajorAxis = 100;
                 properties.image = "images/billboards/position.svg";
                 properties.opacity = 0;
                 break;
+
 
             case "RED":
                 properties.color = Cesium.Color.RED.withAlpha(0.2)

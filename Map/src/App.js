@@ -29,7 +29,11 @@ Map.onStarted.push(() => {
     Loader.load(idToLoad, () => {
 
         console.log(Loader.root.asset)
-        AssetManager.init();
+        
+        // let range = Loader.root.asset.boundingSphere.radius * 3;
+        let range = 140000;
+        
+        AssetManager.init(range);
 
         // /// DEBUG : show circle
         // Ellipse.draw(Loader.root.asset.boundingSphere.center, "ORANGE", Loader.root.asset.boundingSphere.radius);
@@ -37,8 +41,7 @@ Map.onStarted.push(() => {
 
 
         /* load cities from boundingsphere position - radius */
-        let range = 140000;
-        // cities.init(Loader.root.asset.boundingSphere.center, range);
+        cities.init(Loader.root.asset.boundingSphere.center, range);
     });
 })
 
@@ -54,23 +57,6 @@ Map.onReady.push(function () {
     /* change Map changed sensitivity */
     Map.camera.percentageChanged = 0.3; /// default 0.5
 })
-
-
-
-
-
-
-
-
-
-//////////////////////////////////////////////
-/// receive messages
-//////////////////////////////////////////////
-dispatcher.receiveMessage("playerPlaying", (data) => {
-
-    /// rotate placeholder texture with player angle
-    // placeholder.ellipse.stRotation = Cesium.Math.toRadians(data.angle);
-});
 
 
 

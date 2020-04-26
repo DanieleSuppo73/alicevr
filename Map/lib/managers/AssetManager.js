@@ -9,7 +9,9 @@ import Player from "./Player.js"
 
 export default class AssetManager {
 
-    static init() {
+    static init(_range) {
+
+        range = _range;
 
         zoomToAll();
 
@@ -36,16 +38,16 @@ export default class AssetManager {
 
         /* HOME button
         ***************/
-        // $('#navigator-button-home').mouseenter(
-        //     function () {
-        //         $(this).attr('src', 'images/icon_home_on.svg');
-        //     }
-        // );
-        // $('#navigator-button-home').mouseleave(
-        //     function () {
-        //         $(this).attr('src', 'images/icon_home_off.svg');
-        //     }
-        // );
+        $('#homeButton').hover(
+            function () {
+                $(this).attr('src', 'images/icon_home_on.svg');
+            },
+            function () {
+                $(this).attr('src', 'images/icon_home_off.svg');
+            }
+        );
+
+
         $('#homeButton').click(
             function () {
                 $(this).fadeOut();
@@ -54,31 +56,12 @@ export default class AssetManager {
                     selectedAsset = null;
                     hoverAsset = null;
                     zoomToAll(true);
-                    // hideNavigatorButtons();
-                    // hideNavigatorMessage();
                 })
 
                 /* send message for root asset */
                 dispatcher.sendMessage("rootAssetClicked", Loader.root.asset);
             }
         );
-
-
-        // $('#navigator-button-play').mouseenter(
-        //     function () {
-        //         $(this).attr('src', 'images/icon_play_on.svg');
-        //     }
-        // );
-        // $('#navigator-button-play').mouseleave(
-        //     function () {
-        //         $(this).attr('src', 'images/icon_play_off.svg');
-        //     }
-        // );
-        // $('#navigator-button-play').click(
-        //     function () {
-        //         startPlay();
-        //     }
-        // );
 
 
 
@@ -90,20 +73,6 @@ export default class AssetManager {
                 console.log(asset)
                 AssetManager.OnOver(asset);
             }
-            // switch (entity.id.category) {
-
-            //     case "PLACEHOLDER-VIDEO":
-            //         console.log("ENTER VIDEO")
-            //         const asset = Loader.root.getAssetById(entity.id.asset.id);
-
-            //         AssetManager.OnOver(asset);
-            //         break;
-
-            // case "PLACEHOLDER-VIDEO-CLICKED":
-            //     console.log("ENTER VIDEO PLAY")
-
-            //     break;
-            // }
         });
 
 
@@ -126,17 +95,7 @@ export default class AssetManager {
 
 
         Map.onClickEntity.push((entity) => {
-            // console.log(entity)
-            // switch (entity.id.category) {
 
-            //     case "PLACEHOLDER-VIDEO-OVER":
-            //         AssetManager.OnClick_Video(entity);
-            //         break;
-
-            //     case "PLACEHOLDER-VIDEO-CLICKED":
-            //         AssetManager.OnClick_Video_Play(entity);
-            //         break;
-            // }
             if (entity.id.category === "PLACEHOLDER-VIDEO-OVER") {
                 console.log("CLICK VIDEO")
                 $("#homeButton").fadeIn();
@@ -146,6 +105,8 @@ export default class AssetManager {
                     $('#overlayLabel').fadeOut(1000);
                     overlayLabelVisible = false;
                 }
+
+
 
                 if (selectedAsset) {
                     selectedAsset.entityClicked.utils.fade(0.01);
@@ -194,8 +155,6 @@ export default class AssetManager {
             asset.entityOver.utils.zoom(1.2);
             hoverAsset = asset;
 
-            // showNavigatorMessage(hoverAsset);
-
 
             var htmlOverlay = document.getElementById('overlayLabel');
             var scratch = new Cesium.Cartesian2();
@@ -205,23 +164,14 @@ export default class AssetManager {
                 if (Cesium.defined(canvasPosition)) {
                     htmlOverlay.style.top = (canvasPosition.y + 20) + 'px';
                     htmlOverlay.style.left = (canvasPosition.x + 20) + 'px';
-
-
-                    // htmlOverlay.innerHTML = asset.title + '<br/>' + asset.location;
-
-                    // console.log("******************************")
-                    // console.log("MOSTRO OVERLAYLABEL")
                     $('#overlayLabel').find(".overlayLabel-bold").text(asset.title)
                     $('#overlayLabel').find(".overlayLabel-light").text(asset.location)
-                   
                 }
             });
 
             $('#overlayLabel').show();
             overlayLabelVisible = true;
 
-
-            // $('#overlayLabel').fadeIn();
 
             /* send message */
             dispatcher.sendMessage("videoAssetOver", asset);
@@ -230,9 +180,6 @@ export default class AssetManager {
 
 
     static OnExit(asset, forced = false) {
-        // const asset = typeof entity.asset === "undefined" ?
-        //     Loader.root.getAssetById(entity.id.asset.id) :
-        //     Loader.root.getAssetById(entity.asset.id);
         if (asset !== selectedAsset || forced) {
             console.log("EXITTTTTTTTT")
             console.log(asset)
@@ -243,9 +190,6 @@ export default class AssetManager {
                 hoverAsset = null;
             });
 
-            // if (!forced) hideNavigatorMessage();
-
-            
             $('#overlayLabel').hide();
             overlayLabelVisible = false;
 
@@ -256,28 +200,11 @@ export default class AssetManager {
 
 
     static OnClick_Video() {
-        // $("#homeButton").fadeIn();
-
-        // if (selectedAsset) {
-        //     selectedAsset.entityClicked.utils.fade(0.01);
-        //     reset();
-        // }
-        // if (hoverAsset) {
-        //     $('#overlayLabel').fadeOut();
-        // }
-        // selectedAsset = typeof entity.asset === "undefined" ?
-        //     Loader.root.getAssetById(entity.id.asset.id) :
-        //     Loader.root.getAssetById(entity.asset.id);
         selectedAsset.entity.utils.setOpacity(0.01);
         selectedAsset.entityOver.utils.setOpacity(1);
         selectedAsset.entityOver.utils.setScale(1.2);
         selectedAsset.entityOver.utils.fade(0.01, null, 1000);
         selectedAsset.entityOver.utils.zoom(2, null, 1000);
-
-
-        // /* show navigator */
-        // if (!navigatorMessageVisible) showNavigatorMessage(selectedAsset);
-        // showNavigatorButtons();
 
         /* initialize Player */
         Player.init(selectedAsset);
@@ -294,6 +221,7 @@ export default class AssetManager {
                 startCameraRotation();
 
                 selectedAsset.entityClicked.utils.fade(1);
+                selectedAsset.entityClicked.utils.setScale(1);
             },
             duration: 8,
             easingFunction: Cesium.EasingFunction.QUADRACTIC_IN_OUT,
@@ -308,10 +236,12 @@ export default class AssetManager {
 
     static OnClick_Video_Play() {
 
-        selectedAsset.entityClicked.utils.fade(0.01, null, 1000);
+        // selectedAsset.entityClicked.utils.fade(0.01, null, 1000);
 
         /* send message */
         dispatcher.sendMessage("videoPlayerPlay");
+
+
 
     };
 
@@ -319,15 +249,15 @@ export default class AssetManager {
 
 };
 
+let range = null;
 let selectedAsset = null;
 let hoverAsset = null;
-// let navigatorMessageVisible = false;
 let navigatorButtonEnabled = true;
 let overlayLabelVisible = false;
 
 
+
 function reset(callback = null) {
-    // const entity = selectedAsset.entity;
     AssetManager.OnExit(selectedAsset, true);
     Player.hideStartPoints();
     stopCameraRotation();
@@ -343,7 +273,7 @@ function zoomToAll(slow) {
     stopCameraRotation();
 
     const duration = slow ? null : 0;
-    const range = 140000;
+    // const range = 140000;
     Map.camera.flyToBoundingSphere(Loader.root.asset.boundingSphere, {
         offset: new Cesium.HeadingPitchRange(0, -1.47, range),
         duration: duration,
@@ -379,10 +309,13 @@ Map.onDown.push(function () {
 messages receivers
 ******************/
 dispatcher.receiveMessage("playerStarted", () => {
+    selectedAsset.entityClicked.utils.fade(0.01, null, 1000);
+    selectedAsset.entityClicked.utils.zoom(2, null, 1000);
     stopCameraRotation();
 });
 
 dispatcher.receiveMessage("playerEnded", () => {
+
     /* fly there */
     Map.camera.flyToBoundingSphere(selectedAsset.boundingSphere, {
         offset: new Cesium.HeadingPitchRange(0, -0.5, selectedAsset.boundingSphere.radius * 2),
@@ -395,6 +328,7 @@ dispatcher.receiveMessage("playerEnded", () => {
             startCameraRotation();
 
             selectedAsset.entityClicked.utils.fade(1);
+            selectedAsset.entityClicked.utils.setScale(1);
         },
         duration: 8,
         easingFunction: Cesium.EasingFunction.QUADRACTIC_IN_OUT,
@@ -424,7 +358,8 @@ dispatcher.receiveMessage("splashScreenClicked", (id) => {
     }
 
     if (selectedAsset) {
-        selectedAsset.entityClicked.utils.fade(0.01);
+        selectedAsset.entityClicked.utils.fade(0.01, null, 1000);
+        selectedAsset.entityClicked.utils.zoom(2, null, 1000);
         reset(() => {
             selectedAsset = Loader.root.getAssetById(id);
             AssetManager.OnClick_Video();
@@ -435,6 +370,4 @@ dispatcher.receiveMessage("splashScreenClicked", (id) => {
         AssetManager.OnClick_Video();
     }
 });
-
-
 

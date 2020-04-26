@@ -2,40 +2,65 @@
 
 <head>
     <style>
-        * {
+        #guidePanel {
             font-family: 'Roboto', sans-serif;
             font-weight: 400;
+            font-size: 14px;
+            padding: 1em;
+            background-color: white !important;
         }
 
-        #guidePanel {
-            /* border-top: 1px solid rgb(224, 224, 224); */
-            background-color: rgb(237, 240, 242);
-            padding: 0.3em;
-            border-radius: 8px;
-            margin: 0.7em;
-
-
-
+        p {
+            line-height: 160%;
         }
 
-        #guidePanel p {
-            color: rgb(26, 26, 26);
-            margin: 10px;
+        b {
+            font-weight: 700;
+        }
+
+        a {
+            color: dodgerblue;
+        }
+
+        a:link {
+            text-decoration: none;
+        }
+
+        a:visited {
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        a:active {
+            text-decoration: underline;
+        }
+
+        .i {
+            font-style: italic;
+        }
+
+        .small {
             font-size: small;
-            /* word-spacing: 1px; */
-            line-height: 150%;
+            margin: 0;
         }
 
-        #guidePanel img {
-            margin-right: 1em;
-            width: 50px;
+        .large {
+            font-size: large;
+        }
+
+        .border-bottom {
+            border-bottom: 1px solid rgb(136, 136, 136);
         }
     </style>
 </head>
 
 <body>
     <div id="guidePanel">
-        <p><img src="../../Journal/images/guide.svg" ALIGN="left">
+        <p class="large border-bottom">Guida</p>
+        <p>
             Il <span style="font-weight: 700;">Lido di Venezia</span> (anche detto semplicemente <span
                 style="font-weight: 700;">Lido</span>) è una sottile isola
             che si allunga per circa 12 km tra la laguna di Venezia ed il mare Adriatico, delimitata dai porti di San

@@ -198,14 +198,13 @@ export default class Map {
     
 
 
-
+        
         /* credits */
         let credits = Map.params.useMapbox ?
-            "Imagery data attribution Mapbox" :
-            "Imagery data attribution Bing Maps";
-        let id = document.getElementById("credits");
-        if (id !== null && id.value == "") id.innerHTML = credits;
-
+            "Realized by ISSIMISSIMO - Imagery data attribution Mapbox" :
+            "Realized by ISSIMISSIMO - Imagery data attribution Bing Maps";
+        $('#credits').text(credits);
+        
 
         /* call handlers on viewer defined */
         for (let i = 0; i < Map.onStarted.length; i++) {
@@ -311,9 +310,9 @@ export default class Map {
 
 
 Map.params = {
-    useMapbox: true,
+    useMapbox: false,
     fxaa: false,
-    maxScreenSpaceError: 6,
+    maxScreenSpaceError: 2,
     occlusion: false,
     useBrowserRecommendedResolution: false,
     imageryProvider: function () {

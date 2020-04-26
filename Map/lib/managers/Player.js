@@ -19,7 +19,7 @@ export default class Player {
         /* create markers */
         markers = jsUtils.arrayOfObjectsCloneAndIncrease(video.markers);
         markers[markers.length - 1].timecode += 1000; /// add 100 sec to last marker
-        
+
         /* create the proxy 
         for the 1st time!*/
         if (!Player.radarProxy) Player.radarProxy = Point.draw(video.boundingSphere.center, "PROXY");
@@ -28,11 +28,12 @@ export default class Player {
         for (let i = 0; i < Player.startPoints.length; i++) {
             Map.viewer.entities.remove(Player.startPoints[i].entity);
         }
-        
+
         Player.radar = null;
         Player.startPoints = [];
+        Player.started = false;
         spIndex = 0;
-        
+
         let track = Loader.root.getAssetByClass("Track", video);
 
         if (typeof track !== "undefined") {
@@ -44,17 +45,9 @@ export default class Player {
             /* create radar */
             Player.radar = Ellipse.draw(video.boundingSphere.center, "POSITION");
             createStartPoints();
+            dispatcher.sendMessage("showGuideWarningForNoTrack");
+            console.warn("showGuideWarningForNoTrack")
         }
-
-        
-
-        /* create start points */
-        // for (let i = 0; i < Player.startPoints.length; i++) {
-        //     Map.viewer.entities.remove(Player.startPoints[i].entity);
-        // }
-        // Player.startPoints = [];
-        // spIndex = 0;
-        // createStartPoints();
     };
 
 
@@ -64,14 +57,14 @@ export default class Player {
         markerIndex = null;
         idle = true;
 
-        if (Player.radar.opacity > 0){
+        if (Player.radar.opacity > 0) {
             entityUtils.fadeOut(Player.radar);
         }
         if (moveRadarLerp) {
             clearInterval(moveRadarLerp);
             moveRadarLerp = null;
         }
-        if (Map.viewer.trackedEntity){
+        if (Map.viewer.trackedEntity) {
             Map.viewer.trackedEntity = null;
         }
         if (callback) callback();
@@ -79,13 +72,16 @@ export default class Player {
 
 
     static showStartPoints() {
-        let interval = 0;
-        for (let i = 0; i < Player.startPoints.length; i++) {
-            interval += 250;
-            setTimeout(function () {
-                Player.startPoints[i].entity.utils.fade(1);
-            }, interval);
+        const t = () => {
+            setTimeout(() => {
+                if (spIndex < Player.startPoints.length - 1 && !Player.started) {
+                    spIndex++;
+                    Player.startPoints[spIndex].entity.utils.fade(1);
+                    t();
+                }
+            }, 250);
         }
+        t();
     };
 
     static hideStartPoints() {
@@ -97,7 +93,9 @@ export default class Player {
 
 Player.radarProxy = null;
 Player.radar = null;
+Player.fake = null;
 Player.startPoints = [];
+Player.started = false;
 Player.playing = false;
 
 
@@ -109,10 +107,12 @@ Player.playing = false;
 messages receivers
 ******************/
 dispatcher.receiveMessage("playerStarted", () => {
+    Player.started = true;
     Player.hideStartPoints();
 });
 dispatcher.receiveMessage("playerPlaying", (data) => {
     check(data.time);
+    Player.started = false;
     Player.playing = true;
     Player.radar.ellipse.stRotation = Cesium.Math.toRadians(data.angle) + radarHeading;
 });
@@ -173,10 +173,20 @@ const check = time => {
                         /* or simply jump the radar
                         without lerp */
                         else {
+                            Map.viewer.trackedEntity = null;
                             Player.radarProxy.position = position;
                             entityUtils.fadeOut(Player.radar, () => {
-                                Player.radar.position = Player.radarProxy.position._value;
-                                entityUtils.fadeIn(Player.radar);
+
+                                /* we MUST create a new radar,
+                                otherwise the boundingsphere for this video asset
+                                would not be the right one (??????....),
+                                and we MUST wait a ilttle before to show
+                                the ellipse because otherwise
+                                it would be totally white for a couple of frames */
+                                Player.radar = Ellipse.draw(position, "POSITION");
+                                setTimeout(function () {
+                                    entityUtils.fadeIn(Player.radar);
+                                }, 500)
                             });
                             jump();
                         }
@@ -218,9 +228,13 @@ const createStartPoints = () => {
             if (minDist >= spMinDist) {
                 Player.startPoints.push(new StartPoint(pos, timecode));
             }
+
             if (spIndex < markers.length - 1) {
                 spIndex++;
                 createStartPoints();
+            }
+            else {
+                spIndex = 0;
             }
         })
 };
@@ -310,7 +324,8 @@ const jump = (heading = null) => {
     let r = idle ? 500 : Map.range;
     let easingFunction = idle ? Cesium.EasingFunction.QUADRACTIC_IN_OUT : null;
 
-    if (heading) Map.viewer.trackedEntity = Player.radarProxy;
+    // if (heading) Map.viewer.trackedEntity = Player.radarProxy;
+    Map.viewer.trackedEntity = Player.radarProxy;
     Map.viewer.camera.flyToBoundingSphere(boundingSphere, {
         offset: new Cesium.HeadingPitchRange(h, p, r),
         easingFunction: easingFunction,

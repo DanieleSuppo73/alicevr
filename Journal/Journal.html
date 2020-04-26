@@ -4,16 +4,26 @@
     <meta charset='utf-8' />
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
     <script type="module" src="src/Journal.js"></script>
 
     <style>
         html,
         body {
             margin: 0;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .absolute {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
         }
 
         /* width */
-         ::-webkit-scrollbar {
+        ::-webkit-scrollbar {
             width: 10px;
         }
 
@@ -36,5 +46,28 @@
 </head>
 
 <body>
-    <div id="journal"></div>
+    <div>
+
+        <div class="absolute"
+            style="z-index: 1; display: flex;  align-items: center; justify-content: center;">
+            <div style="display: flex; flex-direction: column;">
+                <img src="images/guide.svg" width="100px" style="opacity: 0.3; margin: auto;">
+                <p style="opacity: 0.3;">NESSUN PERCORSO SELEZIONATO</p>
+            </div>
+        </div>
+
+        <div class="absolute" id="journal" style="z-index: 2;"></div>
+
+        <div class="absolute" id="warnMsg" style="z-index: 3;  display: none;">
+            <div class="absolute" style="display: flex;  align-items: center;
+            justify-content: center; background-color: white;">
+                <div style="display: flex; flex-direction: column;">
+                    <img src="images/warning.svg" width="70px" style="margin: auto;">
+                    <p>QUESTO VIDEO NON HA TRACCE REGISTRATE</p>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
 </body>

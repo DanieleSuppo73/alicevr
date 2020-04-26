@@ -15,6 +15,11 @@ dispatcher.receiveMessage("rootAssetClicked", function () {
     hide();
 });
 
+dispatcher.receiveMessage("showGuideWarningForNoTrack", function () {
+    console.warn("--> showGuideWarningForNoTrack")
+    showWarn();
+});
+
 
 
 /********************************************
@@ -46,6 +51,13 @@ function init(asset) {
 
 function hide() {
     $(id).empty();
+}
+
+function showWarn(){
+    $('#warnMsg').show();
+    setTimeout(function(){
+        $('#warnMsg').fadeOut();
+    }, 5000);
 }
 
 

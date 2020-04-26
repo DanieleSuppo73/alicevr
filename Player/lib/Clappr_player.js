@@ -93,10 +93,11 @@ const Clappr_player = {
 
     setup: function (url, poster = null) {
 
+        console.warn("SETUP VIDEOPLAYER")
         /// destroy old video
         if (this.player) {
             this.player.destroy();
-            console.log("new video is requested to load");
+            console.warn("new video is requested to load");
         }
 
 

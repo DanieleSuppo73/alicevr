@@ -61,13 +61,13 @@ export default class SplashScreen {
                     divs[i].find('.splashScreen-description').text(description);
                     divs[i].hover(
                         function () {
-                            divs[i].css('background-color', 'rgba(0,0,0,1');
+                            divs[i].css('background-color', 'rgba(26, 27, 33, 1');
 
                             /* send message */
                             dispatcher.sendMessage("splashScreenOver", divs[i].data().id);
                         },
                         function () {
-                            divs[i].css('background-color', 'rgba(0,0,0,0.4');
+                            divs[i].css('background-color', 'rgba(26, 27, 33, 0.4');
 
                             /* send message */
                             dispatcher.sendMessage("splashScreenExit", divs[i].data().id);

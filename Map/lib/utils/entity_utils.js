@@ -3,6 +3,13 @@ import {
 } from "../../../lib/Maf.js"
 
 
+
+
+export function remove(entity){
+    Map.viewer.entities.remove(entity);
+}
+
+
 export function fadeIn(entity, callback = null, time = null) {
     if (entity.opacity !== 1)
         fadeFunc(entity, 0, 1, callback, time);
